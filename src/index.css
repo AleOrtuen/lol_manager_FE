@@ -1,0 +1,38 @@
+
+body {
+  background-color: #1e1e1e !important;
+  color: rgb(215, 215, 215) !important;
+}
+
+a {
+  font-weight: 500;
+ /* color: #646cff !important;
+  text-decoration: inherit !important; */
+  cursor: pointer;
+}
+
+.dropdown-item:hover {
+  background-color: #333 !important; /* Colore di sfondo più scuro */
+}
+
+/* Modifica lo sfondo della modale */
+.custom-modal-bg {
+  background-color: #242424 !important; /* Colore scuro per lo sfondo della modale */
+  color: rgb(215, 215, 215) !important; /* Colore del testo chiaro */
+}
+
+/* Navbar.css */
+.navbar {
+  background-color: #333;
+  padding: 10px;
+}
+
+/*
+.dropdown-menu li {
+  padding: 4px 8px;
+} */
+
+.dropdown:hover .dropdown-menu {
+  display: block;
+}
+
