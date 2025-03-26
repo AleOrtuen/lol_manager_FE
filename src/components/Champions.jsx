@@ -1,9 +1,7 @@
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
 
-function Champions() {
+function Champions({champions}) {
   const [imagesMap, setImagesMap] = useState({});
-  const user = useSelector((state) => state.user);
 
   useEffect(() => {
     // Crea una mappa con le immagini usando i nomi dei file
@@ -43,7 +41,7 @@ function Champions() {
           }}
         >
           {/* Mostra tutti i campioni dell'utente */}
-          {user.champions.map((champion, index) => (
+          {champions.map((champion, index) => (
             <div 
               key={index}
               style={{

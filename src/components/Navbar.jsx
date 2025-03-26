@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { LOGIN } from "../utils/routes";
+import { LOGIN, TEAM, HOME, COMP_BUILDER } from "../utils/routes";
 import { setTeam } from "../store/slice/teamSlice";
 import miniLogo from '../img/mini_logo.png';
 import midIco from '../img/roles/mid_ico.png';
@@ -77,13 +77,13 @@ function Navbar() {
                             </a>
                             <ul class="dropdown-menu bg-dark" aria-labelledby="navbarDropdownMenuLink">
                                 <li>
-                                    <a class="dropdown-item text-light" onClick={() => navigate()}>Profilo</a>
+                                    <a class="dropdown-item text-light" onClick={() => navigate(TEAM, {state: {idTeam: team.idTeam}})}>Profilo</a>
                                 </li>
                                 <li>
                                     <a class="dropdown-item text-light" onClick={() => navigate()}>Team Comp</a>
                                 </li>  
                                 <li>
-                                    <a class="dropdown-item text-light" onClick={() => navigate()}>Comp builder</a>
+                                    <a class="dropdown-item text-light" onClick={() => navigate(COMP_BUILDER, {state: {idTeam: team.idTeam}})}>Comp builder</a>
                                 </li>                                 
                             </ul>   
                         </li>
@@ -122,8 +122,8 @@ function Navbar() {
                                 <img 
                                     src={midIco} 
                                     style={{
-                                        width: '20%', 
-                                        height: '20%', 
+                                        width: '20px', 
+                                        height: '20px', 
                                         maxWidth: '20px', 
                                         maxHeight: '20px', 
                                         marginRight: '5px'}}
