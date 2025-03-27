@@ -36,3 +36,39 @@ a {
   display: block;
 }
 
+::-webkit-scrollbar {
+  width: 10px; /* Larghezza della scrollbar */
+  height: 12px; /* Altezza della scrollbar (per gli elementi orizzontali) */
+}
+
+/* Stile per il "track" (la parte grigia dietro la scrollbar) */
+::-webkit-scrollbar-track {
+  /* background: #f1f1f1; Colore di sfondo del track */
+  /* border-radius: 5px; Raggio del bordo per angoli arrotondati */
+}
+
+/* Stile per il "thumb" (la parte che si sposta) */
+::-webkit-scrollbar-thumb {
+  background: #888; /* Colore dello "thumb" */
+  border-radius: 10px; 
+}
+
+/* Stile quando il "thumb" è in hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Colore più scuro quando si passa sopra */
+}
+
+.image-hover {
+  transition: filter 0.3s ease, transform 0.2s ease; /* Aggiungi una transizione fluida */
+}
+
+.image-hover:hover {
+  filter: brightness(1.2); /* Aumenta la luminosità dell'immagine */
+  transform: scale(1.05);
+}
+
+header {
+  padding-top: 60px;
+  /* padding-left: 5px;
+  padding-right: 5px; */
+}

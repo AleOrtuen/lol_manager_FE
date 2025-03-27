@@ -29,9 +29,6 @@ function Champions({champions}) {
   
   return (
     <div>
-      <header className="bg-gray bg-gradient text-white">
-        <h2>Champion pool</h2>
-        <br/>
         <div 
           style={{
             display: 'flex',
@@ -45,7 +42,7 @@ function Champions({champions}) {
             <div 
               key={index}
               style={{
-                minWidth: '80px',
+                minWidth: '50px',
                 textAlign: 'center',
               }}
             >
@@ -55,11 +52,12 @@ function Champions({champions}) {
                   src={imagesMap[champion.name.toLowerCase()]} 
                   alt={champion.name}
                   style={{
-                    width: '80px',
-                    height: '80px',
+                    width: '50px',
+                    height: '50px',
                     objectFit: 'cover',
                     borderRadius: '8px'
                   }}
+                  class="image-hover"
                 />
               ) : (
                 /* Mostra l'immagine dal percorso indicato nell'oggetto champion, se presente */
@@ -68,11 +66,12 @@ function Champions({champions}) {
                     src={`../img/champions/${champion.img}`} 
                     alt={champion.name}
                     style={{
-                      width: '80px',
-                      height: '80px',
+                      width: '50px',
+                      height: '50px',
                       objectFit: 'cover',
                       borderRadius: '8px'
                     }}
+                    class="image-hover"
                     onError={(e) => {
                       e.target.style.display = 'none';
                       e.target.nextSibling.style.display = 'block';
@@ -84,7 +83,6 @@ function Champions({champions}) {
             </div>
           ))}
         </div>
-      </header>
     </div>
   );
 }

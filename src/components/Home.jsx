@@ -7,8 +7,10 @@ function Home() {
 
     return(
         <>
-            <Navbar />
-            <Champions champions={user.champions}/>
+            <header className="bg-gray bg-gradient text-white">
+                <Navbar />
+                <Champions champions={user.champions}/>
+            </header>
         </>
     )
 }

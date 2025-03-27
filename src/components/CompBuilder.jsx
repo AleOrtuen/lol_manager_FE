@@ -7,32 +7,97 @@ import adc from '../img/roles/adc.webp';
 import sup from '../img/roles/sup.webp';
 import { useLocation } from 'react-router-dom';
 import { teamCompFindTeam } from '../service/teamCompService';
+import { champRoleFindComp } from '../service/champRoleService';
+import Champions from './Champions';
 
 
 function CompBuilder() {
     const location = useLocation();
     const [comps,setComps] = useState([]);
     const [champRoles,setChampRoles] = useState([]);
+    const [uniqueChamp,setUniqueChamp] = useState({
+        top: [],
+        jng: [],
+        mid: [],
+        adc: [],
+        sup: []
+    });
 
+    const [pick,setPick] = useState({
+        1: {
+            champion: "ciaone"
+        },
+        2: {
+            champion: null
+        },
+        3: {
+            champion: null
+        },
+        4: {
+            champion: null
+        },
+        5: {
+            champion: null
+        }
+    })
+
+    //TROVA TUTTE LE COMP DEL TEAM
     useEffect(() => {
         console.log(location && location.state.idTeam)
         if (location.state && location.state.idTeam) {
-            teamCompFindTeam(location.state.idTeam).then ( (response) => {
-                setComps(response.data.objResponse);
-                console.log(comps);
-            }).catch( error => {
-                console.log(error.response.data.response)
-            })
-
+            teamCompFindTeam(location.state.idTeam)
+                .then ( (response) => {
+                    setComps(response.data.objResponse);
+                })
+                .catch( error => {
+                    console.log(error.response.data.response)
+                })
         }
-
     }, []);
 
-    // useEffect(() => {
-    //     if (comps & comps.length > 0) {
+    //TROVA TUTTI I CHAMP ROLE PER LE COMP
+    useEffect(() => {
+        if (comps && comps.length > 0) {
+            comps.forEach( (comp) => { 
+                champRoleFindComp(comp.idComp)
+                    .then((response) => {
+                        setChampRoles(prevChampRoles => [
+                            ...prevChampRoles,  
+                            ...response.data.objResponse 
+                        ]);
+                    })
+                    .catch(error => {
+                        console.log(error.response.data);
+                    });
+            });
+        }
+    }, [comps]);
+    
+    //POPOLA LE LISTE DEI RUOLI CON NOMI CHAMP UNICI
+    useEffect(() => {
+        if (champRoles && champRoles.length > 0) {
+            const newUniqueChamp = {
+                top: [],
+                jng: [],
+                mid: [],
+                adc: [],
+                sup: []
+            };
 
-    //     }
-    // }, [comps])
+            champRoles.forEach((champ) => {
+                const role = champ.role;
+                const champName = champ.champion.name;
+
+                // Verifica se il champion è già presente nel ruolo
+                if (role && champName && 
+                    !newUniqueChamp[role].some(existingChamp => existingChamp === champName)) {
+                    newUniqueChamp[role].push(champName);
+                }
+            });
+
+            setUniqueChamp(newUniqueChamp);
+        }
+    }, [champRoles]);
 
     const rolesData = [
         { role: 'top', image: top },
@@ -46,12 +111,43 @@ function CompBuilder() {
         <div>
             <Navbar />
             <header className="bg-gray bg-gradient text-white">
+                <h2>Comp combinator</h2>
+                <br/>
+                <div className="row mb-3 justify-content-center">
+                {Object.keys(pick).map((pickNumber) => (
+                    <div 
+                        key={pickNumber} 
+                        className="col-2 m-1" 
+                        style={{
+                            width: '75px', 
+                            height: '75px', 
+                            border: '2px solid #555',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            backgroundColor: '#333',
+                            borderRadius: '8px'
+                        }}
+                    >
+                        <span className="text-muted">
+                            {pick[pickNumber].champion ? pick[pickNumber].champion : "No Champion"}
+                        </span>
+                    </div>
+                ))}
+                </div>
+                <button 
+                    class="btn btn-outline-secondary btn-md" 
+                    // onClick={() => userRegistration()}
+                >
+                    Lock 
+                </button>
+                <br/><br/>
                 <div className="container-fluid">
                     <div className="row justify-content-center">
                         {rolesData.map((roleInfo) => (
                             <div 
                                 key={roleInfo.role} 
-                                className="col p-2" 
+                                className="col p-1" 
                                 style={{height: '50vh'}}
                             >
                                 <div
@@ -71,8 +167,30 @@ function CompBuilder() {
                                             }}
                                         />
                                     </div>
-                                    <div className="flex-grow-1 overflow-auto p-2 text-center">
-                                        {/* <p>Campioni {roleInfo.role}</p> */}
+                                    <div className="flex-grow-1 overflow-auto p-2 text-center"
+                                        style={{
+                                        display: 'flex',
+                                        flexWrap: 'wrap',
+                                        gap: '3px',
+                                        justifyContent: 'center',
+                                        alignContent: 'flex-start'
+                                        }}
+                                    >
+                                        {uniqueChamp[roleInfo.role] && uniqueChamp[roleInfo.role].length > 0 ? (
+                                            uniqueChamp[roleInfo.role].map((champName) => {
+                                                const champRole = champRoles.find(
+                                                    (champRole) => 
+                                                        champRole.role === roleInfo.role && 
+                                                        champRole.champion.name === champName
+                                                );
+
+                                                return champRole ? (
+                                                    <div key={champName}>
+                                                        <Champions champions={[champRole.champion]} />
+                                                    </div>
+                                                ) : null;
+                                            })
+                                        ) : null}
                                     </div>
                                 </div>
                             </div>

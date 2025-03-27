@@ -26,10 +26,14 @@ function Team() {
     return(
         <div>
             <Navbar />
+            <header className="bg-gray bg-gradient text-white">
+                <h3>Champion Pool</h3>
+                <br/>
             {champs && champs.length > 0 ?
             <Champions champions={champs} />
             : null
             }
+            </header>
         </div>
     )
 }
