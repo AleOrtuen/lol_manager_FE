@@ -42,7 +42,7 @@ function Champions({champions}) {
             <div 
               key={index}
               style={{
-                minWidth: '50px',
+                minWidth: '67px',
                 textAlign: 'center',
               }}
             >
@@ -52,8 +52,8 @@ function Champions({champions}) {
                   src={imagesMap[champion.name.toLowerCase()]} 
                   alt={champion.name}
                   style={{
-                    width: '50px',
-                    height: '50px',
+                    width: '67px',
+                    height: '67px',
                     objectFit: 'cover',
                     borderRadius: '8px'
                   }}
@@ -66,8 +66,8 @@ function Champions({champions}) {
                     src={`../img/champions/${champion.img}`} 
                     alt={champion.name}
                     style={{
-                      width: '50px',
-                      height: '50px',
+                      width: '67px',
+                      height: '67px',
                       objectFit: 'cover',
                       borderRadius: '8px'
                     }}

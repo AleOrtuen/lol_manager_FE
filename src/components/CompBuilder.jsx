@@ -9,12 +9,15 @@ import { useLocation } from 'react-router-dom';
 import { teamCompFindTeam } from '../service/teamCompService';
 import { champRoleFindComp } from '../service/champRoleService';
 import Champions from './Champions';
+import { teamCombinator } from '../service/teamService';
+import ChampionBox from './ChampionBox';
 
 
 function CompBuilder() {
     const location = useLocation();
     const [comps,setComps] = useState([]);
     const [champRoles,setChampRoles] = useState([]);
+    const [champPicked,setChampPicked] = useState([]);
     const [uniqueChamp,setUniqueChamp] = useState({
         top: [],
         jng: [],
@@ -25,19 +28,24 @@ function CompBuilder() {
 
     const [pick,setPick] = useState({
         1: {
-            champion: "ciaone"
+            champion: null,
+            locked: false
         },
         2: {
-            champion: null
+            champion: null,
+            locked: false
         },
         3: {
-            champion: null
+            champion: null,
+            locked: false
         },
         4: {
-            champion: null
+            champion: null,
+            locked: false
         },
         5: {
-            champion: null
+            champion: null,
+            locked: false
         }
     })
 
@@ -97,8 +105,10 @@ function CompBuilder() {
 
             setUniqueChamp(newUniqueChamp);
         }
+        
     }, [champRoles]);
 
+    //LISTA RUOLI E IMG
     const rolesData = [
         { role: 'top', image: top },
         { role: 'jng', image: jng },
@@ -107,37 +117,161 @@ function CompBuilder() {
         { role: 'sup', image: sup }
     ];
      
+    //METODO DI SELEZIONE CHAMP
+    const champClick = (champ) => {
+        // Create a copy of the current pick state
+        const updatedPick = {...pick};
+        
+        // Find the first unlocked or matching slot
+        for (let pickNumber in updatedPick) {
+            // Check two conditions:
+            // 1. Slot is empty OR slot has an unlocked champion
+            // 2. All previous slots are locked (or this is the first slot)
+            const previousSlotsClosed = Object.keys(updatedPick)
+                .filter(key => parseInt(key) < parseInt(pickNumber))
+                .every(key => updatedPick[key].locked || updatedPick[key].champion === null);
+    
+            if (
+                (updatedPick[pickNumber].champion === null || !updatedPick[pickNumber].locked) && 
+                previousSlotsClosed
+            ) {
+                updatedPick[pickNumber].champion = champ;
+                setPick(updatedPick);
+                break;
+            }
+        }
+    }
+
+    //METODO DI LOCK
+    const lockChampions = () => {
+        pickCombinator();
+        const updatedPick = {...pick};
+        
+        // Lock the first non-locked champion
+        for (let pickNumber in updatedPick) {
+            if (
+                updatedPick[pickNumber].champion !== null && 
+                !updatedPick[pickNumber].locked
+            ) {
+                updatedPick[pickNumber].locked = true;
+                setPick(updatedPick);
+                break;
+            }
+        }
+    }
+
+    const pickCombinator = () => {
+
+        let newPick = null;
+        let oldPicks = [];
+
+        const newChampRoles = [...champRoles, ...champPicked];
+
+        let oldList = [];
+        let newList = [];
+
+        //TROVA LA NUOVA PICK SELEZIONATA E LA INSERISCE IN NEWPICK
+        for (let nonLocked in pick) {
+            if (pick[nonLocked].champion !== null &&
+                !pick[nonLocked].locked
+            ) {
+                newPick = pick[nonLocked].champion;
+                break;
+            }
+        }
+
+        //TROVA TUTTI I CHAMP LOCKATI E LI INSERISCE IN OLDPICKS
+        for (let locked in pick) {
+            if (pick[locked].champion !== null &&
+                pick[locked].locked
+            ) {
+                oldPicks.push(pick[locked].champion);
+            }
+        }
+
+        //INSERISCE IN NEWLIST TUTTI I CHAMPROLE DELLA NUOVA PICK
+        for (const role of newChampRoles) {
+            if (newPick.idChamp === role.champion.idChamp) {
+                newList.push(role);
+            }
+        }
+
+        //INSERISCE IN OLDLIST TUTTI I CHAMPROLE DEI CHAMP PICKATI IN PRECEDENZA
+        for (let oldPickChamp of oldPicks) {
+            for (const role of newChampRoles) {
+                if (oldPickChamp.idChamp === role.champion.idChamp) {
+                    oldList.push(role);
+                }
+            }
+        }
+
+        const request = {
+            oldList,
+            newList
+        } 
+
+        if (request && request !== null) {
+            teamCombinator(request)
+                .then ( (response) => {
+                    setChampRoles(response.data.objResponse2);
+                    setChampPicked(response.data.objResponse);
+                })
+                .catch( error => {
+                    console.log(error.response.data.response);
+                })
+        }
+
+    }
+    
+    
+
     return (
         <div>
             <Navbar />
             <header className="bg-gray bg-gradient text-white">
-                <h2>Comp combinator</h2>
+                <h1 className="display-6">Comp combinator</h1>
                 <br/>
                 <div className="row mb-3 justify-content-center">
                 {Object.keys(pick).map((pickNumber) => (
-                    <div 
-                        key={pickNumber} 
-                        className="col-2 m-1" 
-                        style={{
-                            width: '75px', 
-                            height: '75px', 
-                            border: '2px solid #555',
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            backgroundColor: '#333',
-                            borderRadius: '8px'
-                        }}
-                    >
-                        <span className="text-muted">
-                            {pick[pickNumber].champion ? pick[pickNumber].champion : "No Champion"}
-                        </span>
-                    </div>
+                    // <div 
+                    //     key={pickNumber} 
+                    //     className="col-2 m-1" 
+                    //     style={{
+                    //         width: '85px', 
+                    //         height: '85px', 
+                    //         border: `2px solid ${pick[pickNumber].locked ? 'green' : '#555'}`,
+                    //         display: 'flex',
+                    //         justifyContent: 'center',
+                    //         alignItems: 'center',
+                    //         backgroundColor: '#333',
+                    //         borderRadius: '8px'
+                    //     }}
+                    // >
+                    //     <span className="text-secondary">
+                    //         {pick[pickNumber].champion ? 
+                    //             <Champions champions={[pick[pickNumber].champion]} /> : 
+                    //             "No Champion"}
+                    //     </span>
+                    // </div>
+//                     <ChampionBox 
+//     key={pickNumber}
+//     pickNumber={pickNumber} 
+//     pick={pick} 
+//     Champions={Champions} 
+// />
+<ChampionBox 
+key={pickNumber}
+pickNumber={pickNumber} 
+pick={pick} 
+Champions={Champions}
+champRoles={champRoles}
+champPicked={champPicked}
+/>
                 ))}
                 </div>
                 <button 
-                    class="btn btn-outline-secondary btn-md" 
-                    // onClick={() => userRegistration()}
+                    className="btn btn-outline-secondary btn-md" 
+                    onClick={lockChampions}
                 >
                     Lock 
                 </button>
@@ -186,7 +320,9 @@ function CompBuilder() {
 
                                                 return champRole ? (
                                                     <div key={champName}>
-                                                        <Champions champions={[champRole.champion]} />
+                                                        <a onClick={() => champClick(champRole.champion)}>
+                                                            <Champions champions={[champRole.champion]} />
+                                                        </a>
                                                     </div>
                                                 ) : null;
                                             })
