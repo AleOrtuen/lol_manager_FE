@@ -6,9 +6,9 @@ import Login from './components/Login'
 import SignUp from './components/SignUp';
 import Home from './components/Home';
 import Team from './components/Team';
-import { COMP_BUILDER, HOME, LOGIN, SIGNUP, TEAM } from './utils/routes'
 import CompBuilder from './components/CompBuilder';
-
+import TeamComp from './components/TeamComp';
+import { COMP_BUILDER, HOME, LOGIN, SIGNUP, TEAM, TEAM_COMP } from './utils/routes'
 
 function App() {
 
@@ -17,7 +17,8 @@ function App() {
     {path: SIGNUP, element: <SignUp />},
     {path: HOME, element: <Home />},
     {path: TEAM, element: <Team />},
-    {path: COMP_BUILDER, element: <CompBuilder />}
+    {path: COMP_BUILDER, element: <CompBuilder />},
+    {path: TEAM_COMP, element: <TeamComp />}
 
   ])
 

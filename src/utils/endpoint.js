@@ -40,6 +40,7 @@ export const TEAM_FIND_ALL = TEAM_PATH + 'find-all';
 export const TEAM_FIND_ID = TEAM_PATH + 'find-id/'; 
 export const TEAM_FIND_NAME = TEAM_PATH + 'find-name/';
 export const TEAM_FIND_TAG = TEAM_PATH + 'find-tag/';
+export const TEAM_FIND_MEMBERS = TEAM_PATH + 'find-members/';
 export const TEAM_FIND_CHAMPS = TEAM_PATH + 'find-champs/';
 export const TEAM_CHAMPS_COMPS = TEAM_PATH + 'champs-comps/';
 export const TEAM_COMBINATOR = TEAM_PATH + 'combinator';

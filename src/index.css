@@ -73,3 +73,32 @@ header {
   /* padding-left: 5px;
   padding-right: 5px; */
 }
+
+/* Cambia il colore della freccia dell'accordion */
+.accordion-button::after {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23ffffff'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e") !important;
+}
+
+/* Mantiene lo sfondo scuro e il colore del testo bianco quando l'accordion è aperto */
+.accordion-button:not(.collapsed) {
+  background-color: #343a40; /* Questo è il colore bg-dark di Bootstrap */
+  /* color: white; */
+}
+
+/* Cambia anche il colore della freccia quando l'accordion è aperto */
+.accordion-button:not(.collapsed)::after {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23ffffff'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+  transform: rotate(-180deg);
+}
+
+/* Cambia il colore di sfondo del corpo dell'accordion (dove c'è la descrizione) */
+.accordion-body, .custom-accordion-body {
+  background-color: #353535 !important; /* Stesso colore del bottone (bg-dark) */
+  color: white !important; /* Mantiene il testo bianco */
+}
+
+/* Rimuove i bordi dagli elementi dell'accordion */
+.accordion-item {
+  border-color: gray !important;
+}
+

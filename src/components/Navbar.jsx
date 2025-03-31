@@ -1,9 +1,13 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { LOGIN, TEAM, HOME, COMP_BUILDER } from "../utils/routes";
+import { LOGIN, TEAM, HOME, COMP_BUILDER, TEAM_COMP } from "../utils/routes";
 import { setTeam } from "../store/slice/teamSlice";
 import miniLogo from '../img/mini_logo.png';
+import topIco from '../img/roles/top_ico.png';
+import jngIco from '../img/roles/jng_ico.png';
 import midIco from '../img/roles/mid_ico.png';
+import adcIco from '../img/roles/adc_ico.png';
+import supIco from '../img/roles/sup_ico.png';
 import { useEffect } from "react";
 import { resetAllSlices } from "../store/slice/resetAllSlice";
 import { userFindTeams } from "../service/userService";
@@ -31,6 +35,17 @@ function Navbar() {
         }
     }, [user]);
     
+    // Oggetto che mappa i ruoli alle immagini
+    const roleImages = {
+        top: topIco,
+        jng: jngIco,
+        mid: midIco,
+        adc: adcIco,
+        sup: supIco,
+    };
+
+    // Ottieni l'immagine del ruolo in base a user.pRole
+    const roleImage = user && user.pRole ? roleImages[user.pRole] : null;    
     
     const logOut = () => {
         dispatch(resetAllSlices());
@@ -80,7 +95,7 @@ function Navbar() {
                                     <a class="dropdown-item text-light" onClick={() => navigate(TEAM, {state: {idTeam: team.idTeam}})}>Profilo</a>
                                 </li>
                                 <li>
-                                    <a class="dropdown-item text-light" onClick={() => navigate()}>Team Comp</a>
+                                    <a class="dropdown-item text-light" onClick={() => navigate(TEAM_COMP, {state: {idTeam: team.idTeam}})}>Team Comp</a>
                                 </li>  
                                 <li>
                                     <a class="dropdown-item text-light" onClick={() => navigate(COMP_BUILDER, {state: {idTeam: team.idTeam}})}>Comp builder</a>
@@ -119,15 +134,19 @@ function Navbar() {
                                 data-bs-toggle="dropdown" 
                                 aria-expanded="false"
                             >
+                                {roleImage && (
                                 <img 
-                                    src={midIco} 
+                                    src={roleImage} 
                                     style={{
                                         width: '20px', 
                                         height: '20px', 
                                         maxWidth: '20px', 
                                         maxHeight: '20px', 
-                                        marginRight: '5px'}}
-                                />    
+                                        marginRight: '5px'
+                                    }} 
+                                    alt="Role icon"
+                                />
+                                )}   
                                 {user.username}
                             </a>
                             <ul class="dropdown-menu bg-dark" aria-labelledby="navbarDropdownMenuLink">

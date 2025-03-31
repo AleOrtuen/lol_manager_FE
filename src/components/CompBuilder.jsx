@@ -229,44 +229,18 @@ function CompBuilder() {
         <div>
             <Navbar />
             <header className="bg-gray bg-gradient text-white">
-                <h1 className="display-6">Comp combinator</h1>
+                <h1 className="display-6">COMP COMBINATOR</h1>
                 <br/>
                 <div className="row mb-3 justify-content-center">
                 {Object.keys(pick).map((pickNumber) => (
-                    // <div 
-                    //     key={pickNumber} 
-                    //     className="col-2 m-1" 
-                    //     style={{
-                    //         width: '85px', 
-                    //         height: '85px', 
-                    //         border: `2px solid ${pick[pickNumber].locked ? 'green' : '#555'}`,
-                    //         display: 'flex',
-                    //         justifyContent: 'center',
-                    //         alignItems: 'center',
-                    //         backgroundColor: '#333',
-                    //         borderRadius: '8px'
-                    //     }}
-                    // >
-                    //     <span className="text-secondary">
-                    //         {pick[pickNumber].champion ? 
-                    //             <Champions champions={[pick[pickNumber].champion]} /> : 
-                    //             "No Champion"}
-                    //     </span>
-                    // </div>
-//                     <ChampionBox 
-//     key={pickNumber}
-//     pickNumber={pickNumber} 
-//     pick={pick} 
-//     Champions={Champions} 
-// />
-<ChampionBox 
-key={pickNumber}
-pickNumber={pickNumber} 
-pick={pick} 
-Champions={Champions}
-champRoles={champRoles}
-champPicked={champPicked}
-/>
+                <ChampionBox 
+                    key={pickNumber}
+                    pickNumber={pickNumber} 
+                    pick={pick} 
+                    Champions={Champions}
+                    champRoles={champRoles}
+                    champPicked={champPicked}
+                />
                 ))}
                 </div>
                 <button 
