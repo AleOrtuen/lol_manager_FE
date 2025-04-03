@@ -1,8 +1,12 @@
 import axios from "axios";
-import { USER_AUTH, USER_FIND_TEAMS, USER_SAVE } from "../utils/endpoint";
+import { USER_AUTH, USER_FIND_TEAMS, USER_SAVE, USER_UPDATE } from "../utils/endpoint";
 
 export function userSave(user) {
     return axios.post(USER_SAVE, user);
+}
+
+export function userUpdate(user) {
+    return axios.post(USER_UPDATE, user);
 }
 
 export function userFindTeams(idUser) {

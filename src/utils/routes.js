@@ -4,3 +4,4 @@ export const HOME = '/home';
 export const TEAM = '/team';
 export const COMP_BUILDER = '/comp-builder';
 export const TEAM_COMP = '/team-comp';
+export const ACCOUNT =  '/account';

@@ -13,6 +13,7 @@ function SignUp() {
         email: '',
         password: '',
         password2: '',
+        pRole: null,
         error: ''
     })
 
@@ -29,8 +30,10 @@ function SignUp() {
         const user = {
             username: form.username,
             email: form.email,
-            password: form.password
+            password: form.password,
+            pRole: form.pRole
         }
+        console.log(user);
         userSave(user).then ( (response) => {
             console.log(response);
             alert('Utente registrato correttamente');
@@ -195,6 +198,25 @@ function SignUp() {
                     }}
                 />
                 <label htmlFor="password2">Digita di nuovo la passsword</label>
+                </div>
+                <div className="form-floating">
+                    <select 
+                        className="form-select" 
+                        id="floatingSelect" 
+                        name="pRole"
+                        value={form.pRole || ''}
+                        onChange={(e) => handleChange(e)}
+                        onKeyDown={handleKey}
+                        aria-label="Floating label select example"
+                    >
+                        <option value="">No Role</option>
+                        <option value="top">Top</option>
+                        <option value="jng">Jungle</option>
+                        <option value="mid">Mid</option>
+                        <option value="adc">Adc</option>
+                        <option value="sup">Support</option>
+                    </select>
+                    <label htmlFor="floatingSelect">Primary role</label>
                 </div>
             </form>
             <div>

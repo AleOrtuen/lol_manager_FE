@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { LOGIN, TEAM, HOME, COMP_BUILDER, TEAM_COMP } from "../utils/routes";
+import { LOGIN, TEAM, HOME, COMP_BUILDER, TEAM_COMP, ACCOUNT } from "../utils/routes";
 import { setTeam } from "../store/slice/teamSlice";
 import miniLogo from '../img/mini_logo.png';
 import topIco from '../img/roles/top_ico.png';
@@ -151,7 +151,7 @@ function Navbar() {
                             </a>
                             <ul class="dropdown-menu bg-dark" aria-labelledby="navbarDropdownMenuLink">
                                 <li>
-                                    <a class="dropdown-item text-light" onClick={() => navigate()}>Il mio account</a>
+                                    <a class="dropdown-item text-light" onClick={() => navigate(ACCOUNT)}>Il mio account</a>
                                 </li>
                                 <li>
                                     <a class="dropdown-item text-light" onClick={() => navigate()}>Champion pool</a>

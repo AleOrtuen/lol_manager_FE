@@ -28,25 +28,6 @@ function Team() {
         { role: 'sup', image: supIco }
     ];    
 
-    // useEffect(() => {
-    //     if (location.state && location.state.idTeam) {
-    //         teamFindChamps(location.state.idTeam).then ( (response) => {
-    //             setChamps(response.data.objResponse);  
-    //         }).catch( error => {
-    //             console.log(error.response.data.response)
-    //         }) 
-
-    //         teamFindMembers(location.state.idTeam)
-    //             .then ( (response) => {
-    //                 setMembers(response.data.objResponse);
-    //             })
-    //             .catch( error => {
-    //                 console.log(error.response.data.response);
-    //             })
-    //     }
-
-    // }, []);
-
     useEffect(() => {
         if (location.state && location.state.idTeam) {
             teamFindChamps(location.state.idTeam).then((response) => {
@@ -79,9 +60,10 @@ function Team() {
                     ) : null
                 ))}
                 <br />
-                <div>
+                <div className="container-fluid">
+                <div className="row justify-content-center" >
                 {rolesData.map((role) => (
-                    <div key={role.role}>
+                    <div key={role.role} className="col p-1">   
                         <img
                             src={role.image}
                             style={{
@@ -105,6 +87,7 @@ function Team() {
                         <br />
                     </div>
                 ))}
+                </div>
                 </div>
                 <br/>
                 <p>Champion pool</p>
