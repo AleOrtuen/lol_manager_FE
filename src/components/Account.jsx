@@ -164,90 +164,24 @@ function Account() {
                 </div>
                 )}
                 <br/>
-                <div class="btn-group" role="group" aria-label="Basic example">
-                    <button 
-                        class="btn btn-outline-secondary btn-sm" 
-                        onClick={() => navigate()}
-                        type="button" 
-                        data-bs-toggle="collapse" 
-                        data-bs-target="#collapseExample" 
-                        aria-expanded="false" 
-                        aria-controls="collapseExample"
-                    >
-                        Username
-                    </button>
-                    <button 
-                        class="btn btn-outline-secondary btn-sm" 
-                        onClick={() => navigate()}
-                        type="button" 
-                        data-bs-toggle="collapse" 
-                        data-bs-target="#collapseExample2" 
-                        aria-expanded="false" 
-                        aria-controls="collapseExample"
-                    >
-                        Ruolo
-                    </button>
-                    <button 
-                        class="btn btn-outline-secondary btn-sm" 
-                        onClick={() => navigate()}
-                        type="button" 
-                        data-bs-toggle="collapse" 
-                        data-bs-target="#collapseExample3" 
-                        aria-expanded="false" 
-                        aria-controls="collapseExample"
-                    >
-                        Email
-                    </button>
-                    <button 
-                        class="btn btn-outline-secondary btn-sm" 
-                        onClick={() => navigate()}
-                        type="button" 
-                        data-bs-toggle="collapse" 
-                        data-bs-target="#collapseExample4" 
-                        aria-expanded="false" 
-                        aria-controls="collapseExample"
-                    >
-                        Password
-                    </button>
-                </div>
-                <div className="collapse container-fluid" id="collapseExample" style={{ maxWidth: '300px' }}>
-                    <div class="card card-body bg-dark">
-                        <p>{user.username}</p>
-                        <button class="btn btn-outline-secondary btn-sm" onClick={() => navigate()}>
-                        Modifica
-                        </button>
-                    </div>
-                </div>
-                <div className="collapse container-fluid" id="collapseExample2" style={{ maxWidth: '300px' }}>
-                    <div class="card card-body bg-dark">
-                        <p>{user.pRole}</p>
-                        <button class="btn btn-outline-secondary btn-sm" onClick={() => navigate()}>
-                        Modifica
-                        </button>
-                    </div>
-                </div>
-                <div className="collapse container-fluid" id="collapseExample3" style={{ maxWidth: '300px' }}>
-                    <div class="card card-body bg-dark">
-                        <p>{user.email}</p>
-                        <button class="btn btn-outline-secondary btn-sm" onClick={() => navigate()}>
-                        Modifica
-                        </button>
-                    </div>
-                </div>
-                <div className="collapse container-fluid" id="collapseExample4" style={{ maxWidth: '300px' }}>
-                    <div class="card card-body bg-dark">
-                        <button class="btn btn-outline-secondary btn-sm" onClick={() => navigate()}>
-                            Cambia password
-                        </button>
-                    </div>
-                </div>
+
+                <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Dati personali
+                </button>
+                <ul class="dropdown-menu bg-dark">
+                    <li><a class="dropdown-item text-light" href="#">{user.username} </a></li>
+                    <li><a class="dropdown-item text-light" href="#">{user.email}</a></li>
+                    <li><a class="dropdown-item text-light" href="#">{user.pRole}</a></li>
+                    <li><a class="dropdown-item text-light" href="#">Password</a></li>
+                </ul>
+
                 <br/><br/>
                 <div className="container-fluid">
                     <div className="row justify-content-center">
                         <div  
                             className="col p-1" 
                             style={{
-                                height: '50vh',
+                                // height: '50vh',
                                 marginLeft: '10%',
                                 marginRight: '10%'
                             }}
