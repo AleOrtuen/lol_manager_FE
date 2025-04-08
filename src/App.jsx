@@ -9,7 +9,8 @@ import Team from './components/Team';
 import CompBuilder from './components/CompBuilder';
 import TeamComp from './components/TeamComp';
 import Account from './components/Account';
-import { ACCOUNT, COMP_BUILDER, HOME, LOGIN, SIGNUP, TEAM, TEAM_COMP } from './utils/routes'
+import ChampionPool from './components/ChampionPool';
+import { ACCOUNT, COMP_BUILDER, HOME, LOGIN, POOL, SIGNUP, TEAM, TEAM_COMP } from './utils/routes'
 
 function App() {
 
@@ -20,7 +21,8 @@ function App() {
     {path: TEAM, element: <Team />},
     {path: COMP_BUILDER, element: <CompBuilder />},
     {path: TEAM_COMP, element: <TeamComp />},
-    {path: ACCOUNT, element: <Account />}
+    {path: ACCOUNT, element: <Account />},
+    {path: POOL, element: <ChampionPool />}
   ])
 
   return (

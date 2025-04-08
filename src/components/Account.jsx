@@ -126,7 +126,7 @@ function Account() {
                             </li>
                         </ul>
                         <ModaleUserData toUpdate={dataToUpdate} />
-                        <br /><br />
+                        <br />
                         <div className="container-fluid">
                             <div className="row justify-content-center">
                                 <div
@@ -144,7 +144,7 @@ function Account() {
                                         }}
                                     >
                                         <div className="bg-dark text-white text-center p-2">
-                                            Champion Pool
+                                            Champion pool
                                         </div>
                                         <div className="flex-grow-1 overflow-auto p-2 text-center"
                                             style={{
