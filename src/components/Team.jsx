@@ -15,8 +15,8 @@ function Team() {
 
     const user = useSelector((state) => state.user);
     const teams = useSelector((state) => state.team);
-    const [champs,setChamps] = useState();
-    const [members,setMembers] = useState();
+    const [champs, setChamps] = useState();
+    const [members, setMembers] = useState();
     const location = useLocation();
 
     //LISTA RUOLI E IMG
@@ -26,7 +26,7 @@ function Team() {
         { role: 'mid', image: midIco },
         { role: 'adc', image: adcIco },
         { role: 'sup', image: supIco }
-    ];    
+    ];
 
     useEffect(() => {
         if (location.state && location.state.idTeam) {
@@ -35,7 +35,7 @@ function Team() {
             }).catch(error => {
                 console.log('Error fetching champions:', error.response?.data?.response || error.message);
             });
-    
+
             teamFindMembers(location.state.idTeam)
                 .then((response) => {
                     console.log('Members data:', response.data.objResponse);  // Log dei membri
@@ -61,43 +61,75 @@ function Team() {
                 ))}
                 <br />
                 <div className="container-fluid">
-                <div className="row justify-content-center" >
-                {rolesData.map((role) => (
-                    <div key={role.role} className="col p-1">   
-                        <img
-                            src={role.image}
-                            style={{
-                                width: '20px',
-                                height: '20px',
-                                maxWidth: '20px',
-                                maxHeight: '20px',
-                                marginRight: '5px',
-                            }}
-                            alt="Role icon"
-                        />
-                        {members && members.length > 0 ? (
-                            members.map((member) => (
-                                member.pRole === role.role ? (
-                                    <span key={member.id}>{member.username}</span>
-                                ) : null
-                            ))
-                        ) : (
-                            <span>No members found for {role.role}</span>
-                        )}
-                        <br />
+                    <div className="row justify-content-center" >
+                        {rolesData.map((role) => (
+                            <div key={role.role} className="col p-1">
+                                <img
+                                    src={role.image}
+                                    style={{
+                                        width: '20px',
+                                        height: '20px',
+                                        maxWidth: '20px',
+                                        maxHeight: '20px',
+                                        marginRight: '5px',
+                                    }}
+                                    alt="Role icon"
+                                />
+                                {members && members.length > 0 ? (
+                                    members.map((member) => (
+                                        member.pRole === role.role ? (
+                                            <span key={member.id}>{member.username}</span>                          
+                                        ) : null
+                                    ))
+                                ) : (
+                                    <span>No members found for {role.role}</span>
+                                )}
+                                <br />
+                            </div>
+                        ))}
                     </div>
-                ))}
                 </div>
+                <br />
+                <div className="container-fluid">
+                    <div className="row justify-content-center">
+                        <div
+                            className="col p-1"
+                            style={{
+                                // height: '50vh',
+                                marginLeft: '10%',
+                                marginRight: '10%'
+                            }}
+                        >
+                            <div
+                                className="rounded-top d-flex flex-column h-100"
+                                style={{
+                                    border: '5px solid #242424',
+                                }}
+                            >
+                                <div className="bg-dark text-white text-center p-2">
+                                    Champion pool
+                                </div>
+                                <div className="flex-grow-1 overflow-auto p-2 text-center"
+                                    style={{
+                                        display: 'flex',
+                                        flexWrap: 'wrap',
+                                        gap: '3px',
+                                        justifyContent: 'center',
+                                        alignContent: 'flex-start'
+                                    }}
+                                >
+                                    {champs && champs.length > 0 ? (
+                                        <Champions champions={champs} />
+                                    ) : null}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <br/>
-                <p>Champion pool</p>
-                {champs && champs.length > 0 ? (
-                    <Champions champions={champs} />
-                ) : null}
             </header>
         </div>
     );
-    
+
 }
 
 export default Team;

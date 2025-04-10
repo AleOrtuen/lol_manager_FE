@@ -6,7 +6,7 @@ body {
 
 a {
   font-weight: 500;
- /* color: #646cff !important;
+  /* color: #646cff !important;
   text-decoration: inherit !important; */
   cursor: pointer;
 }
@@ -95,10 +95,20 @@ header {
 .accordion-body, .custom-accordion-body {
   background-color: #353535 !important; /* Stesso colore del bottone (bg-dark) */
   color: white !important; /* Mantiene il testo bianco */
+  
 }
 
 /* Rimuove i bordi dagli elementi dell'accordion */
 .accordion-item {
   border-color: gray !important;
 }
+
+.form-floating input:not(:focus) + label {
+  color: gray; /* Colore della label quando non in focus */
+}
+
+.form-floating input:focus + label {
+  color: gray !important; /* Colore quando il campo è selezionato (es. blu Bootstrap) */
+}
+
 
