@@ -2,6 +2,7 @@ import { useState } from 'react'
 import './App.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { ACCOUNT, COMP, COMP_BUILDER, COMP_FORM, HOME, LOGIN, POOL, SIGNUP, TEAM, TEAM_COMP, TEAM_FORM, TEAMS } from './utils/routes'
 import Login from './components/Login'
 import SignUp from './components/SignUp';
 import Home from './components/Home';
@@ -10,9 +11,10 @@ import CompBuilder from './components/CompBuilder';
 import TeamComp from './components/TeamComp';
 import Account from './components/Account';
 import ChampionPool from './components/ChampionPool';
-import { ACCOUNT, COMP_BUILDER, HOME, LOGIN, POOL, SIGNUP, TEAM, TEAM_COMP, TEAM_FORM, TEAMS } from './utils/routes'
 import TeamForm from './components/TeamForm';
 import Teams from './components/Teams';
+import CompForm from './components/CompForm';
+import Comp from './components/Comp';
 
 function App() {
 
@@ -26,7 +28,9 @@ function App() {
     {path: ACCOUNT, element: <Account />},
     {path: POOL, element: <ChampionPool />},
     {path: TEAM_FORM, element: <TeamForm />},
-    {path: TEAMS, element: <Teams />}
+    {path: TEAMS, element: <Teams />},
+    {path: COMP_FORM, element: <CompForm />},
+    {path: COMP, element: <Comp />}
   ])
 
   return (

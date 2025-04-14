@@ -111,4 +111,13 @@ header {
   color: gray !important; /* Colore quando il campo è selezionato (es. blu Bootstrap) */
 }
 
+.form-floating textarea:not(:focus) + label {
+  color: gray; /* Colore della label quando non in focus */
+}
+
+.form-floating textarea:focus + label {
+  color: gray !important; /* Colore quando il campo è selezionato (es. blu Bootstrap) */
+}
+
+
 

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import Navbar from "./Navbar"
-import { teamFindAll } from "../service/teamService";
+import { teamDelete, teamFindAll } from "../service/teamService";
 import { TEAM } from "../utils/routes";
 import { useNavigate } from "react-router-dom";
 
@@ -19,6 +19,23 @@ function Teams() {
                 console.log(error.response.data.response);
             })
     }, []);
+
+    const deleteTeam = (idTeam) => {
+        const confirmed = window.confirm("Sei sicuro di voler eliminare questo team?");
+        if (!confirmed) return;
+    
+        teamDelete(idTeam)
+            .then((response) => {
+                console.log(response.data);
+                alert('Team eliminato');
+                // Aggiorna la lista senza ricaricare la pagina
+                setTeams((prevTeams) => prevTeams.filter((team) => team.idTeam !== idTeam));
+            })
+            .catch(error => {
+                console.log(error.response.data.response);
+                alert('Errore nell`eliminazione del team');
+            });
+    };
 
     return (
         <div>
@@ -57,7 +74,7 @@ function Teams() {
                                             <button class="btn btn-secondary btn-sm" onClick={() => navigate(TEAM, { state: { idTeam: team.idTeam } })}>
                                                 Info
                                             </button>
-                                            <button class="btn btn-danger btn-sm" onClick={() => navigate()}>
+                                            <button class="btn btn-danger btn-sm" onClick={() => deleteTeam(team.idTeam)}>
                                                 Elimina
                                             </button>
                                         </div>

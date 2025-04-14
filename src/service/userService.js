@@ -1,5 +1,5 @@
 import axios from "axios";
-import { USER_AUTH, USER_FIND_ID, USER_FIND_TEAMS, USER_SAVE, USER_UPDATE } from "../utils/endpoint";
+import { USER_AUTH, USER_FIND_EMAIL, USER_FIND_ID, USER_FIND_TEAMS, USER_SAVE, USER_UPDATE } from "../utils/endpoint";
 
 
 export function userSave(user) {
@@ -11,7 +11,11 @@ export function userUpdate(user) {
 }
 
 export function userFindById(idUser) {
-    return axios.get(`${USER_FIND_ID}${idUser}`)
+    return axios.get(`${USER_FIND_ID}${idUser}`);
+}
+
+export function userFindByEmail(email) {
+    return axios.get(`${USER_FIND_EMAIL}${email}`);
 }
 
 export function userFindTeams(idUser) {

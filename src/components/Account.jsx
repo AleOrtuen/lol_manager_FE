@@ -70,7 +70,7 @@ function Account() {
                         </h1>
                         {teams && teams.length > 0 ?
                             (teams.map((team) =>
-                                <div>
+                                <div key={team.idTeam}>
                                     <span>{team.name}</span>
                                     <br />
                                 </div>

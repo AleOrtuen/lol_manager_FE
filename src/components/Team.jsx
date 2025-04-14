@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import Navbar from "./Navbar";
 import { useEffect } from "react";
@@ -10,14 +10,15 @@ import jngIco from '../img/roles/jng_ico.png';
 import midIco from '../img/roles/mid_ico.png';
 import adcIco from '../img/roles/adc_ico.png';
 import supIco from '../img/roles/sup_ico.png';
+import ModaleTeamData from "./ModaleTeamData";
 
 function Team() {
 
-    const user = useSelector((state) => state.user);
     const teams = useSelector((state) => state.team);
     const [champs, setChamps] = useState();
     const [members, setMembers] = useState();
     const location = useLocation();
+    const [dataToUpdate, setDataToUpdate] = useState(null);
 
     //LISTA RUOLI E IMG
     const rolesData = [
@@ -30,6 +31,7 @@ function Team() {
 
     useEffect(() => {
         if (location.state && location.state.idTeam) {
+            setChamps(null);
             teamFindChamps(location.state.idTeam).then((response) => {
                 setChamps(response.data.objResponse);
             }).catch(error => {
@@ -56,10 +58,48 @@ function Team() {
                         <>
                             <h1 className="display-6">{team.name}</h1>
                             <p>{team.tag}</p>
+                            <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Modifica team
+                            </button>
+                            <ul class="dropdown-menu bg-dark">
+                                <li>
+                                    <a
+                                        className="dropdown-item text-light"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#modal"
+                                        onClick={() => setDataToUpdate({ field: 'nome', value: team.name })}
+                                    >
+                                        <b>Nome:</b> {team.name}
+                                    </a>
+                                </li>
+                                <li>
+                                    <a
+                                        className="dropdown-item text-light"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#modal"
+                                        onClick={() => setDataToUpdate({ field: 'tag', value: team.tag })}
+                                    >
+                                        <b>Tag:</b> {team.tag}
+                                    </a>
+                                </li>
+                                <li>
+                                    <a
+                                        className="dropdown-item text-light"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#modal"
+                                        onClick={() => setDataToUpdate({ field: 'membri', value: members })}
+                                    >
+                                        <b>Membri</b> 
+                                    </a>
+                                </li>
+                            </ul>
+                            <ModaleTeamData toUpdate={dataToUpdate} team={team}/>
                         </>
+
+
                     ) : null
                 ))}
-                <br />
+                <br /><br />
                 <div className="container-fluid">
                     <div className="row justify-content-center" >
                         {rolesData.map((role) => (
@@ -78,12 +118,11 @@ function Team() {
                                 {members && members.length > 0 ? (
                                     members.map((member) => (
                                         member.pRole === role.role ? (
-                                            <span key={member.id}>{member.username}</span>                          
+                                            <span key={member.id}>{member.username}</span>
                                         ) : null
                                     ))
-                                ) : (
-                                    <span>No members found for {role.role}</span>
-                                )}
+                                ) : null
+                                }
                                 <br />
                             </div>
                         ))}

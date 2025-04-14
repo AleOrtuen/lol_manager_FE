@@ -8,3 +8,5 @@ export const TEAM_COMP = '/team-comp';
 export const ACCOUNT =  '/account';
 export const POOL = '/champ-pool';
 export const TEAM_FORM = '/team-form';
+export const COMP_FORM = '/comp-form';
+export const COMP = '/comp';

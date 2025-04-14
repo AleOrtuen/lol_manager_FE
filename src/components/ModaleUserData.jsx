@@ -17,6 +17,7 @@ function ModaleUserData({ toUpdate }) {
         password: null,
         password2: null,
         pRole: user.pRole,
+        admin: user.admin,
         error: ''
     });
 
@@ -64,13 +65,14 @@ function ModaleUserData({ toUpdate }) {
             username: updateUser.username,
             email: updateUser.email,
             password: updateUser.password,
+            admin: updateUser.admin,
             pRole: updateUser.pRole
         }
         await userUpdate(user).then((response) => {
-            console.log(response);
+            console.log(response.data);
             alert('Utente aggiornato correttamente');
         }).catch(error => {
-            alert('Utente già registrato');
+            alert('Errore nell`aggiornamento');
             console.log(error.response.data.response);
         })
 
@@ -158,11 +160,11 @@ function ModaleUserData({ toUpdate }) {
     }
 
     // ALLA PRESSIONE DI INVIO REGISTRA
-    function handleKey(e) {
-        if (e.key === "Enter") {
-            update();
-        }
-    }
+    // function handleKey(e) {
+    //     if (e.key === "Enter") {
+    //         update();
+    //     }
+    // }
 
     return (
         <div>

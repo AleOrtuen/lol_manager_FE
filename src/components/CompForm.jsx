@@ -1,51 +1,57 @@
 import { useState } from "react"
 import Navbar from "./Navbar"
-import { teamSave } from "../service/teamService";
+import { useLocation } from "react-router-dom"
+import { teamCompSave } from "../service/teamCompService";
 
-function TeamForm() {
+function CompForm() {
 
-    const [formTeam, setFormTeam] = useState({
+    const location = useLocation();
+    const [formComp, setFormComp] = useState({
+        idTeam: location.state.idTeam,
         name: '',
-        tag: '',
+        descr: '',
         error: ''
-    });
+    })
 
-    const teamRegistration = () => {
-        const team = {
-            name: formTeam.name,
-            tag: formTeam.tag
+    const compSave = () => {
+        const comp = {
+            team: {
+                idTeam: formComp.idTeam
+            },
+            name: formComp.name,
+            descr: formComp.descr
         }
 
-        teamSave(team)
+        teamCompSave(comp)
             .then((response) => {
                 console.log(response.data);
-                alert('Team registrato correttamente');
+                alert('Comp creata correttamente');
             })
             .catch(error => {
                 console.log(error.response.data.response);
-                alert('Team esistente');
+                alert('Errore nella creazione della comp');
             })
     }
-    
+
     // GESTISCE GLI ERRORI DI INSERIMENTO DA STAMPARE A SCHERMO
     const errorChange = (e) => {
         const { name, value } = e.target;
         switch (name) {
             case 'name':
                 if (!validName(value) && value != '') {
-                    setFormTeam(prevForm => ({ ...prevForm, error: 'Nome di almeno 3 caratteri. ' }));
+                    setFormComp(prevForm => ({ ...prevForm, error: 'Nome di almeno 3 caratteri. ' }));
                 } else {
-                    if (formTeam.error === 'Nome di almeno 3 caratteri. ') {
-                        setFormTeam(prevForm => ({ ...prevForm, error: '' }));
+                    if (formComp.error === 'Nome di almeno 3 caratteri. ') {
+                        setFormComp(prevForm => ({ ...prevForm, error: '' }));
                     }
                 }
                 break;
-            case 'tag':
-                if (!validTag(value) && value != '') {
-                    setFormTeam(prevForm => ({ ...prevForm, error: 'Tag di almeno 2 caratteri e massimo 5.' }));
+            case 'descr':
+                if (!validDescr(value) && value != '') {
+                    setFormComp(prevForm => ({ ...prevForm, error: 'Descrizione di massimo 255 caratteri.' }));
                 } else {
-                    if (formTeam.error === 'Tag di almeno 3 caratteri e massimo 5.') {
-                        setFormTeam(prevForm => ({ ...prevForm, error: '' }));
+                    if (formComp.error === 'Descrizione di massimo 255 caratteri.') {
+                        setFormComp(prevForm => ({ ...prevForm, error: '' }));
                     }
                 }
                 break;
@@ -54,42 +60,40 @@ function TeamForm() {
     }
 
     const validForm = () => {
-        return validName(formTeam.name) &&
-            validTag(formTeam.tag);
+        return validName(formComp.name) &&
+            validDescr(formComp.descr);
     }
 
-    // METODI DI VALIDAZIONE DEGLI INPUT 
     const validName = (name) => {
         return name !== ''
             && name.length >= 3
             && name.length <= 50;
     }
 
-    const validTag = (tag) => {
-        return tag !== ''
-            && tag.length >= 2
-            && tag.length <= 5;
+    const validDescr = (descr) => {
+        return descr !== ''
+            && descr.length <= 255;
     }
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormTeam((prevData) => ({
+        setFormComp((prevData) => ({
             ...prevData,
             [name]: value
         }));
+        errorChange(e);
     }
 
     function handleKey(e) {
         if (e.key === "Enter") {
-            teamRegistration();
+            compSave();
         }
     }
-
     return (
         <div>
             <Navbar />
             <header className="bg-gray bg-gradient text-white">
-                <h1 className="display-6">CREAZIONE TEAM</h1>
+                <h1 className="display-6">CREAZIONE TEAM COMP</h1>
                 <br />
                 <div className="row justify-content-center">
                     <div className="col-6">
@@ -100,47 +104,45 @@ function TeamForm() {
                                     type="text"
                                     id="name"
                                     name="name"
-                                    value={formTeam.name}
+                                    value={formComp.name}
                                     placeholder="nome"
                                     onChange={(e) => handleChange(e)}
                                     onKeyDown={handleKey}
                                     onBlur={(e) => errorChange(e)}
                                     style={{
-                                        borderColor: validName(formTeam.name) ? 'green' : (formTeam.name !== '' ? 'red' : ''),
-                                        borderWidth: (formTeam.name !== '' ? '3px' : '0')
+                                        borderColor: validName(formComp.name) ? 'green' : (formComp.name !== '' ? 'red' : ''),
+                                        borderWidth: (formComp.name !== '' ? '3px' : '0')
                                     }}
                                 />
                                 <label htmlFor="username">Nome</label>
                             </div>
                             <div class="form-floating mb-3">
-                                <input
+                                <textarea
                                     class="form-control"
-                                    type="text"
-                                    id="tag"
-                                    name="tag"
-                                    maxlength="5"
-                                    value={formTeam.tag}
-                                    placeholder="tag"
+                                    id="descr"
+                                    name="descr"
+                                    value={formComp.descr}
+                                    placeholder="descrizione"
                                     onChange={(e) => handleChange(e)}
                                     onKeyDown={handleKey}
                                     onBlur={(e) => errorChange(e)}
                                     style={{
-                                        borderColor: validTag(formTeam.tag) ? 'green' : (formTeam.tag !== '' ? 'red' : ''),
-                                        borderWidth: (formTeam.tag !== '' ? '3px' : '0')
+                                        borderColor: validDescr(formComp.descr) ? 'green' : (formComp.descr !== '' ? 'red' : ''),
+                                        borderWidth: (formComp.descr !== '' ? '3px' : '0')
                                     }}
                                 />
-                                <label htmlFor="username">Tag</label>
+                                <label htmlFor="descr">Descrizione</label>
                             </div>
                         </form>
                         <div>
-                            &nbsp;{formTeam.error}
+                            &nbsp;{formComp.error}
                         </div> <br />
                         <button
                             class="btn btn-outline-secondary btn-lg"
                             disabled={!validForm()}
-                            onClick={() => teamRegistration()}
+                            onClick={() => compSave()}
                         >
-                            Registrati
+                            Crea comp
                         </button> <br />
                     </div>
                 </div>
@@ -149,4 +151,4 @@ function TeamForm() {
     )
 }
 
-export default TeamForm
+export default CompForm

@@ -51,8 +51,8 @@ function CompBuilder() {
 
     //TROVA TUTTE LE COMP DEL TEAM
     useEffect(() => {
-        console.log(location && location.state.idTeam)
         if (location.state && location.state.idTeam) {
+            setComps(null);
             teamCompFindTeam(location.state.idTeam)
                 .then ( (response) => {
                     setComps(response.data.objResponse);
@@ -61,7 +61,7 @@ function CompBuilder() {
                     console.log(error.response.data.response)
                 })
         }
-    }, []);
+    }, [location.state]);
 
     //TROVA TUTTI I CHAMP ROLE PER LE COMP
     useEffect(() => {
