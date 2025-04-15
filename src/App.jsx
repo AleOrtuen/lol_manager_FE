@@ -15,6 +15,7 @@ import TeamForm from './components/TeamForm';
 import Teams from './components/Teams';
 import CompForm from './components/CompForm';
 import Comp from './components/Comp';
+import Footer from './components/Footer';
 
 function App() {
 
@@ -36,6 +37,7 @@ function App() {
   return (
     <>
       <RouterProvider router={router}/>
+      <Footer />
     </>
   )
 }

@@ -132,7 +132,7 @@ function SignUp() {
             <div class="row justify-content-center">
                 <div class="col-8 col-lg-4 col-md-6 col-sm-6">
                     <form>
-                        <div class="form-floating mb-3">
+                        <div class="form-floating mb-2">
                             <input
                                 class="form-control"
                                 type="text"
@@ -150,7 +150,7 @@ function SignUp() {
                             />
                             <label htmlFor="username">Username</label>
                         </div>
-                        <div class="form-floating mb-3">
+                        <div class="form-floating mb-2">
                             <input
                                 class="form-control"
                                 type="text"
@@ -168,7 +168,7 @@ function SignUp() {
                             />
                             <label htmlFor="email">Email</label>
                         </div>
-                        <div class="form-floating mb-3">
+                        <div class="form-floating mb-2">
                             <input
                                 class="form-control"
                                 type="password"
@@ -186,7 +186,7 @@ function SignUp() {
                             />
                             <label htmlFor="password">Password</label>
                         </div>
-                        <div class="form-floating mb-3">
+                        <div class="form-floating mb-2">
                             <input
                                 class="form-control"
                                 type="password"
@@ -203,7 +203,7 @@ function SignUp() {
                             />
                             <label htmlFor="password2">Digita di nuovo la passsword</label>
                         </div>
-                        <div className="form-floating">
+                        <div className="form-floating ">
                             <select
                                 className="form-select"
                                 id="floatingSelect"

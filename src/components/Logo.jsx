@@ -8,7 +8,8 @@ function Logo() {
                     // width: '30%', 
                     // height: '30%',
                     maxWidth: '350px',
-                    marginBottom: '-40px'
+                    marginBottom: '-40px',
+                    marginTop: '-40px'
                 }}
             />
         </div>

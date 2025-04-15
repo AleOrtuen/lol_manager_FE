@@ -49,11 +49,19 @@ function Login() {
             <div>
                 <h1 className="display-6">TEAM MANAGER</h1>
                 <br/>
+                <div className="row justify-content-center">
+                    <div className="col-10 col-lg-5 col-md-6 col-sm-8">
+                        Benvenuto nella versione alpha di LoL Team Manager!
+                        Con LoL manager potrai facilmente gestire la tua lista di campioni giocabili, creare team e progettare le tue strategie.
+                        Lo strumento Comp builder ti aiuterà nel drafting così da ottenere il miglior risultato possibile nel combinare i campioni del tuo team!
+                    </div>
+                </div>
+                <br/>
                 <h5 class="fw-bolder">Login</h5>               
                 <div class="row justify-content-center">
                     <div class="col-8 col-lg-4 col-md-6 col-sm-6">
                         <form>
-                            <div class="form-floating mb-3">
+                            <div class="form-floating mb-2">
                                 <input
                                     class="form-control"
                                     type="text"
@@ -65,7 +73,7 @@ function Login() {
                                 />
                                 <label htmlFor="email">Email</label>
                             </div>
-                            <div class="form-floating mb-3">
+                            <div class="form-floating mb-2">
                                 <input
                                     class="form-control"
                                     type="password"
