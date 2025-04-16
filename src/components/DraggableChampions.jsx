@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-function Champions({champions}) {
+function DraggableChampions({ champions, onChampionClick }) {
   const [imagesMap, setImagesMap] = useState({});
 
   useEffect(() => {
@@ -44,10 +44,13 @@ function Champions({champions}) {
               style={{
                 minWidth: '67px',
                 textAlign: 'center',
+                cursor: 'pointer',
+                transition: 'transform 0.2s ease',
               }}
+              onClick={() => onChampionClick(champion)}
             >
               {/* Verifica se l'immagine è disponibile basandosi sul nome */}
-              {imagesMap[champion.name.toLowerCase()] ? (
+              {imagesMap[champion.name?.toLowerCase()] ? (
                 <img 
                   src={imagesMap[champion.name.toLowerCase()]} 
                   alt={champion.name}
@@ -57,29 +60,30 @@ function Champions({champions}) {
                     objectFit: 'cover',
                     borderRadius: '8px'
                   }}
-                  class="image-hover"
+                  className="image-hover"
                 />
               ) : (
                 /* Mostra l'immagine dal percorso indicato nell'oggetto champion, se presente */
-                champion.img ? (
+                champion.img || champion.imgChamp ? (
                   <img 
-                    src={`../img/champions/${champion.img}`} 
-                    alt={champion.name}
+                    src={champion.imgChamp || `../img/champions/${champion.img}`} 
+                    alt={champion.name || champion.nameChamp}
                     style={{
                       width: '67px',
                       height: '67px',
                       objectFit: 'cover',
                       borderRadius: '8px'
                     }}
-                    class="image-hover"
+                    className="image-hover"
                     onError={(e) => {
                       e.target.style.display = 'none';
-                      e.target.nextSibling.style.display = 'block';
+                      if (e.target.nextSibling) {
+                        e.target.nextSibling.style.display = 'block';
+                      }
                     }}
                   />
                 ) : null
               )}
-              {/* <p>{champion.name}</p> */}
             </div>
           ))}
         </div>
@@ -87,4 +91,4 @@ function Champions({champions}) {
   );
 }
 
-export default Champions;
+export default DraggableChampions;

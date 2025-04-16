@@ -6,7 +6,7 @@ body {
 
 a {
   font-weight: 500;
- /* color: #646cff !important;
+  /* color: #646cff !important;
   text-decoration: inherit !important; */
   cursor: pointer;
 }
@@ -35,4 +35,89 @@ a {
 .dropdown:hover .dropdown-menu {
   display: block;
 }
+
+::-webkit-scrollbar {
+  width: 10px; /* Larghezza della scrollbar */
+  height: 12px; /* Altezza della scrollbar (per gli elementi orizzontali) */
+}
+
+/* Stile per il "track" (la parte grigia dietro la scrollbar) */
+::-webkit-scrollbar-track {
+  /* background: #f1f1f1; Colore di sfondo del track */
+  /* border-radius: 5px; Raggio del bordo per angoli arrotondati */
+}
+
+/* Stile per il "thumb" (la parte che si sposta) */
+::-webkit-scrollbar-thumb {
+  background: #888; /* Colore dello "thumb" */
+  border-radius: 10px; 
+}
+
+/* Stile quando il "thumb" è in hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Colore più scuro quando si passa sopra */
+}
+
+.image-hover {
+  transition: filter 0.3s ease, transform 0.2s ease; /* Aggiungi una transizione fluida */
+}
+
+.image-hover:hover {
+  filter: brightness(1.2); /* Aumenta la luminosità dell'immagine */
+  transform: scale(1.05);
+}
+
+header {
+  padding-top: 80px;
+  /* padding-bottom: 10px; */
+  /* padding-left: 5px;
+  padding-right: 5px; */
+}
+
+/* Cambia il colore della freccia dell'accordion */
+.accordion-button::after {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23ffffff'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e") !important;
+}
+
+/* Mantiene lo sfondo scuro e il colore del testo bianco quando l'accordion è aperto */
+.accordion-button:not(.collapsed) {
+  background-color: #343a40; /* Questo è il colore bg-dark di Bootstrap */
+  /* color: white; */
+}
+
+/* Cambia anche il colore della freccia quando l'accordion è aperto */
+.accordion-button:not(.collapsed)::after {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23ffffff'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+  transform: rotate(-180deg);
+}
+
+/* Cambia il colore di sfondo del corpo dell'accordion (dove c'è la descrizione) */
+.accordion-body, .custom-accordion-body {
+  background-color: #353535 !important; /* Stesso colore del bottone (bg-dark) */
+  color: white !important; /* Mantiene il testo bianco */
+  
+}
+
+/* Rimuove i bordi dagli elementi dell'accordion */
+.accordion-item {
+  border-color: gray !important;
+}
+
+.form-floating input:not(:focus) + label {
+  color: gray; /* Colore della label quando non in focus */
+}
+
+.form-floating input:focus + label {
+  color: gray !important; /* Colore quando il campo è selezionato (es. blu Bootstrap) */
+}
+
+.form-floating textarea:not(:focus) + label {
+  color: gray; /* Colore della label quando non in focus */
+}
+
+.form-floating textarea:focus + label {
+  color: gray !important; /* Colore quando il campo è selezionato (es. blu Bootstrap) */
+}
+
+
 

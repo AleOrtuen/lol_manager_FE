@@ -8,26 +8,26 @@ import { setUser } from "../store/slice/userSlice";
 
 function Login() {
 
-    const navigate  = useNavigate();
+    const navigate = useNavigate();
     const dispatch = useDispatch();
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    
+
     function login() {
-        if(email && email !== ''
-        && password && password !== ''
+        if (email && email !== ''
+            && password && password !== ''
         ) {
             const user = {
                 email,
                 password
             }
 
-            userAuth(email, password).then( (response) => {
+            userAuth(email, password).then((response) => {
                 console.log(response.data)
                 dispatch(setUser(response.data.objResponse))
                 navigate(HOME)
-            }).catch( error => {
+            }).catch(error => {
                 console.log(error.response.data.response)
                 alert('Credenziali errate')
             })
@@ -43,52 +43,60 @@ function Login() {
         }
     }
 
-    return(
+    return (
         <>
             <Logo />
             <div>
+                <h1 className="display-6">TEAM MANAGER</h1>
                 <br/>
-                <h5 class="fw-bolder">Login</h5>
-                <br/>
-                <div class="row">
-                <div class="col-md-4 offset-md-4 col-sm-8 offset-sm-2">
-                <form>
-                <div class="form-floating mb-3">
-                    <input
-                        class="form-control"
-                        type="text"
-                        id="email" 
-                        value={email} 
-                        placeholder="Email" 
-                        onChange={(e) => setEmail(e.target.value)}
-                        onKeyDown={handleKey}
-                    />
-                    <label htmlFor="email">Email</label> 
-                </div>
-                <div class="form-floating mb-3">
-                    <input
-                        class="form-control"
-                        type="password" 
-                        id="password"
-                        value={password} 
-                        placeholder="Password" 
-                        onChange={(e) => setPassword(e.target.value)}
-                        onKeyDown={handleKey}
-                    />
-                    <label htmlFor="password">Password</label>
+                <div className="row justify-content-center">
+                    <div className="col-10 col-lg-5 col-md-6 col-sm-8">
+                        <b>Benvenuto nella versione alpha di LoL Team Manager!<br/></b>
+                        Potrai facilmente gestire la tua lista di campioni giocabili, creare team e progettare le tue strategie.<br/>
+                        Lo strumento Comp builder ti aiuterà nel drafting così da ottenere il miglior risultato possibile nel combinare i campioni del tuo team!
                     </div>
-                </form>  
-                <br/>
-                <button class="btn btn-outline-secondary btn-lg" onClick={() => login()}>
-                    Entra
-                </button>
                 </div>
+                <br/>
+                <h5 className="fw-bolder">Login</h5>               
+                <div className="row justify-content-center">
+                    <div className="col-8 col-lg-4 col-md-6 col-sm-6">
+                        <form>
+                            <div className="form-floating mb-2">
+                                <input
+                                    className="form-control"
+                                    type="text"
+                                    id="email"
+                                    value={email}
+                                    placeholder="Email"
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    onKeyDown={handleKey}
+                                />
+                                <label htmlFor="email">Email</label>
+                            </div>
+                            <div className="form-floating mb-2">
+                                <input
+                                    className="form-control"
+                                    type="password"
+                                    id="password"
+                                    value={password}
+                                    placeholder="Password"
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    onKeyDown={handleKey}
+                                />
+                                <label htmlFor="password">Password</label>
+                            </div>
+                        </form>
+                        <br />
+                        <button className="btn btn-outline-secondary btn-lg" onClick={() => login()}>
+                            Entra
+                        </button>
+                    </div>
                 </div>
             </div>
-            <br/>
+            <br />
             {/* <p> */}
-                Non hai un account? 
-                <a onClick={() => navigate(SIGNUP)}> Registrati!</a>
+            Non hai un account?
+            <a onClick={() => navigate(SIGNUP)}> Registrati!</a>
 
             {/* </p> */}
         </>
