@@ -1,4 +1,4 @@
-const BASE_PATH = 'http://localhost:8080/'
+const BASE_PATH = import.meta.env.VITE_API_BASE_URL;
 
 //ENDPOINT USER
 const USER_PATH = BASE_PATH + 'user/';
