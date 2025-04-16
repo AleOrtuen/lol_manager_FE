@@ -1,11 +1,13 @@
 import { useState } from "react"
 import Navbar from "./Navbar"
-import { useLocation } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 import { teamCompSave } from "../service/teamCompService";
+import { TEAM_COMP } from "../utils/routes";
 
 function CompForm() {
 
     const location = useLocation();
+    const navigate = useNavigate();
     const [formComp, setFormComp] = useState({
         idTeam: location.state.idTeam,
         name: '',
@@ -13,7 +15,7 @@ function CompForm() {
         error: ''
     })
 
-    const compSave = () => {
+    const compSave = async () => {
         const comp = {
             team: {
                 idTeam: formComp.idTeam
@@ -22,7 +24,7 @@ function CompForm() {
             descr: formComp.descr
         }
 
-        teamCompSave(comp)
+        await teamCompSave(comp)
             .then((response) => {
                 console.log(response.data);
                 alert('Comp creata correttamente');
@@ -31,6 +33,7 @@ function CompForm() {
                 console.log(error.response.data.response);
                 alert('Errore nella creazione della comp');
             })
+        // navigate(TEAM_COMP, navigate(TEAM_COMP, { state: { idTeam: location.state.idTeam } }));
     }
 
     // GESTISCE GLI ERRORI DI INSERIMENTO DA STAMPARE A SCHERMO
@@ -138,7 +141,7 @@ function CompForm() {
                             &nbsp;{formComp.error}
                         </div> <br />
                         <button
-                            class="btn btn-outline-secondary btn-lg"
+                            class="btn btn-secondary btn-lg"
                             disabled={!validForm()}
                             onClick={() => compSave()}
                         >

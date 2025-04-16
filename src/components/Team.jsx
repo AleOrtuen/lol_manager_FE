@@ -58,10 +58,10 @@ function Team() {
                         <>
                             <h1 className="display-6">{team.name}</h1>
                             <p>{team.tag}</p>
-                            <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <button className="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 Modifica team
                             </button>
-                            <ul class="dropdown-menu bg-dark">
+                            <ul className="dropdown-menu bg-dark">
                                 <li>
                                     <a
                                         className="dropdown-item text-light"
@@ -89,43 +89,83 @@ function Team() {
                                         data-bs-target="#modal"
                                         onClick={() => setDataToUpdate({ field: 'membri', value: members })}
                                     >
-                                        <b>Membri</b> 
+                                        <b>Membri</b>
                                     </a>
                                 </li>
                             </ul>
-                            <ModaleTeamData toUpdate={dataToUpdate} team={team}/>
+                            <ModaleTeamData toUpdate={dataToUpdate} team={team} />
                         </>
 
 
                     ) : null
                 ))}
-                <br /><br />
+                <br />
                 <div className="container-fluid">
-                    <div className="row justify-content-center" >
-                        {rolesData.map((role) => (
-                            <div key={role.role} className="col p-1">
-                                <img
-                                    src={role.image}
-                                    style={{
-                                        width: '20px',
-                                        height: '20px',
-                                        maxWidth: '20px',
-                                        maxHeight: '20px',
-                                        marginRight: '5px',
-                                    }}
-                                    alt="Role icon"
-                                />
-                                {members && members.length > 0 ? (
-                                    members.map((member) => (
-                                        member.pRole === role.role ? (
-                                            <span key={member.id}>{member.username}</span>
-                                        ) : null
-                                    ))
-                                ) : null
-                                }
-                                <br />
+                    <div className="row justify-content-center">
+                        <div className="col-12">
+                            <div className="d-flex flex-wrap justify-content-center">
+                                {rolesData.slice(0, 3).map((role) => (
+                                    <div key={role.role} className="role-item col-auto mx-4 mb-3">
+                                        <div className="d-flex align-items-center">
+                                            <div className="role-icon">
+                                                <img
+                                                    src={role.image}
+                                                    className="me-2"
+                                                    style={{
+                                                        width: '20px',
+                                                        height: '20px',
+                                                        maxWidth: '20px',
+                                                        maxHeight: '20px',
+                                                    }}
+                                                    alt="Role icon"
+                                                />
+                                            </div>
+                                            <div className="role-name">
+                                                {members && members.length > 0 ? (
+                                                    members.map((member) => (
+                                                        member.pRole === role.role ? (
+                                                            <span key={member.id}>{member.username}</span>
+                                                        ) : null
+                                                    ))
+                                                ) : null}
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+
+                                {/* Forzare gli ultimi due ruoli ad andare a capo quando lo spazio è limitato */}
+                                <div className="w-100 d-md-none"></div>
+
+                                {rolesData.slice(3).map((role) => (
+                                    <div key={role.role} className="role-item col-auto mx-4 mb-3">
+                                        <div className="d-flex align-items-center">
+                                            <div className="role-icon">
+                                                <img
+                                                    src={role.image}
+                                                    className="me-2"
+                                                    style={{
+                                                        width: '20px',
+                                                        height: '20px',
+                                                        maxWidth: '20px',
+                                                        maxHeight: '20px',
+                                                    }}
+                                                    alt="Role icon"
+                                                />
+                                            </div>
+                                            <div className="role-name">
+                                                {members && members.length > 0 ? (
+                                                    members.map((member) => (
+                                                        member.pRole === role.role ? (
+                                                            <span key={member.id}>{member.username}</span>
+                                                        ) : null
+                                                    ))
+                                                ) : null}
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
-                        ))}
+                        </div>
                     </div>
                 </div>
                 <br />

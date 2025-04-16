@@ -160,11 +160,11 @@ function ModaleUserData({ toUpdate }) {
     }
 
     // ALLA PRESSIONE DI INVIO REGISTRA
-    // function handleKey(e) {
-    //     if (e.key === "Enter") {
-    //         update();
-    //     }
-    // }
+    function handleKey(e) {
+        if (e.key === "Enter") {
+            update();
+        }
+    }
 
     return (
         <div>
@@ -190,7 +190,9 @@ function ModaleUserData({ toUpdate }) {
                             </button>
                         </div>
                         <div class="modal-body">
-                            <form>
+                            <form onSubmit={(e) => { 
+                                e.preventDefault(); 
+                            }}>
                                 {field && field !== "ruolo" ? (
                                     field === "password" ? (
                                         <>
@@ -204,6 +206,7 @@ function ModaleUserData({ toUpdate }) {
                                                     placeholder="password"
                                                     onChange={(e) => handleChange(e)}
                                                     onBlur={(e) => errorChange(e)}
+                                                    onKeyDown={handleKey}
                                                 />
                                                 <label htmlFor="password">password</label>
                                             </div>
@@ -217,6 +220,7 @@ function ModaleUserData({ toUpdate }) {
                                                     placeholder="digita di nuovo la password"
                                                     onChange={(e) => handleChange(e)}
                                                     onBlur={(e) => errorChange(e)}
+                                                    onKeyDown={handleKey}
                                                 />
                                                 <label htmlFor="password2">digita di nuovo la password</label>
                                             </div>
@@ -233,6 +237,7 @@ function ModaleUserData({ toUpdate }) {
                                                 placeholder={field}
                                                 onChange={(e) => handleChange(e)}
                                                 onBlur={(e) => errorChange(e)}
+                                                onKeyDown={handleKey}
                                             />
                                             <label htmlFor={field}>{field}</label>
                                         </div>
@@ -245,6 +250,7 @@ function ModaleUserData({ toUpdate }) {
                                             name="pRole"
                                             value={updateUser.pRole || ''}
                                             onChange={(e) => handleChange(e)}
+                                            onKeyDown={handleKey}
                                             aria-label="Floating label select example"
                                         >
                                             <option value="">No Role</option>
@@ -265,7 +271,7 @@ function ModaleUserData({ toUpdate }) {
                         <div class="modal-footer">
                             <button
                                 type="button"
-                                class="btn btn-outline-secondary btn-lg"
+                                class="btn btn-secondary btn-lg"
                                 disabled={!validForm()}
                                 onClick={() => update()}
                             >

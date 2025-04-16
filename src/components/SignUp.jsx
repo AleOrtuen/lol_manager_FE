@@ -128,13 +128,13 @@ function SignUp() {
             <Logo />
             <h1 className="display-6">TEAM MANAGER</h1>
             <br/>
-            <h5 class="fw-bolder">Registrazione utente</h5>
-            <div class="row justify-content-center">
-                <div class="col-8 col-lg-4 col-md-6 col-sm-6">
+            <h5 className="fw-bolder">Registrazione utente</h5>
+            <div className="row justify-content-center">
+                <div className="col-8 col-lg-4 col-md-6 col-sm-6">
                     <form>
-                        <div class="form-floating mb-2">
+                        <div className="form-floating mb-2">
                             <input
-                                class="form-control"
+                                className="form-control"
                                 type="text"
                                 id="username"
                                 name="username"
@@ -150,9 +150,9 @@ function SignUp() {
                             />
                             <label htmlFor="username">Username</label>
                         </div>
-                        <div class="form-floating mb-2">
+                        <div className="form-floating mb-2">
                             <input
-                                class="form-control"
+                                className="form-control"
                                 type="text"
                                 name="email"
                                 id="email"
@@ -168,9 +168,9 @@ function SignUp() {
                             />
                             <label htmlFor="email">Email</label>
                         </div>
-                        <div class="form-floating mb-2">
+                        <div className="form-floating mb-2">
                             <input
-                                class="form-control"
+                                className="form-control"
                                 type="password"
                                 name="password"
                                 id="password"
@@ -186,9 +186,9 @@ function SignUp() {
                             />
                             <label htmlFor="password">Password</label>
                         </div>
-                        <div class="form-floating mb-2">
+                        <div className="form-floating mb-2">
                             <input
-                                class="form-control"
+                                className="form-control"
                                 type="password"
                                 name="password2"
                                 value={form.password2}
@@ -227,7 +227,7 @@ function SignUp() {
                         &nbsp;{form.error}
                     </div> <br />
                     <button
-                        class="btn btn-outline-secondary btn-lg"
+                        className="btn btn-outline-secondary btn-lg"
                         disabled={!validForm()}
                         onClick={() => userRegistration()}
                     >

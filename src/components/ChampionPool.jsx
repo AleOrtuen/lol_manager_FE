@@ -196,7 +196,7 @@ function ChampionPool() {
                 </div>
 
                 <button
-                    className="btn btn-outline-secondary btn-md"
+                    className="btn btn-secondary btn-md"
                     type="button"
                     onClick={() => updateChampPool()}
                 >

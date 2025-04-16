@@ -36,12 +36,6 @@ function Account() {
 
     const roleImage = user && user.pRole ? roleImages[user.pRole] : null;
 
-    // ALLA PRESSIONE DI INVIO REGISTRA
-    function handleKey(e) {
-        if (e.key === "Enter") {
-            userRegistration();
-        }
-    }
 
     return (
         <>
@@ -80,7 +74,7 @@ function Account() {
 
                         <br />
 
-                        <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Modifica dati personali
                         </button>
                         <ul class="dropdown-menu bg-dark">

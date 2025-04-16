@@ -1,4 +1,4 @@
-import {createSlice} from "@reduxjs/toolkit"
+import { createSlice } from "@reduxjs/toolkit"
 
 const initialTeam = {}
 
@@ -7,11 +7,9 @@ export const teamSlice = createSlice({
     initialState: initialTeam,
     reducers: {
         setTeam: (state, action) => {
-            return state = action.payload
+            return action.payload;
         },
-        resetTeam: (state, action) => {
-            return (state = initialTeam)
-        }
+        resetTeam: () => initialTeam
     }
 })
 

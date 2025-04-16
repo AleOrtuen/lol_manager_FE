@@ -185,21 +185,13 @@ function ModaleTeamData({ toUpdate, team }) {
             .then((response) => {
                 console.log(response.data);
                 setUpdateTeam(response.data.objResponse);
+                // dispatch(resetTeam());
+                // dispatch(setTeam(response.data.objResponse));
                 alert('Team aggiornato');
             })
             .catch(error => {
                 console.log(error.response.data.response);
                 alert('Problema nell`aggiornamento');
-            })
-
-        await teamFindAll()
-            .then((response) => {
-                console.log(response.data);
-                dispatch(resetTeam());
-                dispatch(setTeam(response.data.objResponse));
-            })
-            .catch(error => {
-                console.log(error.response.data.response);
             })
 
     }
@@ -214,6 +206,12 @@ function ModaleTeamData({ toUpdate, team }) {
     }
 
     function handleKey(e) {
+        if (e.key === "Enter") {
+            teamUpdateFunction();
+        }
+    }
+
+    function handleKeyAddUser(e) {
         if (e.key === "Enter") {
             addPlayer();
         }
@@ -243,7 +241,9 @@ function ModaleTeamData({ toUpdate, team }) {
                             </button>
                         </div>
                         <div class="modal-body">
-                            <form>
+                            <form onSubmit={(e) => { 
+                                e.preventDefault(); 
+                            }}>
                                 {field === "membri" ? (
                                     <>
                                         <table className="table table-dark table-hover">
@@ -277,8 +277,8 @@ function ModaleTeamData({ toUpdate, team }) {
                                                     setNewMember(e.target.value);
                                                     errorChange(e);
                                                 }}
-                                                onKeyDown={handleKey}
-                                                onBlur={(e) => errorChange(e)}                                                
+                                                onKeyDown={handleKeyAddUser}
+                                                // onBlur={(e) => errorChange(e)}                                                
                                                 style={{
                                                     borderColor: validEmail(newMember) ? 'green' : (newMember !== '' ? 'red' : ''),
                                                     borderWidth: (newMember !== '' ? '3px' : '0')
@@ -299,6 +299,7 @@ function ModaleTeamData({ toUpdate, team }) {
                                             placeholder="name"
                                             onChange={handleChange}
                                             onBlur={(e) => errorChange(e)}
+                                            onKeyDown={handleKey}
                                             style={{
                                                 borderColor: validName(updateTeam.name) ? 'green' : (updateTeam.name !== '' ? 'red' : ''),
                                                 borderWidth: (updateTeam.name !== '' ? '3px' : '0')
@@ -317,6 +318,7 @@ function ModaleTeamData({ toUpdate, team }) {
                                             placeholder="tag"
                                             onChange={handleChange}
                                             onBlur={(e) => errorChange(e)}
+                                            onKeyDown={handleKey}
                                             style={{
                                                 borderColor: validTag(updateTeam.tag) ? 'green' : (updateTeam.tag !== '' ? 'red' : ''),
                                                 borderWidth: (updateTeam.tag !== '' ? '3px' : '0')
@@ -344,7 +346,7 @@ function ModaleTeamData({ toUpdate, team }) {
                             <div class="modal-footer">
                                 <button
                                     type="button"
-                                    class="btn btn-outline-secondary btn-lg"
+                                    class="btn btn-secondary btn-lg"
                                     disabled={!validForm()}
                                     onClick={() => teamUpdateFunction()}
                                 >

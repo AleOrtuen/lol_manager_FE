@@ -1,8 +1,12 @@
 import { useState } from "react"
 import Navbar from "./Navbar"
 import { teamSave } from "../service/teamService";
+import { useNavigate } from "react-router-dom";
+import { TEAMS } from "../utils/routes";
 
 function TeamForm() {
+
+    const navigate = useNavigate();
 
     const [formTeam, setFormTeam] = useState({
         name: '',
@@ -10,13 +14,13 @@ function TeamForm() {
         error: ''
     });
 
-    const teamRegistration = () => {
+    const teamRegistration = async () => {
         const team = {
             name: formTeam.name,
             tag: formTeam.tag
         }
 
-        teamSave(team)
+        await teamSave(team)
             .then((response) => {
                 console.log(response.data);
                 alert('Team registrato correttamente');
@@ -25,6 +29,7 @@ function TeamForm() {
                 console.log(error.response.data.response);
                 alert('Team esistente');
             })
+        navigate(TEAMS);
     }
     
     // GESTISCE GLI ERRORI DI INSERIMENTO DA STAMPARE A SCHERMO
@@ -118,7 +123,7 @@ function TeamForm() {
                                     type="text"
                                     id="tag"
                                     name="tag"
-                                    maxlength="5"
+                                    maxLength="5"
                                     value={formTeam.tag}
                                     placeholder="tag"
                                     onChange={(e) => handleChange(e)}
@@ -136,11 +141,11 @@ function TeamForm() {
                             &nbsp;{formTeam.error}
                         </div> <br />
                         <button
-                            class="btn btn-outline-secondary btn-lg"
+                            class="btn btn-secondary btn-lg"
                             disabled={!validForm()}
                             onClick={() => teamRegistration()}
                         >
-                            Registrati
+                            Crea team
                         </button> <br />
                     </div>
                 </div>

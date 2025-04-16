@@ -51,19 +51,19 @@ function Login() {
                 <br/>
                 <div className="row justify-content-center">
                     <div className="col-10 col-lg-5 col-md-6 col-sm-8">
-                        Benvenuto nella versione alpha di LoL Team Manager!
-                        Con LoL manager potrai facilmente gestire la tua lista di campioni giocabili, creare team e progettare le tue strategie.
+                        <b>Benvenuto nella versione alpha di LoL Team Manager!<br/></b>
+                        Potrai facilmente gestire la tua lista di campioni giocabili, creare team e progettare le tue strategie.<br/>
                         Lo strumento Comp builder ti aiuterà nel drafting così da ottenere il miglior risultato possibile nel combinare i campioni del tuo team!
                     </div>
                 </div>
                 <br/>
-                <h5 class="fw-bolder">Login</h5>               
-                <div class="row justify-content-center">
-                    <div class="col-8 col-lg-4 col-md-6 col-sm-6">
+                <h5 className="fw-bolder">Login</h5>               
+                <div className="row justify-content-center">
+                    <div className="col-8 col-lg-4 col-md-6 col-sm-6">
                         <form>
-                            <div class="form-floating mb-2">
+                            <div className="form-floating mb-2">
                                 <input
-                                    class="form-control"
+                                    className="form-control"
                                     type="text"
                                     id="email"
                                     value={email}
@@ -73,9 +73,9 @@ function Login() {
                                 />
                                 <label htmlFor="email">Email</label>
                             </div>
-                            <div class="form-floating mb-2">
+                            <div className="form-floating mb-2">
                                 <input
-                                    class="form-control"
+                                    className="form-control"
                                     type="password"
                                     id="password"
                                     value={password}
@@ -87,7 +87,7 @@ function Login() {
                             </div>
                         </form>
                         <br />
-                        <button class="btn btn-outline-secondary btn-lg" onClick={() => login()}>
+                        <button className="btn btn-outline-secondary btn-lg" onClick={() => login()}>
                             Entra
                         </button>
                     </div>
