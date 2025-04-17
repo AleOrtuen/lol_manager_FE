@@ -34,7 +34,7 @@ function Navbar() {
                 .catch(error => {
                     console.log(error.response.data.response);
                 });
-        } else {
+        } else if (user && user.admin === true){
             teamFindAll()
             .then((response) => {
                 console.log(response.data);

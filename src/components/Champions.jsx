@@ -57,7 +57,7 @@ function Champions({champions}) {
                     objectFit: 'cover',
                     borderRadius: '8px'
                   }}
-                  class="image-hover"
+                  className="image-hover"
                 />
               ) : (
                 /* Mostra l'immagine dal percorso indicato nell'oggetto champion, se presente */
@@ -71,7 +71,7 @@ function Champions({champions}) {
                       objectFit: 'cover',
                       borderRadius: '8px'
                     }}
-                    class="image-hover"
+                    className="image-hover"
                     onError={(e) => {
                       e.target.style.display = 'none';
                       e.target.nextSibling.style.display = 'block';

@@ -1,6 +1,5 @@
 import { useSelector, useDispatch } from "react-redux"
 import Navbar from "./Navbar";
-import Champions from "./Champions";
 
 function Home() {
     const user = useSelector( (state) => state.user );
@@ -11,7 +10,7 @@ function Home() {
                 <Navbar />
                 <div className="row justify-content-center">
                     <div className="col-10 text-start">
-                        <h4 class="text-center">
+                        <h4 className="text-center">
                             Benvenuto <b>{user.username}</b> nella versione alpha di LoL Team Manager!<br/>
                         </h4><br/>
                         <p>
