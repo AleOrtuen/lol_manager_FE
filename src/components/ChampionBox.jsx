@@ -87,7 +87,7 @@ const ChampionBox = ({ pickNumber, pick, Champions, champRoles, champPicked }) =
                 }}
             >
                 {/* Freccetta che cambia direzione a seconda di `showMenu` */}
-                {showMenu ? <i class="bi bi-caret-up-fill"></i> : <i class="bi bi-caret-down-fill"></i>}
+                {showMenu ? <i className="bi bi-caret-up-fill"></i> : <i className="bi bi-caret-down-fill"></i>}
 
             </div>
 

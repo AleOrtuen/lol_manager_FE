@@ -3,8 +3,6 @@ import { useSelector } from "react-redux"
 import Navbar from "./Navbar";
 import Champions from "./Champions";
 import ModaleUserData from "./ModaleUserData";
-import { EMAIL_REGEX, PASSWORD_REGEX } from "../utils/costanti";
-import { userUpdate } from "../service/userService";
 import topIco from '../img/roles/top.webp';
 import jngIco from '../img/roles/jng.webp';
 import midIco from '../img/roles/mid.webp';
@@ -15,15 +13,6 @@ function Account() {
 
     const user = useSelector((state) => state.user);
     const teams = useSelector((state) => state.team);
-    const [form, setForm] = useState({
-        idUtente: user.idUser,
-        username: '',
-        email: '',
-        password: '',
-        password2: '',
-        pRole: '',
-        error: ''
-    })
     const [dataToUpdate, setDataToUpdate] = useState(null);
 
     const roleImages = {
@@ -35,7 +24,6 @@ function Account() {
     };
 
     const roleImage = user && user.pRole ? roleImages[user.pRole] : null;
-
 
     return (
         <>
@@ -74,10 +62,10 @@ function Account() {
 
                         <br />
 
-                        <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <button className="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Modifica dati personali
                         </button>
-                        <ul class="dropdown-menu bg-dark">
+                        <ul className="dropdown-menu bg-dark">
                             <li>
                                 <a
                                     className="dropdown-item text-light"
