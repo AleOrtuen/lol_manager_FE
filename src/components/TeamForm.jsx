@@ -1,11 +1,13 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Navbar from "./Navbar"
 import { teamSave } from "../service/teamService";
 import { useNavigate } from "react-router-dom";
-import { TEAMS } from "../utils/routes";
+import { HOME, TEAMS } from "../utils/routes";
+import { useSelector } from "react-redux";
 
 function TeamForm() {
 
+    const user = useSelector((state) => state.user);
     const navigate = useNavigate();
 
     const [formTeam, setFormTeam] = useState({
@@ -13,6 +15,10 @@ function TeamForm() {
         tag: '',
         error: ''
     });
+
+    useEffect(() => {
+        user && !user.admin ? navigate(HOME) : null;   
+    }, []);
 
     const teamRegistration = async () => {
         const team = {
@@ -22,7 +28,6 @@ function TeamForm() {
 
         await teamSave(team)
             .then((response) => {
-                console.log(response.data);
                 alert('Team registrato correttamente');
             })
             .catch(error => {
@@ -31,7 +36,7 @@ function TeamForm() {
             })
         navigate(TEAMS);
     }
-    
+
     // GESTISCE GLI ERRORI DI INSERIMENTO DA STAMPARE A SCHERMO
     const errorChange = (e) => {
         const { name, value } = e.target;
@@ -101,7 +106,7 @@ function TeamForm() {
                         <form>
                             <div className="form-floating mb-3">
                                 <input
-                                    class="form-control"
+                                    className="form-control"
                                     type="text"
                                     id="name"
                                     name="name"
@@ -117,9 +122,9 @@ function TeamForm() {
                                 />
                                 <label htmlFor="username">Nome</label>
                             </div>
-                            <div class="form-floating mb-3">
+                            <div className="form-floating mb-3">
                                 <input
-                                    class="form-control"
+                                    className="form-control"
                                     type="text"
                                     id="tag"
                                     name="tag"
@@ -141,12 +146,13 @@ function TeamForm() {
                             &nbsp;{formTeam.error}
                         </div> <br />
                         <button
-                            class="btn btn-secondary btn-lg"
+                            className="btn btn-secondary btn-lg"
                             disabled={!validForm()}
                             onClick={() => teamRegistration()}
                         >
                             Crea team
-                        </button> <br />
+                        </button> <br /><br />
+                        <a className="a-custom" onClick={() => navigate(TEAMS)}>Torna ai teams</a> <br />
                     </div>
                 </div>
             </header>

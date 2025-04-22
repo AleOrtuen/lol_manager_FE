@@ -5,6 +5,7 @@ import { HOME, SIGNUP } from "../utils/routes";
 import { userAuth } from "../service/userService";
 import { useDispatch } from "react-redux";
 import { setUser } from "../store/slice/userSlice";
+import { resetTeam } from "../store/slice/teamSlice";
 
 function Login() {
 
@@ -24,8 +25,8 @@ function Login() {
             }
 
             userAuth(email, password).then((response) => {
-                console.log(response.data)
                 dispatch(setUser(response.data.objResponse))
+                dispatch(resetTeam());
                 navigate(HOME)
             }).catch(error => {
                 console.log(error.response.data.response)
@@ -96,7 +97,7 @@ function Login() {
             <br />
             {/* <p> */}
             Non hai un account?
-            <a onClick={() => navigate(SIGNUP)}> Registrati!</a>
+            <a className="a-custom" onClick={() => navigate(SIGNUP)}> Registrati!</a>
 
             {/* </p> */}
         </>

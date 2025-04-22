@@ -1,32 +1,36 @@
 import { useEffect, useState } from "react"
 import Navbar from "./Navbar"
 import { teamDelete, teamFindAll } from "../service/teamService";
-import { TEAM } from "../utils/routes";
+import { HOME, TEAM, TEAM_FORM } from "../utils/routes";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 function Teams() {
 
-    const [teams,setTeams] = useState([]);
+    const user = useSelector((state) => state.user);
+    const [teams, setTeams] = useState([]);
     const navigate = useNavigate();
 
     useEffect(() => {
-        teamFindAll()
+        if (user && user.admin) {
+            teamFindAll()
             .then((response) => {
-                console.log(response.data);
                 setTeams(response.data.objResponse);
             })
             .catch(error => {
                 console.log(error.response.data.response);
             })
+        } else {
+           navigate(HOME); 
+        }
     }, []);
 
     const deleteTeam = (idTeam) => {
         const confirmed = window.confirm("Sei sicuro di voler eliminare questo team?");
         if (!confirmed) return;
-    
+
         teamDelete(idTeam)
             .then((response) => {
-                console.log(response.data);
                 alert('Team eliminato');
                 // Aggiorna la lista senza ricaricare la pagina
                 setTeams((prevTeams) => prevTeams.filter((team) => team.idTeam !== idTeam));
@@ -67,14 +71,14 @@ function Teams() {
                                 >
                                     <div className="accordion-body custom-accordion-body text-center">
                                         {team.name}
-                                        <br/>
+                                        <br />
                                         {team.tag}
                                         <br /><br />
-                                        <div class="btn-group" role="group" aria-label="Basic example">
-                                            <button class="btn btn-secondary btn-sm" onClick={() => navigate(TEAM, { state: { idTeam: team.idTeam } })}>
+                                        <div className="btn-group" role="group" aria-label="Basic example">
+                                            <button className="btn btn-secondary btn-sm" onClick={() => navigate(TEAM, { state: { idTeam: team.idTeam } })}>
                                                 Info
                                             </button>
-                                            <button class="btn btn-danger btn-sm" onClick={() => deleteTeam(team.idTeam)}>
+                                            <button className="btn btn-danger btn-sm" onClick={() => deleteTeam(team.idTeam)}>
                                                 Elimina
                                             </button>
                                         </div>
@@ -83,7 +87,11 @@ function Teams() {
                             </div>
                         ))}
                     </div>
-                </div> 
+                </div>
+                <br /><br />
+                <button className="btn btn-secondary btn-sm" onClick={() => navigate(TEAM_FORM)}>
+                    Crea team
+                </button>
             </header>
         </div>
     )

@@ -87,8 +87,8 @@ function ChampionPool() {
     };
 
     const updateChampPool = async () => {
-        let toDelete;
-        let toSave;
+        let toDelete = [];
+        let toSave = [];
 
         if (pickedChamps.length > 0) {
             toDelete = user.champions.filter((champion) =>
@@ -112,7 +112,6 @@ function ChampionPool() {
             for (const element of toDelete) {
                 await champPoolDelete(user.idUser, element.idChamp)
                     .then((response) => {
-                        console.log(response.data);
                     })
                     .catch(error => {
                         console.log(error.response.data.response);
@@ -132,7 +131,6 @@ function ChampionPool() {
                 }
                 await champPoolSave(champPool)
                     .then((response) => {
-                        console.log(response.data);
                     })
                     .catch(error => {
                         console.log(error.response.data.response);
@@ -142,7 +140,6 @@ function ChampionPool() {
 
 
         await userFindById(user.idUser).then((response) => {
-            console.log(response.data)
             dispatch(resetUser());
             dispatch(setUser(response.data.objResponse));
         }).catch(error => {

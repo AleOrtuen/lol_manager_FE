@@ -22,9 +22,13 @@ function Navbar() {
     const dispatch = useDispatch();
 
     useEffect(() => {
+
+        if (!user || Object.keys(user).length === 0) {
+            navigate(LOGIN);
+            return; 
+        }
         if (user && user.idUser && user.admin === false) {
             userFindTeams(user.idUser).then((response) => {
-                console.log(response.data);
                 if (response.data && response.data.objResponse) {
                     dispatch(setTeam(response.data.objResponse));
                 } else {
@@ -34,16 +38,16 @@ function Navbar() {
                 .catch(error => {
                     console.log(error.response.data.response);
                 });
-        } else if (user && user.admin === true){
+        } else if (user && user.admin === true) {
             teamFindAll()
-            .then((response) => {
-                console.log(response.data);
-                dispatch(setTeam(response.data.objResponse));
-            })
-            .catch(error => {
-                console.log(error.response.data.response);
-            })
+                .then((response) => {
+                    dispatch(setTeam(response.data.objResponse));
+                })
+                .catch(error => {
+                    console.log(error.response.data.response);
+                })
         }
+
     }, []);
 
     // Oggetto che mappa i ruoli alle immagini
@@ -66,7 +70,7 @@ function Navbar() {
     return (
         <>
             {/* SE USER E' PRESENT */}
-            {user ?
+            {user && user != null ?
 
                 // NAVBAR             
                 <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
@@ -87,7 +91,7 @@ function Navbar() {
                         </button>
 
                         <div className="collapse navbar-collapse" id="navbarResponsive">
-                            <ul className="navbar-nav ms-auto ">
+                            <ul className="navbar-nav ms-auto">
                                 {teams && teams.length > 0 ?
                                     (teams.map((team) =>
 

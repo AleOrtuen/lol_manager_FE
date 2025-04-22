@@ -35,7 +35,6 @@ function SignUp() {
         }
 
         userSave(user).then((response) => {
-            console.log(response.data);
             alert('Utente registrato correttamente');
             navigate(LOGIN);
         }).catch(error => {
@@ -233,7 +232,7 @@ function SignUp() {
                     >
                         Registrati
                     </button> <br /><br />
-                    <a onClick={() => navigate(LOGIN)}>Torna alla home page</a> <br />
+                    <a className="a-custom" onClick={() => navigate(LOGIN)}>Torna alla home page</a> <br />
                 </div>
             </div>
 
