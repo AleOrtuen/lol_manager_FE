@@ -35,7 +35,6 @@ function SignUp() {
         }
 
         userSave(user).then((response) => {
-            console.log(response.data);
             alert('Utente registrato correttamente');
             navigate(LOGIN);
         }).catch(error => {

@@ -24,7 +24,6 @@ function Navbar() {
     useEffect(() => {
         if (user && user.idUser && user.admin === false) {
             userFindTeams(user.idUser).then((response) => {
-                console.log(response.data);
                 if (response.data && response.data.objResponse) {
                     dispatch(setTeam(response.data.objResponse));
                 } else {
@@ -37,7 +36,6 @@ function Navbar() {
         } else if (user && user.admin === true){
             teamFindAll()
             .then((response) => {
-                console.log(response.data);
                 dispatch(setTeam(response.data.objResponse));
             })
             .catch(error => {
