@@ -112,7 +112,6 @@ function ModaleTeamData({ toUpdate, team }) {
     const removePlayer = async (idUser) => {
         await teamMemberDelete(idUser, updateTeam.idTeam)
             .then((response) => {
-                console.log(response.data);
                 alert('Utente rimosso');
             })
             .catch(error => {
@@ -122,7 +121,6 @@ function ModaleTeamData({ toUpdate, team }) {
 
         await teamFindMembers(updateTeam.idTeam)
             .then((response) => {
-                console.log('Members data:', response.data.objResponse);  // Log dei membri
                 setUpdateMembers(response.data.objResponse);
             })
             .catch(error => {
@@ -136,7 +134,6 @@ function ModaleTeamData({ toUpdate, team }) {
         let newUserId;
         await userFindByEmail(newMember)
             .then((response) => {
-                console.log(response.data);
                 newUserId = response.data.objResponse.idUser;
             })
             .catch(error => {
@@ -155,7 +152,6 @@ function ModaleTeamData({ toUpdate, team }) {
 
         await teamMemberSave(member)
             .then((response) => {
-                console.log(response.data);
                 alert('Utente aggiunto al team');
             })
             .catch(error => {
@@ -165,7 +161,6 @@ function ModaleTeamData({ toUpdate, team }) {
 
         await teamFindMembers(updateTeam.idTeam)
             .then((response) => {
-                console.log('Members data:', response.data.objResponse);  // Log dei membri
                 setUpdateMembers(response.data.objResponse);
             })
             .catch(error => {
@@ -183,7 +178,6 @@ function ModaleTeamData({ toUpdate, team }) {
         }
         await teamUpdate(team)
             .then((response) => {
-                console.log(response.data);
                 setUpdateTeam(response.data.objResponse);
                 // dispatch(resetTeam());
                 // dispatch(setTeam(response.data.objResponse));
@@ -220,27 +214,27 @@ function ModaleTeamData({ toUpdate, team }) {
     return (
         <div>
             <div
-                class="modal fade"
+                className="modal fade"
                 id="modal"
-                tabindex="-1"
+                tabIndex="-1"
                 aria-labelledby="modalLabel"
                 aria-hidden="true"
             >
-                <div class="modal-dialog">
-                    <div class="modal-content custom-modal-bg">
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="modalLabel">
+                <div className="modal-dialog">
+                    <div className="modal-content custom-modal-bg">
+                        <div className="modal-header">
+                            <h1 className="modal-title fs-5" id="modalLabel">
                                 Modifica {field}
                             </h1>
                             <button
                                 type="button"
-                                class="btn-close"
+                                className="btn-close"
                                 data-bs-dismiss="modal"
                                 aria-label="Close"
                             >
                             </button>
                         </div>
-                        <div class="modal-body">
+                        <div className="modal-body">
                             <form onSubmit={(e) => { 
                                 e.preventDefault(); 
                             }}>
@@ -332,10 +326,10 @@ function ModaleTeamData({ toUpdate, team }) {
                         </div>
                         &nbsp;{updateTeam.error}
                         {field === "membri" ?
-                            <div class="modal-footer">
+                            <div className="modal-footer">
                                 <button
                                     type="button"
-                                    class="btn btn-outline-secondary btn-lg"
+                                    className="btn btn-outline-secondary btn-lg"
                                     disabled={!validForm()}
                                     onClick={() => addPlayer()}
                                 >
@@ -343,10 +337,10 @@ function ModaleTeamData({ toUpdate, team }) {
                                 </button>
                             </div>
                             :
-                            <div class="modal-footer">
+                            <div className="modal-footer">
                                 <button
                                     type="button"
-                                    class="btn btn-secondary btn-lg"
+                                    className="btn btn-secondary btn-lg"
                                     disabled={!validForm()}
                                     onClick={() => teamUpdateFunction()}
                                 >

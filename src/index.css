@@ -11,6 +11,11 @@ a {
   cursor: pointer;
 }
 
+.a-custom {
+  color: #646cff;
+  text-decoration: inherit;
+}
+
 .dropdown-item:hover {
   background-color: #333 !important; /* Colore di sfondo più scuro */
 }

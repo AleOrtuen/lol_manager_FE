@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Navbar from "./Navbar";
 import { useEffect } from "react";
 import { teamFindChamps, teamFindMembers } from "../service/teamService";
@@ -16,9 +16,10 @@ function Team() {
 
     const teams = useSelector((state) => state.team);
     const [champs, setChamps] = useState();
-    const [members, setMembers] = useState();
+    const [members, setMembers] = useState([]);
     const location = useLocation();
     const [dataToUpdate, setDataToUpdate] = useState(null);
+    const navigate = useNavigate();
 
     //LISTA RUOLI E IMG
     const rolesData = [
@@ -40,7 +41,6 @@ function Team() {
 
             teamFindMembers(location.state.idTeam)
                 .then((response) => {
-                    console.log('Members data:', response.data.objResponse);  // Log dei membri
                     setMembers(response.data.objResponse);
                 })
                 .catch(error => {
@@ -54,8 +54,8 @@ function Team() {
             <Navbar />
             <header className="bg-gray bg-gradient text-white">
                 {teams.map((team) => (
-                    team.idTeam === location.state.idTeam ? (
-                        <>
+                    location.state && team.idTeam === location.state.idTeam ? (
+                        <div key={team.idTeam}>
                             <h1 className="display-6">{team.name}</h1>
                             <p>{team.tag}</p>
                             <button className="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -94,11 +94,13 @@ function Team() {
                                 </li>
                             </ul>
                             <ModaleTeamData toUpdate={dataToUpdate} team={team} />
-                        </>
-
-
+                        </div>
                     ) : null
                 ))}
+                {!location.state ?
+                    <h1 className="display-6">Nessun team selezionato</h1>
+                    : null
+                }
                 <br />
                 <div className="container-fluid">
                     <div className="row justify-content-center">
@@ -122,11 +124,11 @@ function Team() {
                                             </div>
                                             <div className="role-name">
                                                 {members && members.length > 0 ? (
-                                                    members.map((member) => (
-                                                        member.pRole === role.role ? (
+                                                    members
+                                                        .filter(member => member.pRole === role.role)
+                                                        .map(member => (
                                                             <span key={member.id}>{member.username}</span>
-                                                        ) : null
-                                                    ))
+                                                        ))
                                                 ) : null}
                                             </div>
                                         </div>
@@ -174,7 +176,7 @@ function Team() {
                         <div
                             className="col p-1"
                             style={{
-                                // height: '50vh',
+                                maxHeight: '50vh',
                                 marginLeft: '10%',
                                 marginRight: '10%'
                             }}

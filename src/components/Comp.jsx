@@ -132,7 +132,6 @@ function Comp() {
         if (selectedChampRole === null) {
             champRoleSave(champRole)
             .then((response) => {
-                console.log(response.data);
                 alert('Champion role salvato correttamente');
 
                 // Refresh champion roles data after saving
@@ -151,9 +150,7 @@ function Comp() {
         } else {
             champRoleUpdate(champRole)
                 .then((response) => {
-                    console.log(response.data);
                     alert('Champion role aggiornato');
-
                     champRoleFindComp(comp.idComp)
                     .then((response) => {
                         setChampRoles(response.data.objResponse);
@@ -180,7 +177,6 @@ function Comp() {
         champRoleDelete(idComp, idChamp, role)
             .then((response) => {
                 alert('Champ role eliminato');
-                console.log(response.data);
                 setChampRoles((prevRoles) =>
                     prevRoles.filter(
                         (r) =>

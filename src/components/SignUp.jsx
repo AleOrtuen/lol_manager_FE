@@ -232,7 +232,7 @@ function SignUp() {
                     >
                         Registrati
                     </button> <br /><br />
-                    <a onClick={() => navigate(LOGIN)}>Torna alla home page</a> <br />
+                    <a className="a-custom" onClick={() => navigate(LOGIN)}>Torna alla home page</a> <br />
                 </div>
             </div>
 

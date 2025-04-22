@@ -97,7 +97,7 @@ function Login() {
             <br />
             {/* <p> */}
             Non hai un account?
-            <a onClick={() => navigate(SIGNUP)}> Registrati!</a>
+            <a className="a-custom" onClick={() => navigate(SIGNUP)}> Registrati!</a>
 
             {/* </p> */}
         </>
