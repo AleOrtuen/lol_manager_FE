@@ -4,8 +4,10 @@ import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { teamCompDelete, teamCompFindTeam } from "../service/teamCompService";
 import { COMP, COMP_FORM } from "../utils/routes";
+import { useSelector } from "react-redux";
 
 function TeamComp() {
+    const user = useSelector((state) => state.user);
     const location = useLocation();
     const navigate = useNavigate();
     const [comps, setComps] = useState([]);
@@ -77,9 +79,12 @@ function TeamComp() {
                                                         <button className="btn btn-secondary btn-sm" onClick={() => navigate(COMP, { state: { comp: comp } })}>
                                                             Info
                                                         </button>
+                                                        {user && user.admin ?
                                                         <button className="btn btn-danger btn-sm" onClick={() => compDelete(comp.idComp)}>
                                                             Elimina
                                                         </button>
+                                                        : null
+                                                        }
                                                     </div>
                                                 </div>
                                             </div>
@@ -89,9 +94,12 @@ function TeamComp() {
                             </div>
                         </div>
                         <br /><br />
-                        <button className="btn btn-secondary btn-sm" onClick={() => navigate(COMP_FORM, { state: { idTeam: location.state.idTeam } })}>
-                            Crea Comp
-                        </button>
+                        {user && user.admin ?
+                            <button className="btn btn-secondary btn-sm" onClick={() => navigate(COMP_FORM, { state: { idTeam: location.state.idTeam } })}>
+                                Crea Comp
+                            </button>
+                            : null
+                        }
                     </>
                     : <p>Nessun team selezionato</p>
                 }
