@@ -43,9 +43,9 @@ function TeamForm() {
         switch (name) {
             case 'name':
                 if (!validName(value) && value != '') {
-                    setFormTeam(prevForm => ({ ...prevForm, error: 'Nome di almeno 3 caratteri. ' }));
+                    setFormTeam(prevForm => ({ ...prevForm, error: 'Nome di almeno 2 caratteri. ' }));
                 } else {
-                    if (formTeam.error === 'Nome di almeno 3 caratteri. ') {
+                    if (formTeam.error === 'Nome di almeno 2 caratteri. ') {
                         setFormTeam(prevForm => ({ ...prevForm, error: '' }));
                     }
                 }
@@ -54,7 +54,7 @@ function TeamForm() {
                 if (!validTag(value) && value != '') {
                     setFormTeam(prevForm => ({ ...prevForm, error: 'Tag di almeno 2 caratteri e massimo 5.' }));
                 } else {
-                    if (formTeam.error === 'Tag di almeno 3 caratteri e massimo 5.') {
+                    if (formTeam.error === 'Tag di almeno 2 caratteri e massimo 5.') {
                         setFormTeam(prevForm => ({ ...prevForm, error: '' }));
                     }
                 }
@@ -71,7 +71,7 @@ function TeamForm() {
     // METODI DI VALIDAZIONE DEGLI INPUT 
     const validName = (name) => {
         return name !== ''
-            && name.length >= 3
+            && name.length >= 2
             && name.length <= 50;
     }
 
