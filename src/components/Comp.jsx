@@ -10,8 +10,10 @@ import mid from '../img/roles/mid.webp';
 import adc from '../img/roles/adc.webp';
 import sup from '../img/roles/sup.webp';
 import Champions from "./Champions";
+import { useSelector } from "react-redux";
 
 function Comp() {
+    const user = useSelector((state) => state.user);
     const location = useLocation();
     const [champions, setChampions] = useState([]);
     const [champRoles, setChampRoles] = useState([]);
@@ -131,33 +133,33 @@ function Comp() {
 
         if (selectedChampRole === null) {
             champRoleSave(champRole)
-            .then((response) => {
-                alert('Champion role salvato correttamente');
+                .then((response) => {
+                    alert('Champion role salvato correttamente');
 
-                // Refresh champion roles data after saving
-                champRoleFindComp(comp.idComp)
-                    .then((response) => {
-                        setChampRoles(response.data.objResponse);
-                    })
-                    .catch(error => {
-                        console.log(error.response.data.response);
-                    });
-            })
-            .catch(error => {
-                console.log(error.response.data.response);
-                alert('Error nel salvataggio');
-            })
+                    // Refresh champion roles data after saving
+                    champRoleFindComp(comp.idComp)
+                        .then((response) => {
+                            setChampRoles(response.data.objResponse);
+                        })
+                        .catch(error => {
+                            console.log(error.response.data.response);
+                        });
+                })
+                .catch(error => {
+                    console.log(error.response.data.response);
+                    alert('Error nel salvataggio');
+                })
         } else {
             champRoleUpdate(champRole)
                 .then((response) => {
                     alert('Champion role aggiornato');
                     champRoleFindComp(comp.idComp)
-                    .then((response) => {
-                        setChampRoles(response.data.objResponse);
-                    })
-                    .catch(error => {
-                        console.log(error.response.data.response);
-                    });
+                        .then((response) => {
+                            setChampRoles(response.data.objResponse);
+                        })
+                        .catch(error => {
+                            console.log(error.response.data.response);
+                        });
                 })
                 .catch(error => {
                     console.log(error.response.data.response);
@@ -169,11 +171,11 @@ function Comp() {
     const roleDelete = () => {
         const confirmed = window.confirm("Sei sicuro di voler eliminare questo ruolo?");
         if (!confirmed) return;
-    
+
         const idComp = selectedChampRole.comp.idComp;
         const idChamp = selectedChampRole.champion.idChamp;
         const role = selectedChampRole.role;
-    
+
         champRoleDelete(idComp, idChamp, role)
             .then((response) => {
                 alert('Champ role eliminato');
@@ -193,7 +195,7 @@ function Comp() {
                 alert('Errore eliminazione');
             });
     };
-    
+
 
     // Handle search input change
     const handleSearchChange = (e) => {
@@ -429,21 +431,24 @@ function Comp() {
 
                                 </div>
                             </form>
-                            <div class="btn-group" role="group" aria-label="Basic example">
-                                <button
-                                    class="btn btn-secondary btn-sm"
-                                    disabled={!validForm()}
-                                    onClick={() => roleSave()}
-                                >
-                                    Salva
-                                </button>
-                                <button
-                                    class="btn btn-danger btn-sm"
-                                    onClick={() => roleDelete()}
-                                >
-                                    Elimina
-                                </button>
-                            </div>
+                            {user && user.admin ?
+                                <div class="btn-group" role="group" aria-label="Basic example">
+                                    <button
+                                        class="btn btn-secondary btn-sm"
+                                        disabled={!validForm()}
+                                        onClick={() => roleSave()}
+                                    >
+                                        Salva
+                                    </button>
+                                    <button
+                                        class="btn btn-danger btn-sm"
+                                        onClick={() => roleDelete()}
+                                    >
+                                        Elimina
+                                    </button>
+                                </div>
+                                : null
+                            }
                         </div>
                     </div>
                     <br /><br />
