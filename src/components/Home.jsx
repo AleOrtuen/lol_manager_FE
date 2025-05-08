@@ -1,5 +1,6 @@
 import { useSelector, useDispatch } from "react-redux"
 import Navbar from "./Navbar";
+import DraftTest from "./DraftTest";
 
 function Home() {
     const user = useSelector( (state) => state.user );
@@ -8,6 +9,7 @@ function Home() {
         <>
             <header className="bg-gray bg-gradient text-white">
                 <Navbar />
+                <DraftTest />
                 <div className="row justify-content-center">
                     <div className="col-10 text-start">
                         <h4 className="text-center">
