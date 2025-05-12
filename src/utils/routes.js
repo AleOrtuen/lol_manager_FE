@@ -10,3 +10,5 @@ export const POOL = '/champ-pool';
 export const TEAM_FORM = '/team-form';
 export const COMP_FORM = '/comp-form';
 export const COMP = '/comp';
+export const CREATE_GAME = '/create-game';
+export const DRAFT = '/draft';

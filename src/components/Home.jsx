@@ -9,7 +9,6 @@ function Home() {
         <>
             <header className="bg-gray bg-gradient text-white">
                 <Navbar />
-                <DraftTest />
                 <div className="row justify-content-center">
                     <div className="col-10 text-start">
                         <h4 className="text-center">

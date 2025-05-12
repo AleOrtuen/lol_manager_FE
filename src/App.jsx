@@ -2,7 +2,7 @@ import { useState } from 'react'
 import './App.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import { ACCOUNT, COMP, COMP_BUILDER, COMP_FORM, HOME, LOGIN, POOL, SIGNUP, TEAM, TEAM_COMP, TEAM_FORM, TEAMS } from './utils/routes'
+import { ACCOUNT, COMP, COMP_BUILDER, COMP_FORM, CREATE_GAME, DRAFT, HOME, LOGIN, POOL, SIGNUP, TEAM, TEAM_COMP, TEAM_FORM, TEAMS } from './utils/routes'
 import Login from './components/Login'
 import SignUp from './components/SignUp';
 import Home from './components/Home';
@@ -16,6 +16,10 @@ import Teams from './components/Teams';
 import CompForm from './components/CompForm';
 import Comp from './components/Comp';
 import Footer from './components/Footer';
+import CreateGame from './components/CreateGame';
+import GameRoom from './components/GameRoom';
+import Draft from './components/Drafter/Draft';
+import GuestSelection from './components/GuestSelection';
 
 function App() {
 
@@ -31,7 +35,10 @@ function App() {
     {path: TEAM_FORM, element: <TeamForm />},
     {path: TEAMS, element: <Teams />},
     {path: COMP_FORM, element: <CompForm />},
-    {path: COMP, element: <Comp />}
+    {path: COMP, element: <Comp />},
+    {path: CREATE_GAME, element: <CreateGame />},
+    {path: "/game/:idRoom/:role", element: <Draft />},
+    // {path: "/game/:idRoom/:role", element: <GuestSelection />}
   ])
 
   return (

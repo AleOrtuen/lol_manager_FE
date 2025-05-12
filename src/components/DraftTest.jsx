@@ -1,35 +1,63 @@
-import { useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useWebSocketDraft } from './web_socket/useWebSocketGame';
 
-
-function DraftTest() {
-  const [idRoom, setIdRoom] = useState("a79ddf7a-7d86-4871-a5c8-6fed3f55c7b4"); // cambia con ID reale
+function DraftTest({ idRoom, role }) {
   const [messages, setMessages] = useState([]);
+  const [timeLeft, setTimeLeft] = useState(null);
+  const timerRef = useRef(null);
 
-  const { sendPick } = useWebSocketDraft(idRoom, (msg) => {
+  const { sendMessage } = useWebSocketDraft(idRoom, (msg) => {
     setMessages((prev) => [...prev, msg]);
+
+    if (msg.type === "TIMER_START" && msg.startTime) {
+      const endTime = msg.startTime + 30000;
+      clearInterval(timerRef.current);
+
+      const updateTimer = () => {
+        const now = Date.now();
+        const diff = Math.max(0, Math.floor((endTime - now) / 1000));
+        setTimeLeft(diff);
+        if (diff <= 0) clearInterval(timerRef.current);
+      };
+
+      updateTimer();
+      timerRef.current = setInterval(updateTimer, 1000);
+    }
   });
 
-  const handleSend = () => {
-    const pick = {
-      idRoom: idRoom,
-      side: "blue",
-      idChamp: 103, // Ahri, per esempio
-    };
-    sendPick(pick);
+  const handlePick = () => {
+    sendMessage({
+      idRoom,
+      side: role === "player1" ? "blue" : "red",
+      idChamp: 103,
+      type: "PICK",
+      sender: role
+    });
+  };
+
+  const handleStartTimer = () => {
+    sendMessage({
+      idRoom,
+      type: "TIMER_REQUEST",
+      sender: role
+    });
   };
 
   return (
     <div>
-      <h2>Draft Room: {idRoom}</h2>
-      <button onClick={handleSend}>Invia Pick</button>
-      <ul>
+      {/* <h2>Draft Room: {idRoom}</h2> */}
+      {/* <p>👤 Ruolo: {role}</p> */}
+      <h1>{timeLeft !== null ? `${timeLeft}` : "—"}</h1>
+      {/* <button onClick={handlePick}>Invia Pick</button> */}
+      <button className="btn btn-outline-secondary btn-md" onClick={handleStartTimer}>Avvia Timer</button>
+      {/* <ul>
         {messages.map((msg, index) => (
           <li key={index}>{JSON.stringify(msg)}</li>
         ))}
-      </ul>
+      </ul> */}
     </div>
   );
 }
 
-export default DraftTest
+export default DraftTest;
+

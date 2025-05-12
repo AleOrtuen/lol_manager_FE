@@ -9,15 +9,13 @@ export function useWebSocketDraft(idRoom, onMessage) {
     if (!idRoom) return;
 
     const stompClient = new Client({
-      // ⚠️ Usa SockJS: non impostare `brokerURL`
       webSocketFactory: () => new SockJS(`${import.meta.env.VITE_API_BASE_URL}ws`),
-      reconnectDelay: 5000, // ✅ auto-reconnect ogni 5s
+      reconnectDelay: 5000,
       debug: (str) => console.log("💬 STOMP:", str),
     });
 
     stompClient.onConnect = () => {
       console.log(`✅ Connected to WebSocket room ${idRoom}`);
-
       stompClient.subscribe(`/topic/game/${idRoom}`, (message) => {
         const body = JSON.parse(message.body);
         console.log("📩 Received:", body);
@@ -30,27 +28,27 @@ export function useWebSocketDraft(idRoom, onMessage) {
       console.error(frame.body);
     };
 
-    stompClient.activate(); // 🔌 connessione
-
+    stompClient.activate();
     stompClientRef.current = stompClient;
 
     return () => {
       if (stompClientRef.current) {
-        stompClientRef.current.deactivate(); // 🔌 chiude la connessione in modo pulito
+        stompClientRef.current.deactivate();
         console.log("❌ Disconnected from WebSocket");
       }
     };
   }, [idRoom]);
 
-  const sendPick = (pickMessage) => {
+  const sendMessage = (msg) => {
     if (stompClientRef.current && stompClientRef.current.connected) {
       stompClientRef.current.publish({
-        destination: `/app/game/${idRoom}/pick`,
-        body: JSON.stringify(pickMessage),
+        destination: `/app/game/${idRoom}/action`,
+        body: JSON.stringify(msg),
       });
     }
   };
 
-  return { sendPick };
+  return { sendMessage };
 }
+
 

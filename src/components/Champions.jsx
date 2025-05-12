@@ -63,7 +63,7 @@ function Champions({champions}) {
                 /* Mostra l'immagine dal percorso indicato nell'oggetto champion, se presente */
                 champion.img ? (
                   <img 
-                    src={`../img/champions/${champion.img}`} 
+                    src={`/img/champions/${champion.img}`} 
                     alt={champion.name}
                     style={{
                       width: '67px',

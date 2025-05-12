@@ -75,3 +75,20 @@ export const CHAMP_ROLE_FIND_COMP = CHAMP_ROLE_PATH + 'find-comp/';
 export const CHAMP_ROLE_FIND_CHAMP = CHAMP_ROLE_PATH + 'find-champ/';
 export const CHAMP_ROLE_FIND_ROLE = CHAMP_ROLE_PATH + 'find-role/';
 export const CHAMP_ROLE_FIND_COMPATIBLE = CHAMP_ROLE_PATH + 'compatible-champs';
+
+//ENDPOINT GAME
+const GAME_PATH = BASE_PATH + 'game/';
+export const GAME_SAVE = GAME_PATH + 'save';
+export const GAME_UPDATE = GAME_PATH + 'update';
+export const GAME_DELETE = GAME_PATH + 'delete/';
+export const GAME_FIND_ALL = GAME_PATH + 'find-all';
+export const GAME_FIND_ID = GAME_PATH + 'find-id/';
+
+//ENDPOINT GAME ROOMS 
+const GAME_ROOM_PATH = BASE_PATH + 'game-room/';
+export const GAME_ROOM_SAVE = GAME_ROOM_PATH + 'save';
+export const GAME_ROOM_UPDATE = GAME_ROOM_PATH + 'update';
+export const GAME_ROOM_DELETE = GAME_ROOM_PATH + 'delete/';
+export const GAME_ROOM_FIND_ALL = GAME_ROOM_PATH + 'find-all';
+export const GAME_ROOM_FIND_ID = GAME_ROOM_PATH + 'find-id/';
+export const GAME_ROOM_FIND_GAME = GAME_ROOM_PATH + 'find-game/';
