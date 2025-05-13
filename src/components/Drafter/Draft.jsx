@@ -3,9 +3,12 @@ import { champFindAll } from "../../service/championsService";
 import Champions from "../Champions";
 import { useParams } from "react-router-dom";
 import DraftTest from "../DraftTest";
+import { useSelector } from "react-redux";
+import GuestSelection from "../GuestSelection";
 
 
 function Draft() {
+    const teams = useSelector((state) => state.team);
     const [champions, setChampions] = useState([]);
     const { idRoom, role } = useParams();
     //LISTA RUOLI E IMG
@@ -29,8 +32,10 @@ function Draft() {
     }, []);
 
     return (
-        <div>
 
+        <div>
+            {teams && teams.length > 0 ? 
+            <div>
             {/* TEAMS E PHASE */}
             <div className="row justify-content-center">
                 <div className="col-4">
@@ -211,6 +216,8 @@ function Draft() {
                     )}
                 </div>
             </div>
+            </div>
+            : <GuestSelection/> }
         </div>
     );
 };

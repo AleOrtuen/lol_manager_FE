@@ -17,7 +17,6 @@ import CompForm from './components/CompForm';
 import Comp from './components/Comp';
 import Footer from './components/Footer';
 import CreateGame from './components/CreateGame';
-import GameRoom from './components/GameRoom';
 import Draft from './components/Drafter/Draft';
 import GuestSelection from './components/GuestSelection';
 
@@ -38,6 +37,7 @@ function App() {
     {path: COMP, element: <Comp />},
     {path: CREATE_GAME, element: <CreateGame />},
     {path: "/game/:idRoom/:role", element: <Draft />},
+    {path: "/guest", element: <GuestSelection />}
     // {path: "/game/:idRoom/:role", element: <GuestSelection />}
   ])
 

@@ -25,15 +25,13 @@ function DraftTest({ idRoom, role }) {
     }
   });
 
-  const handlePick = () => {
+  useEffect(() => {
     sendMessage({
       idRoom,
-      side: role === "player1" ? "blue" : "red",
-      idChamp: 103,
-      type: "PICK",
+      type: "TIMER_STATUS_REQUEST",
       sender: role
     });
-  };
+  }, [idRoom, sendMessage]);
 
   const handleStartTimer = () => {
     sendMessage({
@@ -45,16 +43,8 @@ function DraftTest({ idRoom, role }) {
 
   return (
     <div>
-      {/* <h2>Draft Room: {idRoom}</h2> */}
-      {/* <p>👤 Ruolo: {role}</p> */}
       <h1>{timeLeft !== null ? `${timeLeft}` : "—"}</h1>
-      {/* <button onClick={handlePick}>Invia Pick</button> */}
       <button className="btn btn-outline-secondary btn-md" onClick={handleStartTimer}>Avvia Timer</button>
-      {/* <ul>
-        {messages.map((msg, index) => (
-          <li key={index}>{JSON.stringify(msg)}</li>
-        ))}
-      </ul> */}
     </div>
   );
 }

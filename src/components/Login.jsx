@@ -19,10 +19,6 @@ function Login() {
         if (email && email !== ''
             && password && password !== ''
         ) {
-            const user = {
-                email,
-                password
-            }
 
             userAuth(email, password).then((response) => {
                 dispatch(setUser(response.data.objResponse))
