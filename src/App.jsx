@@ -38,7 +38,6 @@ function App() {
     {path: CREATE_GAME, element: <CreateGame />},
     {path: "/game/:idRoom/:role", element: <Draft />},
     {path: "/guest", element: <GuestSelection />}
-    // {path: "/game/:idRoom/:role", element: <GuestSelection />}
   ])
 
   return (

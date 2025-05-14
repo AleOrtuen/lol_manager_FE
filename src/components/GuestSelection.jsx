@@ -4,14 +4,17 @@ import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../store/slice/userSlice";
 import { setTeam, resetTeam } from "../store/slice/teamSlice";
 import { teamFindAll } from "../service/teamService";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { SIGNUP } from "../utils/routes";
+import { gameUpdate } from "../service/gameService";
 
-function GuestSelection() {
+function GuestSelection({ game }) {
 
     const user = useSelector((state) => state.user);
     const teams = useSelector((state) => state.team);
-    const [idTeam, setIdTeam] = useState('');
+    const { idRoom, role } = useParams();
+    const [idTeam, setIdTeam] = useState();
+    const [guestView, setGuestView] = useState(0);
     const [guestName, setGuestName] = useState();
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -43,6 +46,12 @@ function GuestSelection() {
 
     }, [user]);
 
+    useEffect(() => {
+        if (teams && teams.length > 0) {
+            setIdTeam(teams[0].idTeam);
+        }
+    }, [teams]);
+
     const login = async () => {
         if (email && email !== ''
             && password && password !== ''
@@ -60,12 +69,46 @@ function GuestSelection() {
         }
     }
 
+    const teamSelection = () => {
+        let teamKey;
+        if (role === 'player1') {
+            teamKey = 'team1';
+        }
+        if (role === 'player2') {
+            teamKey = 'team2';
+        }
+        const updateTeam = {
+            idGame: game.idGame,
+            [teamKey]: {
+                idTeam: idTeam
+            },
+            style: game.style
+        }
+        gameUpdate(updateTeam)
+            .then((response) => {
+
+            })
+            .catch(error => {
+                console.log(error.response.data.response);
+            })
+
+    }
+
+    const viewForm = () => {
+        if (guestView === 0) {
+            setGuestView(1);
+        } else {
+            setGuestView(0)
+        }
+    }
+
     // LOGIN ALLA PRESSIONE DI INVIO
     function handleKey(e) {
         if (e.key === "Enter") {
             login();
         }
     }
+    
     return (
         <div>
             <div>
@@ -112,9 +155,8 @@ function GuestSelection() {
                                                 className="form-select"
                                                 id="floatingSelect"
                                                 name="team"
-                                                value={idTeam}
-                                                onChange={(e) => setIdTeam(e.target.value)}
-                                                // onKeyDown={handleKey}
+                                                value={idTeam || ''} // fallback se undefined
+                                                onChange={(e) => setIdTeam(Number(e.target.value))}
                                                 aria-label="Floating label select example"
                                             >
                                                 {teams.map((team) => (
@@ -123,6 +165,7 @@ function GuestSelection() {
                                                     </option>
                                                 ))}
                                             </select>
+
                                             <label htmlFor="floatingSelect">Team</label>
                                         </div>
                                     </>
@@ -131,34 +174,53 @@ function GuestSelection() {
                                 )
                             }
                         </form>
-                        <br />
-                        <button className="btn btn-outline-secondary btn-lg" onClick={() => login()}>
-                            Entra
-                        </button>
-                        <br />
                         {user && Object.keys(user).length === 0 ?
                             <>
+                                <br />
+                                <button className="btn btn-outline-secondary btn-lg" onClick={() => login()}>
+                                    Entra
+                                </button>
+                                <br /><br />
                                 Non hai un account?
                                 <a className="a-custom" onClick={() => navigate(SIGNUP)}> Registrati!</a><br />
                             </>
-                            : null
+                            : (teams && teams.length > 0 ?
+                                <>
+                                    <br />
+                                    <button className="btn btn-outline-secondary btn-lg" onClick={() => teamSelection()}>
+                                        Entra
+                                    </button>
+                                </>
+                                : null
+                            )
                         }
                         <br /><br />
-                        {/* <div className="form-floating mb-2">
-                            <input
-                                className="form-control"
-                                type="text"
-                                id="guestName"
-                                value={guestName}
-                                placeholder="Team name"
-                                onChange={(e) => setGuestName(e.target.value)}
-                            // onKeyDown={handleKey}
-                            />
-                            <label htmlFor="guestName">Team name</label>
-                        </div>
-                        <button className="btn btn-outline-secondary btn-lg">
+                        <button
+                            className="btn btn-outline-secondary btn-lg"
+                            onClick={() => viewForm()}
+                        >
                             Continua come guest
-                        </button> */}
+                        </button>
+                        <br /><br />
+                        {guestView && guestView === 1 ?
+                            <>
+                                <div className="form-floating mb-2">
+                                    <input
+                                        className="form-control"
+                                        type="text"
+                                        id="guestName"
+                                        value={guestName}
+                                        placeholder="Team name"
+                                        onChange={(e) => setGuestName(e.target.value)}
+                                    // onKeyDown={handleKey}
+                                    />
+                                    <label htmlFor="guestName">Team name</label>
+                                </div>
+                                <button className="btn btn-outline-secondary btn-lg">
+                                    Entra
+                                </button>
+                            </>
+                            : null}
                     </div>
                 </div>
 

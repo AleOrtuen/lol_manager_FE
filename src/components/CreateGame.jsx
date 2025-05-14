@@ -3,12 +3,12 @@ import { gameRoomSave } from "../service/gameRoomService";
 import { gameSave } from "../service/gameService";
 
 
-function CreateGame() {
 
+function CreateGame() {
     const baseUrl = import.meta.env.VITE_FRONTEND_BASE_URL;
     const [form, setForm] = useState({
-        style: 'bo1', 
-        fearless: false 
+        style: 'bo1',
+        fearless: false
     });
 
     const [room, setRoom] = useState(null);
@@ -38,7 +38,7 @@ function CreateGame() {
                 console.log(error.response.data.response);
                 alert('Errore nella creazione del game');
             })
-          
+
         await gameRoomSave(gameRoom)
             .then((response) => {
                 setRoom(response.data.objResponse);
@@ -123,55 +123,57 @@ function CreateGame() {
                 >
                     Create game
                 </button>
-                <br/><br/>
-{room && (
-    <div className="mt-4 text-start">
-        <div className="mb-3">
-            <label className="form-label fw-bold">Your link:</label>
-            <div className="input-group">
-                <a
-                    href={`${baseUrl}${room.player1Link}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="form-control text-decoration-none text-primary"
-                >
-                    {`${baseUrl}${room.player1Link}`}
-                </a>
-                <button
-                    className="btn btn-outline-secondary"
-                    type="button"
-                    onClick={() => navigator.clipboard.writeText(`${baseUrl}${room.player1Link}`)}
-                >
-                    Copy
-                </button>
+                <br /><br />
+                {room && (
+                    <div className="mt-4 text-start">
+                        <div className="mb-3">
+                            <label className="form-label fw-bold">Your link:</label>
+                            <div className="input-group">
+                                <a
+                                    href={`${baseUrl}${room.player1Link}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="form-control text-decoration-none text-primary"
+                                >
+                                    {`${baseUrl}${room.player1Link}`}
+                                </a>
+                                <button
+                                    className="btn btn-outline-secondary"
+                                    type="button"
+                                    onClick={() => navigator.clipboard.writeText(`${baseUrl}${room.player1Link}`)}
+                                >
+                                    Copy
+                                </button>
+                            </div>
+                        </div>
+
+                        <div className="mb-3">
+                            <label className="form-label fw-bold">Opponent link:</label>
+                            <div className="input-group">
+                                <a
+                                    href={`${baseUrl}${room.player2Link}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="form-control text-decoration-none text-primary"
+                                >
+                                    {`${baseUrl}${room.player2Link}`}
+                                </a>
+                                <button
+                                    className="btn btn-outline-secondary"
+                                    type="button"
+                                    onClick={() => navigator.clipboard.writeText(`${baseUrl}${room.player2Link}`)}
+                                >
+                                    Copy
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
             </div>
+
         </div>
 
-        <div className="mb-3">
-            <label className="form-label fw-bold">Opponent link:</label>
-            <div className="input-group">
-                <a
-                    href={`${baseUrl}${room.player2Link}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="form-control text-decoration-none text-primary"
-                >
-                    {`${baseUrl}${room.player2Link}`}
-                </a>
-                <button
-                    className="btn btn-outline-secondary"
-                    type="button"
-                    onClick={() => navigator.clipboard.writeText(`${baseUrl}${room.player2Link}`)}
-                >
-                    Copy
-                </button>
-            </div>
-        </div>
-    </div>
-)}
-
-            </div>
-        </div>
     );
 }
 
