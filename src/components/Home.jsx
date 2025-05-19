@@ -1,6 +1,5 @@
 import { useSelector, useDispatch } from "react-redux"
 import Navbar from "./Navbar";
-import DraftTest from "./DraftTest";
 
 function Home() {
     const user = useSelector( (state) => state.user );

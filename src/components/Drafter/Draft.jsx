@@ -2,10 +2,11 @@ import { useEffect, useState } from "react";
 import { champFindAll } from "../../service/championsService";
 import Champions from "../Champions";
 import { useParams } from "react-router-dom";
-import DraftTest from "../DraftTest";
 import { useSelector } from "react-redux";
 import GuestSelection from "../GuestSelection";
 import { gameRoomFindId } from "../../service/gameRoomService";
+import Timer from "../Timer";
+import { useWebSocketDraft } from "../web_socket/useWebSocketGame";
 
 
 function Draft() {
@@ -54,6 +55,13 @@ function Draft() {
 
     }, [game, role]);
 
+    const { sendMessage } = useWebSocketDraft(idRoom, (msg) => {
+        if (msg.type === "GAME_UPDATE" && msg.game) {
+            console.log("🆕 GAME_UPDATE received", msg.game);
+            setGame(msg.game); 
+        }
+    });
+
     return (
 
         <div>
@@ -69,7 +77,7 @@ function Draft() {
                             }
                         </div>
                         <div className="col-4">
-                            <DraftTest idRoom={idRoom} role={role} />
+                            <Timer idRoom={idRoom} role={role} />
                         </div>
                         <div className="col-4">
                             {game && game.team2 !== null && game.team2.name !== null ?

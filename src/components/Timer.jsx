@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { useWebSocketDraft } from './web_socket/useWebSocketGame';
 
-function DraftTest({ idRoom, role }) {
+function Timer({ idRoom, role }) {
   const [messages, setMessages] = useState([]);
   const [timeLeft, setTimeLeft] = useState(null);
   const timerRef = useRef(null);
@@ -49,5 +49,5 @@ function DraftTest({ idRoom, role }) {
   );
 }
 
-export default DraftTest;
+export default Timer;
 

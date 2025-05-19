@@ -3,7 +3,7 @@ import { userAuth, userFindTeams } from "../service/userService";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../store/slice/userSlice";
 import { setTeam, resetTeam } from "../store/slice/teamSlice";
-import { teamFindAll } from "../service/teamService";
+import { teamFindAll, teamSave } from "../service/teamService";
 import { useNavigate, useParams } from "react-router-dom";
 import { SIGNUP } from "../utils/routes";
 import { gameUpdate } from "../service/gameService";
@@ -94,6 +94,50 @@ function GuestSelection({ game }) {
 
     }
 
+    const guestTeamSelection = async () => {
+        let teamKey;
+        if (role === 'player1') {
+            teamKey = 'team1';
+        }
+        if (role === 'player2') {
+            teamKey = 'team2';
+        }
+
+        const newGuestTeam = {
+            name: guestName,
+            tag: Math.random().toString(36).substring(2, 7).toUpperCase(),
+            guest: true
+        }
+
+        let newTeam;
+
+        await teamSave(newGuestTeam)
+            .then((response) => {
+                newTeam = response.data.objResponse;
+            })
+            .catch(error => {
+                console.log(error.response.data.response);
+                alert("Registered team");
+            })
+  
+        const updateTeam = {
+            idGame: game.idGame,
+            [teamKey]: {
+                idTeam: newTeam.idTeam
+            },
+            style: game.style
+        }
+
+        await gameUpdate(updateTeam)
+            .then((response) => {
+
+            })
+            .catch(error => {
+                console.log(error.response.data.response);
+            })
+
+    }
+
     const viewForm = () => {
         if (guestView === 0) {
             setGuestView(1);
@@ -108,7 +152,7 @@ function GuestSelection({ game }) {
             login();
         }
     }
-    
+
     return (
         <div>
             <div>
@@ -212,11 +256,10 @@ function GuestSelection({ game }) {
                                         value={guestName}
                                         placeholder="Team name"
                                         onChange={(e) => setGuestName(e.target.value)}
-                                    // onKeyDown={handleKey}
                                     />
                                     <label htmlFor="guestName">Team name</label>
                                 </div>
-                                <button className="btn btn-outline-secondary btn-lg">
+                                <button className="btn btn-outline-secondary btn-lg" onClick={() => guestTeamSelection()}>
                                     Entra
                                 </button>
                             </>
