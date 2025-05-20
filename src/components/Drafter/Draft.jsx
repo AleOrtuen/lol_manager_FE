@@ -3,18 +3,30 @@ import { champFindAll } from "../../service/championsService";
 import Champions from "../Champions";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import GuestSelection from "../GuestSelection";
 import { gameRoomFindId } from "../../service/gameRoomService";
 import Timer from "../Timer";
 import { useWebSocketDraft } from "../web_socket/useWebSocketGame";
+import GuestSelection from "./GuestSelection";
+import SideSelection from "./SideSelection";
 
 
 function Draft() {
     const teams = useSelector((state) => state.team);
-    const [champions, setChampions] = useState([]);
     const { idRoom, role } = useParams();
+    const [champions, setChampions] = useState([]);
     const [game, setGame] = useState();
+    const [draft, setDraft] = useState();
     const [pageLoading, setPageLoading] = useState(false);
+
+    const selectCurrentTeam = () => {
+        if (game.team1 && role === "player1") {
+            return game.team1;
+        }
+        if (game.team2 && role === "player2") {
+            return game.team2;
+        }
+    };
+
     //LISTA RUOLI E IMG
     const rolesData = [
         { role: 'top' },
@@ -24,6 +36,7 @@ function Draft() {
         { role: 'sup' }
     ];
 
+    //TROVA TUTTI I CAMPIONI E IL GAME.
     useEffect(() => {
         champFindAll()
             .then((response) => {
@@ -58,7 +71,7 @@ function Draft() {
     const { sendMessage } = useWebSocketDraft(idRoom, (msg) => {
         if (msg.type === "GAME_UPDATE" && msg.game) {
             console.log("🆕 GAME_UPDATE received", msg.game);
-            setGame(msg.game); 
+            setGame(msg.game);
         }
     });
 
@@ -73,17 +86,18 @@ function Draft() {
                             {game && game.team1 !== null && game.team1.name !== null ?
                                 <h4>{game.team1.name}</h4>
                                 :
-                                <h4>TEAM 1</h4>
+                                <h4>BLUE</h4>
                             }
                         </div>
                         <div className="col-4">
-                            <Timer idRoom={idRoom} role={role} />
+                            {/* <Timer idRoom={idRoom} role={role} /> */}
+                            <SideSelection team={selectCurrentTeam()} />
                         </div>
                         <div className="col-4">
                             {game && game.team2 !== null && game.team2.name !== null ?
                                 <h4>{game.team2.name}</h4>
                                 :
-                                <h4>TEAM 2</h4>
+                                <h4>RED</h4>
                             }
                         </div>
                     </div>

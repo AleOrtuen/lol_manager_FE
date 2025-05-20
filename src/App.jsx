@@ -16,9 +16,9 @@ import Teams from './components/Teams';
 import CompForm from './components/CompForm';
 import Comp from './components/Comp';
 import Footer from './components/Footer';
-import CreateGame from './components/CreateGame';
 import Draft from './components/Drafter/Draft';
-import GuestSelection from './components/GuestSelection';
+import CreateGame from './components/Drafter/CreateGame';
+import GuestSelection from './components/Drafter/GuestSelection';
 
 function App() {
 

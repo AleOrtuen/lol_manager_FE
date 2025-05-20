@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import { userAuth, userFindTeams } from "../service/userService";
 import { useDispatch, useSelector } from "react-redux";
-import { setUser } from "../store/slice/userSlice";
-import { setTeam, resetTeam } from "../store/slice/teamSlice";
-import { teamFindAll, teamSave } from "../service/teamService";
+import { setUser } from "../../store/slice/userSlice";
+import { setTeam, resetTeam } from "../../store/slice/teamSlice";
+import { teamFindAll, teamSave } from "../../service/teamService";
 import { useNavigate, useParams } from "react-router-dom";
-import { SIGNUP } from "../utils/routes";
-import { gameUpdate } from "../service/gameService";
+import { SIGNUP } from "../../utils/routes";
+import { gameUpdate } from "../../service/gameService";
+import { userAuth, userFindTeams } from "../../service/userService";
 
 function GuestSelection({ game }) {
 

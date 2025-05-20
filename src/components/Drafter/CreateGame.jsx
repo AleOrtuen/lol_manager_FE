@@ -1,8 +1,6 @@
 import { useState } from "react"
-import { gameRoomSave } from "../service/gameRoomService";
-import { gameSave } from "../service/gameService";
-
-
+import { gameSave } from "../../service/gameService";
+import { gameRoomSave } from "../../service/gameRoomService";
 
 function CreateGame() {
     const baseUrl = import.meta.env.VITE_FRONTEND_BASE_URL;

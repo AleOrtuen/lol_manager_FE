@@ -92,3 +92,13 @@ export const GAME_ROOM_DELETE = GAME_ROOM_PATH + 'delete/';
 export const GAME_ROOM_FIND_ALL = GAME_ROOM_PATH + 'find-all';
 export const GAME_ROOM_FIND_ID = GAME_ROOM_PATH + 'find-id/';
 export const GAME_ROOM_FIND_GAME = GAME_ROOM_PATH + 'find-game/';
+
+//ENDPOINT DRAFT 
+const DRAFT_PATH = BASE_PATH + 'draft/';
+export const DRAFT_SAVE = DRAFT_PATH + 'save';
+export const DRAFT_UPDATE = DRAFT_PATH + 'update';
+export const DRAFT_DELETE = DRAFT_PATH + 'delete/';
+export const DRAFT_FIND_ALL = DRAFT_PATH + 'find-all';
+export const DRAFT_FIND_ID = DRAFT_PATH + 'find-id/';
+export const DRAFT_FIND_TEAM = DRAFT_PATH + 'find-team/';
+export const DRAFT_FIND_GAME = DRAFT_PATH + 'find-game/';
