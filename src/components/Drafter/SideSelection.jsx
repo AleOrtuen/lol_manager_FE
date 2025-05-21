@@ -1,42 +1,51 @@
 import { useParams } from "react-router-dom";
-import { useWebSocketDraft } from "../web_socket/useWebSocketGame";
-import { useEffect } from "react";
+import {draftSave} from "../../service/draftService.js";
 
-function SideSelection({ team }) {
+function SideSelection({ game }) {
 
     const { idRoom, role } = useParams();
 
-    const { sendMessage } = useWebSocketDraft(idRoom, (msg) => {
-        if (msg.type === "SIDE_SELECTION") {
-            console.log("🆕 SIDE_SELECTION received", msg.side);
-        }
-    });
-
-    // useEffect(() => {
-
-    // }, [idRoom, sendMessage]);
+    let yourTeam, oppositeTeam;
+    if (role === "player1") {
+        yourTeam = game.team1;
+        oppositeTeam = game.team2;
+    } else {
+        yourTeam = game.team2;
+        oppositeTeam = game.team1;
+    }
 
     const handleSideSelection = (side) => {
-        sendMessage({
-            idRoom,
-            type: "SIDE_SELECTION",
-            sender: role,
-            side: side
-        })
+        const confirmed = window.confirm("Confirm " + side + " side?");
+        if (!confirmed) return;
+        const teamSelecting = side === "blue" ? "teamBlue" : "teamRed";
+        const teamWaiting = side === "blue" ? "teamRed" : "teamBlue";
+
+        const draft = {
+            game: game,
+            [teamSelecting]: yourTeam,
+            [teamWaiting]: oppositeTeam
+        }
+
+        draftSave(draft)
+            .then((response) => {
+            })
+            .catch(error => {
+                console.log(error.response.data.response);
+            })
     }
 
     return (
         <div>
-            <h6>Select side for {team.name}</h6>
+            <h5>Select side for {yourTeam.name}</h5>
             <button
-                className="btn btn-primary btn-md"
+                className="btn btn-primary btn-lg"
                 onClick={() => handleSideSelection("blue")}
             >
                 Blue side
             </button>
             <> </>
             <button
-                className="btn btn-danger btn-md"
+                className="btn btn-danger btn-lg"
                 onClick={() => handleSideSelection("red")}
             >
                 Red side

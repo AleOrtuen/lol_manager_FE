@@ -18,15 +18,6 @@ function Draft() {
     const [draft, setDraft] = useState();
     const [pageLoading, setPageLoading] = useState(false);
 
-    const selectCurrentTeam = () => {
-        if (game.team1 && role === "player1") {
-            return game.team1;
-        }
-        if (game.team2 && role === "player2") {
-            return game.team2;
-        }
-    };
-
     //LISTA RUOLI E IMG
     const rolesData = [
         { role: 'top' },
@@ -73,6 +64,11 @@ function Draft() {
             console.log("🆕 GAME_UPDATE received", msg.game);
             setGame(msg.game);
         }
+
+        if (msg.type === "DRAFT_UPDATE" && msg.draft) {
+            console.log("🆕 DRAFT_UPDATE received", msg.draft);
+            setDraft(msg.draft);
+        }
     });
 
     return (
@@ -83,19 +79,18 @@ function Draft() {
                     {/* TEAMS E PHASE */}
                     <div className="row justify-content-center">
                         <div className="col-4">
-                            {game && game.team1 !== null && game.team1.name !== null ?
-                                <h4>{game.team1.name}</h4>
+                            {draft && draft.teamBlue !== null ?
+                                <h4>{draft.teamBlue.name}</h4>
                                 :
                                 <h4>BLUE</h4>
                             }
                         </div>
                         <div className="col-4">
-                            {/* <Timer idRoom={idRoom} role={role} /> */}
-                            <SideSelection team={selectCurrentTeam()} />
+                            ciao ciao
                         </div>
                         <div className="col-4">
-                            {game && game.team2 !== null && game.team2.name !== null ?
-                                <h4>{game.team2.name}</h4>
+                            {draft && draft.teamRed !== null ?
+                                <h4>{draft.teamRed.name}</h4>
                                 :
                                 <h4>RED</h4>
                             }
@@ -142,30 +137,36 @@ function Draft() {
                             }}
                         >
 
-                            <div
-                                className="rounded-top d-flex flex-column h-100"
-                                style={{
-                                    border: '5px solid #242424',
-                                }}
-                            >
-                                <div className="bg-dark text-white text-center p-2">
-                                    Champions
-                                </div>
-                                <div className="flex-grow-1 overflow-auto p-2 text-center"
+                            {draft && draft.teamBlue != null && draft.teamRed != null ?
+                                <div
+                                    className="rounded-top d-flex flex-column h-100"
                                     style={{
-                                        display: 'flex',
-                                        flexWrap: 'wrap',
-                                        gap: '3px',
-                                        justifyContent: 'center',
-                                        alignContent: 'flex-start'
+                                        border: '5px solid #242424',
                                     }}
                                 >
-                                    {champions && champions.length > 0 ? (
-                                        <Champions champions={champions} />
-                                    ) : null}
+                                    <div className="bg-dark text-white text-center p-2">
+                                        Champions
+                                    </div>
+                                    <div className="flex-grow-1 overflow-auto p-2 text-center"
+                                         style={{
+                                             display: 'flex',
+                                             flexWrap: 'wrap',
+                                             gap: '3px',
+                                             justifyContent: 'center',
+                                             alignContent: 'flex-start'
+                                         }}
+                                    >
+                                        {champions && champions.length > 0 ? (
+                                            <Champions champions={champions}/>
+                                        ) : null}
+                                    </div>
                                 </div>
-                            </div>
-
+                                :
+                                (game && game.team1 != null && game.team2 != null ?
+                                        <SideSelection game={game}/>
+                                        : <h5>Waiting for other team to join the game</h5>
+                                )
+                            }
                         </div>
                         <div className="col-2">
                             {rolesData.map((role) =>
