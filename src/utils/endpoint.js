@@ -102,3 +102,4 @@ export const DRAFT_FIND_ALL = DRAFT_PATH + 'find-all';
 export const DRAFT_FIND_ID = DRAFT_PATH + 'find-id/';
 export const DRAFT_FIND_TEAM = DRAFT_PATH + 'find-team/';
 export const DRAFT_FIND_GAME = DRAFT_PATH + 'find-game/';
+export const DRAFT_FIND_ROOM = DRAFT_PATH + 'find-room/';

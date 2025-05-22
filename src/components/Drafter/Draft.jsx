@@ -8,6 +8,10 @@ import Timer from "../Timer";
 import { useWebSocketDraft } from "../web_socket/useWebSocketGame";
 import GuestSelection from "./GuestSelection";
 import SideSelection from "./SideSelection";
+import Picks from "./Picks";
+import Bans from "./Bans";
+import { draftFindRoom } from "../../service/draftService";
+import ReadyCheck from "./ReadyCheck";
 
 
 function Draft() {
@@ -27,7 +31,88 @@ function Draft() {
         { role: 'sup' }
     ];
 
-    //TROVA TUTTI I CAMPIONI E IL GAME.
+    const [blueBans, setBlueBans] = useState({
+        ban1: {
+            champ: null,
+            locked: false
+        },
+        ban2: {
+            champ: null,
+            locked: false
+        },
+        ban3: {
+            champ: null,
+            locked: false
+        },
+        ban4: {
+            champ: null,
+            locked: false
+        },
+        ban5: {
+            champ: null,
+            locked: false
+        }
+    });
+    const [redBans, setRedBans] = useState({
+        ban1: {
+            champ: null,
+            locked: false
+        },
+        ban2: {
+            champ: null,
+            locked: false
+        },
+        ban3: {
+            champ: null,
+            locked: false
+        },
+        ban4: {
+            champ: null,
+            locked: false
+        },
+        ban5: {
+            champ: null,
+            locked: false
+        }
+    });
+
+    const [draftEvents, setDraftEvents] = useState({
+        blueBan1: false,
+        redBan1: false,
+        blueBan2: false,
+        redBan2: false,
+        blueBan3: false,
+        redBan3: false,
+        bluePick1: false,
+        redPick1: false,
+        redPick2: false,
+        bluePick2: false,
+        bluePick3: false,
+        redPick3: false,
+        redBan4: false,
+        blueBan4: false,
+        redBan5: false,
+        blueBan5: false,
+        redPick4: false,
+        bluePick4: false,
+        bluePick5: false,
+        redPick5: false
+    })
+
+    //WEBSOCKET GAME E DRAFT UPDATE
+    const { sendMessage } = useWebSocketDraft(idRoom, (msg) => {
+        if (msg.type === "GAME_UPDATE" && msg.game) {
+            console.log("🆕 GAME_UPDATE received", msg.game);
+            setGame(msg.game);
+        }
+
+        if (msg.type === "DRAFT_UPDATE" && msg.draft) {
+            console.log("🆕 DRAFT_UPDATE received", msg.draft);
+            setDraft(msg.draft);
+        }
+    });
+
+    //TROVA TUTTI I CAMPIONI, IL GAME E LA DRAFT.
     useEffect(() => {
         champFindAll()
             .then((response) => {
@@ -40,6 +125,14 @@ function Draft() {
         gameRoomFindId(idRoom)
             .then((response) => {
                 setGame(response.data.objResponse.game);
+            })
+            .catch(error => {
+                console.log(error.response.data.response);
+            })
+
+        draftFindRoom(idRoom)
+            .then((response) => {
+                setDraft(response.data.objResponse);
             })
             .catch(error => {
                 console.log(error.response.data.response);
@@ -59,18 +152,6 @@ function Draft() {
 
     }, [game, role]);
 
-    const { sendMessage } = useWebSocketDraft(idRoom, (msg) => {
-        if (msg.type === "GAME_UPDATE" && msg.game) {
-            console.log("🆕 GAME_UPDATE received", msg.game);
-            setGame(msg.game);
-        }
-
-        if (msg.type === "DRAFT_UPDATE" && msg.draft) {
-            console.log("🆕 DRAFT_UPDATE received", msg.draft);
-            setDraft(msg.draft);
-        }
-    });
-
     return (
 
         <div>
@@ -78,59 +159,35 @@ function Draft() {
                 <div>
                     {/* TEAMS E PHASE */}
                     <div className="row justify-content-center">
+                        {/* TEAM BLUE SIDE */}
                         <div className="col-4">
                             {draft && draft.teamBlue !== null ?
-                                <h4>{draft.teamBlue.name}</h4>
+                                <h1 className="text-primary display-6">{draft.teamBlue.name}</h1>
                                 :
-                                <h4>BLUE</h4>
+                                <h1 className="text-primary display-6">BLUE</h1>
                             }
                         </div>
+                        {/* TIMER AND SERIES */}
                         <div className="col-4">
-                            ciao ciao
+                            {/* <Timer /> */}
                         </div>
+                        {/* TEAM RED SIDE */}
                         <div className="col-4">
                             {draft && draft.teamRed !== null ?
-                                <h4>{draft.teamRed.name}</h4>
+                                <h1 className="text-danger display-6">{draft.teamRed.name}</h1>
                                 :
-                                <h4>RED</h4>
+                                <h1 className="text-danger display-6">RED</h1>
                             }
                         </div>
                     </div>
 
                     {/* PICKS E ALL CHAMPS */}
                     <div className="row">
+                        {/* PICKS BLUE SIDE */}
                         <div className="col-2">
-                            {rolesData.map((role) =>
-                                <div className="row justify-content-center">
-                                    <div
-                                        style={{
-                                            width: '85px',
-                                            height: '85px',
-                                            border: '2px solid #555',
-                                            display: 'flex',
-                                            justifyContent: 'center',
-                                            alignItems: 'center',
-                                            backgroundColor: '#333',
-                                            borderRadius: '8px',
-                                            cursor: 'pointer',
-                                            marginBottom: '10px'
-                                        }}
-
-                                    >
-                                        <img
-                                            src="/img/champions/champless.png"
-                                            alt="No Champion"
-                                            style={{
-                                                width: '67px',
-                                                height: '67px',
-                                                objectFit: 'cover',
-                                                borderRadius: '8px'
-                                            }}
-                                        />
-                                    </div>
-                                </div>
-                            )}
+                            <Picks />
                         </div>
+                        {/* CHAMPIONS AND SIDE SELECTION */}
                         <div className="col-8"
                             style={{
                                 maxHeight: '60vh'
@@ -148,126 +205,51 @@ function Draft() {
                                         Champions
                                     </div>
                                     <div className="flex-grow-1 overflow-auto p-2 text-center"
-                                         style={{
-                                             display: 'flex',
-                                             flexWrap: 'wrap',
-                                             gap: '3px',
-                                             justifyContent: 'center',
-                                             alignContent: 'flex-start'
-                                         }}
+                                        style={{
+                                            display: 'flex',
+                                            flexWrap: 'wrap',
+                                            gap: '3px',
+                                            justifyContent: 'center',
+                                            alignContent: 'flex-start'
+                                        }}
                                     >
                                         {champions && champions.length > 0 ? (
-                                            <Champions champions={champions}/>
+                                            <Champions champions={champions} />
                                         ) : null}
                                     </div>
                                 </div>
                                 :
                                 (game && game.team1 != null && game.team2 != null ?
-                                        <SideSelection game={game}/>
-                                        : <h5>Waiting for other team to join the game</h5>
+                                    <SideSelection game={game} />
+                                    : <h5>Waiting for other team to join the game</h5>
                                 )
                             }
                         </div>
+                        {/* PICKS RED SIDE */}
                         <div className="col-2">
-                            {rolesData.map((role) =>
-                                <div className="row justify-content-center">
-                                    <div
-                                        style={{
-                                            width: '85px',
-                                            height: '85px',
-                                            border: '2px solid #555',
-                                            display: 'flex',
-                                            justifyContent: 'center',
-                                            alignItems: 'center',
-                                            backgroundColor: '#333',
-                                            borderRadius: '8px',
-                                            cursor: 'pointer',
-                                            marginBottom: '10px'
-                                        }}
-
-                                    >
-                                        <img
-                                            src="/img/champions/champless.png"
-                                            alt="No Champion"
-                                            style={{
-                                                width: '67px',
-                                                height: '67px',
-                                                objectFit: 'cover',
-                                                borderRadius: '8px'
-                                            }}
-                                        />
-                                    </div>
-                                </div>
-                            )}
+                            <Picks />
                         </div>
                     </div>
 
                     {/* BANS E BUTTON */}
                     <div className="row align-items-center">
+                        {/* BLUE BANS */}
                         <div className="col-5 d-flex justify-content-center align-items-center" style={{ display: 'flex', gap: '10px' }}>
-                            {rolesData.map((role) =>
-                                <div
-                                    key={role.role}
-                                    style={{
-                                        width: '85px',
-                                        height: '85px',
-                                        border: '2px solid #555',
-                                        display: 'flex',
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                        backgroundColor: '#333',
-                                        borderRadius: '8px',
-                                        cursor: 'pointer',
-                                        marginBottom: '10px'
-                                    }}
-                                >
-                                    <img
-                                        src="/img/champions/champless.png"
-                                        alt="No Champion"
-                                        style={{
-                                            width: '67px',
-                                            height: '67px',
-                                            objectFit: 'cover',
-                                            borderRadius: '8px'
-                                        }}
-                                    />
-                                </div>
-                            )}
+                            <Bans />
                         </div>
 
                         <div className="col-2">
-                            BUTTON
+                            {draft && draft.ready === false ?
+                                <ReadyCheck draft={draft} setDraft={setDraft} />
+                                :
+                                null
+                            }
+
                         </div>
 
+                        {/* RED BANS */}
                         <div className="col-5 d-flex justify-content-center align-items-center" style={{ display: 'flex', gap: '10px' }}>
-                            {rolesData.map((role) =>
-                                <div
-                                    key={role.role}
-                                    style={{
-                                        width: '85px',
-                                        height: '85px',
-                                        border: '2px solid #555',
-                                        display: 'flex',
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                        backgroundColor: '#333',
-                                        borderRadius: '8px',
-                                        cursor: 'pointer',
-                                        marginBottom: '10px'
-                                    }}
-                                >
-                                    <img
-                                        src="/img/champions/champless.png"
-                                        alt="No Champion"
-                                        style={{
-                                            width: '67px',
-                                            height: '67px',
-                                            objectFit: 'cover',
-                                            borderRadius: '8px'
-                                        }}
-                                    />
-                                </div>
-                            )}
+                            <Bans />
                         </div>
                     </div>
                 </div>
