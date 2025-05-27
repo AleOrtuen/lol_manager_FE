@@ -1,10 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { champFindAll } from "../../service/championsService";
 import Champions from "../Champions";
 import { useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
 import { gameRoomFindId } from "../../service/gameRoomService";
-import Timer from "../Timer";
 import { useWebSocketDraft } from "../web_socket/useWebSocketGame";
 import GuestSelection from "./GuestSelection";
 import SideSelection from "./SideSelection";
@@ -12,24 +10,20 @@ import Picks from "./Picks";
 import Bans from "./Bans";
 import { draftFindRoom } from "../../service/draftService";
 import ReadyCheck from "./ReadyCheck";
+import Timer from "./Timer";
 
 
 function Draft() {
-    const teams = useSelector((state) => state.team);
     const { idRoom, role } = useParams();
     const [champions, setChampions] = useState([]);
     const [game, setGame] = useState();
     const [draft, setDraft] = useState();
+    const [selectedChampion, setSelectedChampion] = useState(null);
+    const [currentPhase, setCurrentPhase] = useState();
     const [pageLoading, setPageLoading] = useState(false);
-
-    //LISTA RUOLI E IMG
-    const rolesData = [
-        { role: 'top' },
-        { role: 'jng' },
-        { role: 'mid' },
-        { role: 'adc' },
-        { role: 'sup' }
-    ];
+    const [passiveState, setPassiveState] = useState();
+    const [yourSide, setYourSide] = useState();
+    const yourSideRef = useRef();
 
     const [blueBans, setBlueBans] = useState({
         ban1: {
@@ -75,6 +69,50 @@ function Draft() {
             locked: false
         }
     });
+    const [bluePicks, setBluePicks] = useState({
+        pick1: {
+            champ: null,
+            locked: false
+        },
+        pick2: {
+            champ: null,
+            locked: false
+        },
+        pick3: {
+            champ: null,
+            locked: false
+        },
+        pick4: {
+            champ: null,
+            locked: false
+        },
+        pick5: {
+            champ: null,
+            locked: false
+        }
+    })
+    const [redPicks, setRedPicks] = useState({
+        pick1: {
+            champ: null,
+            locked: false
+        },
+        pick2: {
+            champ: null,
+            locked: false
+        },
+        pick3: {
+            champ: null,
+            locked: false
+        },
+        pick4: {
+            champ: null,
+            locked: false
+        },
+        pick5: {
+            champ: null,
+            locked: false
+        }
+    })
 
     const [draftEvents, setDraftEvents] = useState({
         blueBan1: false,
@@ -110,9 +148,43 @@ function Draft() {
             console.log("🆕 DRAFT_UPDATE received", msg.draft);
             setDraft(msg.draft);
         }
+
+        if (msg.type === "EVENT_CHANGE" && msg.events) {
+            const nextPhase = msg.events.currentPhase;
+            console.log("🆕 EVENTS_UPDATE received", msg.events);
+            const side = yourSideRef.current;
+            setCurrentPhase(nextPhase);
+
+            if (
+                (side === 'blue' && nextPhase.startsWith("blue")) ||
+                (side === 'red' && nextPhase.startsWith("red"))
+            ) {
+                setPassiveState(false);
+            } else {
+                setPassiveState(true);
+            }
+        }
+
+        if (msg.type === "CURRENT_EVENT" && msg.events) {
+            const current = msg.events.currentPhase;
+            console.log("🆕 CURRENT_EVENT received", current);
+            setCurrentPhase(current);
+
+            const side = yourSideRef.current;
+            if (!side) {
+                console.warn("⚠️ yourSideRef ancora non inizializzato, salto setPassiveState");
+                return;
+            }
+
+            setPassiveState(
+                (side === 'blue' && current.startsWith("blue")) ||
+                    (side === 'red' && current.startsWith("red")) ? false : true
+            );
+        }
+
     });
 
-    //TROVA TUTTI I CAMPIONI, IL GAME E LA DRAFT.
+    //FIND ALL CHAMPS, GAME AND DRAFT
     useEffect(() => {
         champFindAll()
             .then((response) => {
@@ -139,6 +211,7 @@ function Draft() {
             })
     }, []);
 
+    // VERIFY IF THE GAME EXIST BEFORE LOAD THE PAGE
     useEffect(() => {
         if (!game) return;
 
@@ -151,6 +224,50 @@ function Draft() {
         }
 
     }, [game, role]);
+
+    // CHECK WHAT SIDE THE TEAM IS PLAYING
+    useEffect(() => {
+        if (!draft || !game) return;
+        const yourTeam = role === "player1" ? game.team1 : game.team2;
+        const side = yourTeam?.idTeam === draft?.teamBlue?.idTeam ? "blue" : "red";
+        yourSideRef.current = side;
+        setYourSide(side);
+    }, [draft, role]);
+
+    // FIRST EVENT START AFTER READY CHECK
+    useEffect(() => {
+        if (draft?.ready && role === "player1") {
+            sendMessage({
+                idRoom,
+                type: "EVENT",
+                sender: role
+            });
+        }
+    }, [draft?.ready]);
+
+    // RETRIEVE CURRENT EVENT ON UPDATE
+    // useEffect(() => {
+    //     console.log("ECCOMI!!!")
+
+    //     sendMessage({
+    //         idRoom,
+    //         type: "CURRENT_EVENT_REQUEST",
+    //         sender: role
+    //     });
+    //     console.log("ho inviato");
+    // }, [idRoom]);
+
+    const consoleLogs = () => {
+        // console.log(passiveState);
+        // console.log(currentPhase);
+        // console.log(yourSide);
+        // console.log(draft);
+        sendMessage({
+            idRoom,
+            type: "CURRENT_EVENT_REQUEST",
+            sender: role
+        });
+    };
 
     return (
 
@@ -169,7 +286,11 @@ function Draft() {
                         </div>
                         {/* TIMER AND SERIES */}
                         <div className="col-4">
-                            {/* <Timer /> */}
+                            {draft && draft.ready ?
+                                <Timer phase={draftEvents} />
+                                : null
+                            }
+                            <button onClick={consoleLogs}>LOGS</button>
                         </div>
                         {/* TEAM RED SIDE */}
                         <div className="col-4">
@@ -214,7 +335,7 @@ function Draft() {
                                         }}
                                     >
                                         {champions && champions.length > 0 ? (
-                                            <Champions champions={champions} />
+                                            <Champions champions={champions} onSelectChampion={(champ) => setSelectedChampion(champ)} />
                                         ) : null}
                                     </div>
                                 </div>
@@ -235,16 +356,19 @@ function Draft() {
                     <div className="row align-items-center">
                         {/* BLUE BANS */}
                         <div className="col-5 d-flex justify-content-center align-items-center" style={{ display: 'flex', gap: '10px' }}>
-                            <Bans />
+                            <Bans
+                                selectedChampion={selectedChampion}
+                                lockedChampions={blueBans}
+                                currentPhase={currentPhase}
+                            />
                         </div>
 
                         <div className="col-2">
                             {draft && draft.ready === false ?
                                 <ReadyCheck draft={draft} setDraft={setDraft} />
                                 :
-                                null
+                                <button className="btn btn-secondary btn-lg">Lock</button>
                             }
-
                         </div>
 
                         {/* RED BANS */}

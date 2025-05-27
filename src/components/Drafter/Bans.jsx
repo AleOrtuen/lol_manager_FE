@@ -1,19 +1,36 @@
-function Bans() {
-    //LISTA RUOLI E IMG
-    const rolesData = [
-        { role: 'top' },
-        { role: 'jng' },
-        { role: 'mid' },
-        { role: 'adc' },
-        { role: 'sup' }
-    ];
+function Bans({ selectedChampion, lockedChampions = {}, currentPhase }) {
+
+    const phaseToSlot = {
+        blueBan1: 'ban1',
+        blueBan2: 'ban2',
+        blueBan3: 'ban3',
+        blueBan4: 'ban4',
+        blueBan5: 'ban5',
+        redBan1: 'ban1',
+        redBan2: 'ban2',
+        redBan3: 'ban3',
+        redBan4: 'ban4',
+        redBan5: 'ban5'
+    };
+
+    const slotOrder = ['ban1', 'ban2', 'ban3', 'ban4', 'ban5'];
+    const activeSlot = phaseToSlot[currentPhase];
 
     return (
         <>
-            {rolesData.map((role) =>
-                <div
-                    key={role.role}
-                    style={{
+            {slotOrder.map((slot) => {
+                const champ = lockedChampions[slot]?.champ;
+
+                const isActive = slot === activeSlot;
+
+                const champToShow = champ
+                    ? champ
+                    : isActive && selectedChampion
+                        ? selectedChampion
+                        : null;
+
+                return (
+                    <div key={slot} style={{
                         width: '85px',
                         height: '85px',
                         border: '2px solid #555',
@@ -24,22 +41,21 @@ function Bans() {
                         borderRadius: '8px',
                         cursor: 'pointer',
                         marginBottom: '10px'
-                    }}
-                >
-                    <img
-                        src="/img/champions/champless.png"
-                        alt="No Champion"
-                        style={{
-                            width: '67px',
-                            height: '67px',
-                            objectFit: 'cover',
-                            borderRadius: '8px'
-                        }}
-                    />
-                </div>
-            )}
+                    }}>
+                        <img
+                            src={
+                                champToShow
+                                    ? `/img/champions/${champToShow.img || 'champless.png'}`
+                                    : '/img/champions/champless.png'
+                            }
+                            alt={champToShow?.name || 'No Champion'}
+                            style={{ width: '67px', height: '67px', borderRadius: '8px' }}
+                        />
+                    </div>
+                );
+            })}
         </>
-    )
+    );
 }
 
 export default Bans

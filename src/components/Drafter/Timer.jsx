@@ -1,13 +1,14 @@
 import { useEffect, useState, useRef } from 'react';
-import { useWebSocketDraft } from './web_socket/useWebSocketGame';
+import { useWebSocketDraft } from '../web_socket/useWebSocketGame';
+import { useParams } from 'react-router-dom';
 
-function Timer({ idRoom, role }) {
-  const [messages, setMessages] = useState([]);
+
+function Timer({draftEvents}) {
   const [timeLeft, setTimeLeft] = useState(null);
   const timerRef = useRef(null);
+  const { idRoom, role } = useParams();
 
   const { sendMessage } = useWebSocketDraft(idRoom, (msg) => {
-    setMessages((prev) => [...prev, msg]);
 
     if (msg.type === "TIMER_START" && msg.startTime) {
       const endTime = msg.startTime + 30000;
@@ -28,6 +29,14 @@ function Timer({ idRoom, role }) {
   useEffect(() => {
     sendMessage({
       idRoom,
+      type: "TIMER_REQUEST",
+      sender: role
+    });
+  }, [draftEvents]);
+
+  useEffect(() => {
+    sendMessage({
+      idRoom,
       type: "TIMER_STATUS_REQUEST",
       sender: role
     });
@@ -44,7 +53,7 @@ function Timer({ idRoom, role }) {
   return (
     <div>
       <h1>{timeLeft !== null ? `${timeLeft}` : "—"}</h1>
-      <button className="btn btn-outline-secondary btn-md" onClick={handleStartTimer}>Avvia Timer</button>
+      {/* <button className="btn btn-outline-secondary btn-md" onClick={handleStartTimer}>Avvia Timer</button> */}
     </div>
   );
 }

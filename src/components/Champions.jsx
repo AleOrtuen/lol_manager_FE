@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-function Champions({champions}) {
+function Champions({champions, onSelectChampion }) {
   const [imagesMap, setImagesMap] = useState({});
 
   useEffect(() => {
@@ -44,7 +44,9 @@ function Champions({champions}) {
               style={{
                 minWidth: '67px',
                 textAlign: 'center',
+                cursor: 'pointer',
               }}
+              onClick={() => onSelectChampion(champion)}
             >
               {/* Verifica se l'immagine è disponibile basandosi sul nome */}
               {imagesMap[champion.name.toLowerCase()] ? (
@@ -79,7 +81,6 @@ function Champions({champions}) {
                   />
                 ) : null
               )}
-              {/* <p>{champion.name}</p> */}
             </div>
           ))}
         </div>
