@@ -1,9 +1,10 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import SockJS from 'sockjs-client';
 import { Client } from '@stomp/stompjs';
 
 export function useWebSocketDraft(idRoom, onMessage) {
   const stompClientRef = useRef(null);
+  const [connected, setConnected] = useState(false);
 
   useEffect(() => {
     if (!idRoom) return;
@@ -16,6 +17,7 @@ export function useWebSocketDraft(idRoom, onMessage) {
 
     stompClient.onConnect = () => {
       console.log(`✅ Connected to WebSocket room ${idRoom}`);
+      setConnected(true);
       stompClient.subscribe(`/topic/game/${idRoom}`, (message) => {
         const body = JSON.parse(message.body);
         console.log("📩 Received:", body);
@@ -34,6 +36,7 @@ export function useWebSocketDraft(idRoom, onMessage) {
     return () => {
       if (stompClientRef.current) {
         stompClientRef.current.deactivate();
+        setConnected(false);
         console.log("❌ Disconnected from WebSocket");
       }
     };
@@ -48,7 +51,7 @@ export function useWebSocketDraft(idRoom, onMessage) {
     }
   };
 
-  return { sendMessage };
+  return { sendMessage, connected };
 }
 
 

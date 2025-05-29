@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { champFindAll } from "../../service/championsService";
 import Champions from "../Champions";
 import { useParams } from "react-router-dom";
@@ -138,7 +138,7 @@ function Draft() {
     })
 
     //WEBSOCKET GAME E DRAFT UPDATE
-    const { sendMessage } = useWebSocketDraft(idRoom, (msg) => {
+    const onWebSocketMessage = useCallback((msg) => {
         if (msg.type === "GAME_UPDATE" && msg.game) {
             console.log("🆕 GAME_UPDATE received", msg.game);
             setGame(msg.game);
@@ -155,14 +155,10 @@ function Draft() {
             const side = yourSideRef.current;
             setCurrentPhase(nextPhase);
 
-            if (
+            setPassiveState(
                 (side === 'blue' && nextPhase.startsWith("blue")) ||
-                (side === 'red' && nextPhase.startsWith("red"))
-            ) {
-                setPassiveState(false);
-            } else {
-                setPassiveState(true);
-            }
+                    (side === 'red' && nextPhase.startsWith("red")) ? false : true
+            );
         }
 
         if (msg.type === "CURRENT_EVENT" && msg.events) {
@@ -181,8 +177,9 @@ function Draft() {
                     (side === 'red' && current.startsWith("red")) ? false : true
             );
         }
+    }, [setGame, setDraft, setCurrentPhase, setPassiveState]);
 
-    });
+    const { sendMessage, connected } = useWebSocketDraft(idRoom, onWebSocketMessage);
 
     //FIND ALL CHAMPS, GAME AND DRAFT
     useEffect(() => {
@@ -246,27 +243,19 @@ function Draft() {
     }, [draft?.ready]);
 
     // RETRIEVE CURRENT EVENT ON UPDATE
-    // useEffect(() => {
-    //     console.log("ECCOMI!!!")
-
-    //     sendMessage({
-    //         idRoom,
-    //         type: "CURRENT_EVENT_REQUEST",
-    //         sender: role
-    //     });
-    //     console.log("ho inviato");
-    // }, [idRoom]);
-
-    const consoleLogs = () => {
-        // console.log(passiveState);
-        // console.log(currentPhase);
-        // console.log(yourSide);
-        // console.log(draft);
+    useEffect(() => {
         sendMessage({
             idRoom,
             type: "CURRENT_EVENT_REQUEST",
             sender: role
         });
+    }, [connected]);
+
+    const consoleLogs = () => {
+        console.log(passiveState);
+        console.log(currentPhase);
+        console.log(yourSide);
+        console.log(draft);
     };
 
     return (
@@ -287,7 +276,7 @@ function Draft() {
                         {/* TIMER AND SERIES */}
                         <div className="col-4">
                             {draft && draft.ready ?
-                                <Timer phase={draftEvents} />
+                                <Timer currentPhase={currentPhase} />
                                 : null
                             }
                             <button onClick={consoleLogs}>LOGS</button>
@@ -367,13 +356,19 @@ function Draft() {
                             {draft && draft.ready === false ?
                                 <ReadyCheck draft={draft} setDraft={setDraft} />
                                 :
-                                <button className="btn btn-secondary btn-lg">Lock</button>
+                                <button className="btn btn-secondary btn-lg" disabled={passiveState}>
+                                    Lock
+                                </button>
                             }
                         </div>
 
                         {/* RED BANS */}
                         <div className="col-5 d-flex justify-content-center align-items-center" style={{ display: 'flex', gap: '10px' }}>
-                            <Bans />
+                            <Bans
+                                selectedChampion={selectedChampion}
+                                lockedChampions={redBans}
+                                currentPhase={currentPhase}
+                            />
                         </div>
                     </div>
                 </div>

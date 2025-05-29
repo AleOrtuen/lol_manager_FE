@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom"
 import { useWebSocketDraft } from "../web_socket/useWebSocketGame";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 function ReadyCheck({ draft, setDraft }) {
 
@@ -8,7 +8,7 @@ function ReadyCheck({ draft, setDraft }) {
     const [checked, setChecked] = useState(false);
 
     //WEBSOCKET GAME E DRAFT UPDATE
-    const { sendMessage } = useWebSocketDraft(idRoom, (msg) => {
+    const onWebSocketMessage = useCallback((msg) => {
         if (msg.type === msg.sender + " READY" && msg.type) {
             if (msg.sender === role) {
                 setChecked(true);
@@ -20,7 +20,9 @@ function ReadyCheck({ draft, setDraft }) {
             console.log(msg.type);
             setDraft(msg.draft);
         }
-    });
+    }, [setChecked, setDraft]);
+
+    const { sendMessage, connected } = useWebSocketDraft(idRoom, onWebSocketMessage);
 
     const handleReadyCheck = () => {
         sendMessage({
@@ -39,7 +41,7 @@ function ReadyCheck({ draft, setDraft }) {
             >
                 {checked ? "Ready" : "Ready"}
             </button>
-            <br/>
+            <br />
             {checked ? "Waiting opponent.." : null}
         </div>
     )
