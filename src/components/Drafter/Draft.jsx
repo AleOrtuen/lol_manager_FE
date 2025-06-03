@@ -19,100 +19,25 @@ function Draft() {
     const [game, setGame] = useState();
     const [draft, setDraft] = useState();
     const [selectedChampion, setSelectedChampion] = useState(null);
+    const [remoteSelectedChampion, setRemoteSelectedChampion] = useState(null);
     const [currentPhase, setCurrentPhase] = useState();
     const [pageLoading, setPageLoading] = useState(false);
     const [passiveState, setPassiveState] = useState();
     const [yourSide, setYourSide] = useState();
     const yourSideRef = useRef();
 
-    const [blueBans, setBlueBans] = useState({
-        ban1: {
-            champ: null,
-            locked: false
-        },
-        ban2: {
-            champ: null,
-            locked: false
-        },
-        ban3: {
-            champ: null,
-            locked: false
-        },
-        ban4: {
-            champ: null,
-            locked: false
-        },
-        ban5: {
-            champ: null,
-            locked: false
-        }
-    });
-    const [redBans, setRedBans] = useState({
-        ban1: {
-            champ: null,
-            locked: false
-        },
-        ban2: {
-            champ: null,
-            locked: false
-        },
-        ban3: {
-            champ: null,
-            locked: false
-        },
-        ban4: {
-            champ: null,
-            locked: false
-        },
-        ban5: {
-            champ: null,
-            locked: false
-        }
-    });
-    const [bluePicks, setBluePicks] = useState({
-        pick1: {
-            champ: null,
-            locked: false
-        },
-        pick2: {
-            champ: null,
-            locked: false
-        },
-        pick3: {
-            champ: null,
-            locked: false
-        },
-        pick4: {
-            champ: null,
-            locked: false
-        },
-        pick5: {
-            champ: null,
-            locked: false
-        }
-    })
-    const [redPicks, setRedPicks] = useState({
-        pick1: {
-            champ: null,
-            locked: false
-        },
-        pick2: {
-            champ: null,
-            locked: false
-        },
-        pick3: {
-            champ: null,
-            locked: false
-        },
-        pick4: {
-            champ: null,
-            locked: false
-        },
-        pick5: {
-            champ: null,
-            locked: false
-        }
-    })
+    const [blueBans, setBlueBans] = useState(
+        Array(5).fill({ champ: null, locked: false })
+    );
+    const [redBans, setRedBans] = useState(
+        Array(5).fill({ champ: null, locked: false })
+    );
+    const [bluePicks, setBluePicks] = useState(
+        Array(5).fill({ champ: null, locked: false })
+    );
+    const [redPicks, setRedPicks] = useState(
+        Array(5).fill({ champ: null, locked: false })
+    );
 
     const [draftEvents, setDraftEvents] = useState({
         blueBan1: false,
@@ -137,7 +62,7 @@ function Draft() {
         redPick5: false
     })
 
-    //WEBSOCKET GAME E DRAFT UPDATE
+    //WEBSOCKET EVENTS
     const onWebSocketMessage = useCallback((msg) => {
         if (msg.type === "GAME_UPDATE" && msg.game) {
             console.log("🆕 GAME_UPDATE received", msg.game);
@@ -177,7 +102,12 @@ function Draft() {
                     (side === 'red' && current.startsWith("red")) ? false : true
             );
         }
-    }, [setGame, setDraft, setCurrentPhase, setPassiveState]);
+
+        if (msg.type === "SELECTED_CHAMP" && msg.champion && role !== msg.sender) {
+            console.log("🆕 SELECTED_CHAMP received", msg.champion);
+            setRemoteSelectedChampion(msg.champion);
+        }
+    }, [setGame, setDraft, setCurrentPhase, setPassiveState, setRemoteSelectedChampion]);
 
     const { sendMessage, connected } = useWebSocketDraft(idRoom, onWebSocketMessage);
 
@@ -250,6 +180,31 @@ function Draft() {
             sender: role
         });
     }, [connected]);
+
+    // SEND INFO ABOUT PRESELECTED PICK
+    useEffect(() => {
+        if (!passiveState && selectedChampion) {
+            sendMessage({
+                idRoom,
+                type: "PICK",
+                sender: role,
+                champion: selectedChampion
+            });
+        }
+    }, [selectedChampion, passiveState]);
+
+    const lockChampion = () => {
+        if (!passiveState) {
+            sendMessage({
+                idRoom,
+                type: "LOCK",
+                sender: role,
+                events: {
+                    currentPhase: currentPhase
+                }
+            });
+        }
+    }
 
     const consoleLogs = () => {
         console.log(passiveState);
@@ -346,7 +301,11 @@ function Draft() {
                         {/* BLUE BANS */}
                         <div className="col-5 d-flex justify-content-center align-items-center" style={{ display: 'flex', gap: '10px' }}>
                             <Bans
-                                selectedChampion={selectedChampion}
+                                selectedChampion={
+                                    currentPhase?.startsWith("blueBan")
+                                        ? (passiveState ? remoteSelectedChampion : selectedChampion)
+                                        : undefined
+                                }
                                 lockedChampions={blueBans}
                                 currentPhase={currentPhase}
                             />
@@ -356,7 +315,11 @@ function Draft() {
                             {draft && draft.ready === false ?
                                 <ReadyCheck draft={draft} setDraft={setDraft} />
                                 :
-                                <button className="btn btn-secondary btn-lg" disabled={passiveState}>
+                                <button 
+                                    className="btn btn-secondary btn-lg" 
+                                    disabled={passiveState}
+                                    onClick={lockChampion}
+                                >
                                     Lock
                                 </button>
                             }
@@ -365,7 +328,11 @@ function Draft() {
                         {/* RED BANS */}
                         <div className="col-5 d-flex justify-content-center align-items-center" style={{ display: 'flex', gap: '10px' }}>
                             <Bans
-                                selectedChampion={selectedChampion}
+                                selectedChampion={
+                                    currentPhase?.startsWith("redBan")
+                                        ? (passiveState ? remoteSelectedChampion : selectedChampion)
+                                        : undefined
+                                }
                                 lockedChampions={redBans}
                                 currentPhase={currentPhase}
                             />
