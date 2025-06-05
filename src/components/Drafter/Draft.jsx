@@ -79,7 +79,8 @@ function Draft() {
             console.log("🆕 EVENTS_UPDATE received", msg.events);
             const side = yourSideRef.current;
             setCurrentPhase(nextPhase);
-
+            setSelectedChampion(null);
+            setRemoteSelectedChampion(null);
             setPassiveState(
                 (side === 'blue' && nextPhase.startsWith("blue")) ||
                     (side === 'red' && nextPhase.startsWith("red")) ? false : true
@@ -106,6 +107,42 @@ function Draft() {
         if (msg.type === "SELECTED_CHAMP" && msg.champion && role !== msg.sender) {
             console.log("🆕 SELECTED_CHAMP received", msg.champion);
             setRemoteSelectedChampion(msg.champion);
+        }
+
+        if (msg.type === "CHAMP_BAN" && msg.champion && msg.side) {
+            console.log("🆕 CHAMP_BAN received", msg.champion);
+            const setBans = msg.side === "blue" ? setBlueBans : setRedBans;
+
+            const match = msg.events.currentPhase?.match(/Ban(\d)/i);
+            const index = match ? parseInt(match[1], 10) - 1 : -1;
+
+            if (index >= 0 && index < 5) {
+                setBans(prev => {
+                    const updated = [...prev];
+                    updated[index] = { champ: msg.champion, locked: true };
+                    return updated;
+                });
+            } else {
+                console.warn("⚠️ Indice di ban non valido:", msg.phase);
+            }
+        }
+
+        if (msg.type === "CHAMP_PICK" && msg.champion && msg.side) {
+            console.log("🆕 CHAMP_PICK received", msg.champion);
+            const setPicks = msg.side === "blue" ? setBluePicks : setRedPicks;
+
+            const match = msg.events.currentPhase?.match(/Pick(\d)/i);
+            const index = match ? parseInt(match[1], 10) - 1 : -1;
+
+            if (index >= 0 && index < 5) {
+                setPicks(prev => {
+                    const updated = [...prev];
+                    updated[index] = { champ: msg.champion, locked: true };
+                    return updated;
+                });
+            } else {
+                console.warn("⚠️ Indice di pick non valido:", msg.phase);
+            }
         }
     }, [setGame, setDraft, setCurrentPhase, setPassiveState, setRemoteSelectedChampion]);
 
@@ -193,6 +230,7 @@ function Draft() {
         }
     }, [selectedChampion, passiveState]);
 
+    // METHOD TO LOCK CHAMPS(BANS AND PICKS)
     const lockChampion = () => {
         if (!passiveState) {
             sendMessage({
@@ -207,10 +245,12 @@ function Draft() {
     }
 
     const consoleLogs = () => {
-        console.log(passiveState);
+        // console.log(passiveState);
         console.log(currentPhase);
-        console.log(yourSide);
-        console.log(draft);
+        // console.log(yourSide);
+        // console.log(draft);
+        console.log(blueBans);
+        console.log(redBans);
     };
 
     return (
@@ -250,7 +290,15 @@ function Draft() {
                     <div className="row">
                         {/* PICKS BLUE SIDE */}
                         <div className="col-2">
-                            <Picks />
+                            <Picks
+                                selectedChampion={
+                                    currentPhase?.startsWith("bluePick")
+                                        ? (passiveState ? remoteSelectedChampion : selectedChampion)
+                                        : undefined
+                                }
+                                lockedChampions={bluePicks}
+                                currentPhase={currentPhase}
+                            />
                         </div>
                         {/* CHAMPIONS AND SIDE SELECTION */}
                         <div className="col-8"
@@ -292,7 +340,15 @@ function Draft() {
                         </div>
                         {/* PICKS RED SIDE */}
                         <div className="col-2">
-                            <Picks />
+                            <Picks
+                                selectedChampion={
+                                    currentPhase?.startsWith("redPick")
+                                        ? (passiveState ? remoteSelectedChampion : selectedChampion)
+                                        : undefined
+                                }
+                                lockedChampions={redPicks}
+                                currentPhase={currentPhase}
+                            />
                         </div>
                     </div>
 
@@ -315,8 +371,8 @@ function Draft() {
                             {draft && draft.ready === false ?
                                 <ReadyCheck draft={draft} setDraft={setDraft} />
                                 :
-                                <button 
-                                    className="btn btn-secondary btn-lg" 
+                                <button
+                                    className="btn btn-secondary btn-lg"
                                     disabled={passiveState}
                                     onClick={lockChampion}
                                 >

@@ -44,7 +44,6 @@ function Login() {
         <>
             <Logo />
             <div>
-                <h1 className="display-6">TEAM MANAGER</h1>
                 <br/>
                 <div className="row justify-content-center">
                     <div className="col-10 col-lg-5 col-md-6 col-sm-8">

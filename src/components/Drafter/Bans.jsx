@@ -1,36 +1,31 @@
-function Bans({ selectedChampion, lockedChampions = {}, currentPhase }) {
-
-    const phaseToSlot = {
-        blueBan1: 'ban1',
-        blueBan2: 'ban2',
-        blueBan3: 'ban3',
-        blueBan4: 'ban4',
-        blueBan5: 'ban5',
-        redBan1: 'ban1',
-        redBan2: 'ban2',
-        redBan3: 'ban3',
-        redBan4: 'ban4',
-        redBan5: 'ban5'
+function Bans({ selectedChampion, lockedChampions = [], currentPhase }) {
+    const phaseToIndex = {
+        blueBan1: 0,
+        blueBan2: 1,
+        blueBan3: 2,
+        blueBan4: 3,
+        blueBan5: 4,
+        redBan1: 0,
+        redBan2: 1,
+        redBan3: 2,
+        redBan4: 3,
+        redBan5: 4
     };
 
-    const slotOrder = ['ban1', 'ban2', 'ban3', 'ban4', 'ban5'];
-    const activeSlot = phaseToSlot[currentPhase];
+    const activeIndex = phaseToIndex[currentPhase];
 
     return (
         <>
-            {slotOrder.map((slot) => {
-                const champ = lockedChampions[slot]?.champ;
-
-                const isActive = slot === activeSlot;
-
-                const champToShow = champ
-                    ? champ
+            {lockedChampions.map((ban, index) => {
+                const isActive = index === activeIndex;
+                const champToShow = ban.champ
+                    ? ban.champ
                     : isActive && selectedChampion
                         ? selectedChampion
                         : null;
 
                 return (
-                    <div key={slot} style={{
+                    <div key={index} style={{
                         width: '85px',
                         height: '85px',
                         border: '2px solid #555',
@@ -57,5 +52,6 @@ function Bans({ selectedChampion, lockedChampions = {}, currentPhase }) {
         </>
     );
 }
+
 
 export default Bans

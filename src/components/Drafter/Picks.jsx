@@ -1,57 +1,69 @@
-import Champions from "../Champions";
+function Picks({ selectedChampion, lockedChampions = [], currentPhase }) {
+    const phaseToIndex = {
+        bluePick1: 0,
+        bluePick2: 1,
+        bluePick3: 2,
+        bluePick4: 3,
+        bluePick5: 4,
+        redPick1: 0,
+        redPick2: 1,
+        redPick3: 2,
+        redPick4: 3,
+        redPick5: 4
+    };
 
-function Picks({champions = []}) {
-
-
-    //LISTA RUOLI E IMG
-    const rolesData = [
-        { role: 'top' },
-        { role: 'jng' },
-        { role: 'mid' },
-        { role: 'adc' },
-        { role: 'sup' }
-    ];
+    const activeIndex = phaseToIndex[currentPhase];
 
     return (
-        <>
-            {rolesData.map((_, index) => {
-                const champion = champions[index];
+        <div 
+            style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center'
+            }}
+        >
+            {lockedChampions.map((pick, index) => {
+                const isActive = index === activeIndex;
+                const champToShow = pick.champ
+                    ? pick.champ
+                    : isActive && selectedChampion
+                        ? selectedChampion
+                        : null;
 
                 return (
-                    <div className="row justify-content-center" key={index}>
-                        <div
-                            style={{
-                                width: '85px',
-                                height: '85px',
-                                border: '2px solid #555',
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                backgroundColor: '#333',
+                    <div 
+                        key={index} 
+                        style={{
+                            width: '85px',
+                            height: '85px',
+                            border: '2px solid #555',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            backgroundColor: '#333',
+                            borderRadius: '8px',
+                            cursor: 'pointer',
+                            marginBottom: '10px'
+                        }}
+                    >
+                        <img
+                            src={
+                                champToShow
+                                    ? `/img/champions/${champToShow.img || 'champless.png'}`
+                                    : '/img/champions/champless.png'
+                            }
+                            alt={champToShow?.name || 'No Champion'}
+                            style={{ 
+                                width: '67px', 
+                                height: '67px', 
                                 borderRadius: '8px',
-                                cursor: 'pointer',
-                                marginBottom: '10px'
+                                objectFit: 'cover' 
                             }}
-                        >
-                            {champion ? (
-                                <Champions />
-                            ) : (
-                                <img
-                                    src="/img/champions/champless.png"
-                                    alt="No Champion"
-                                    style={{
-                                        width: '67px',
-                                        height: '67px',
-                                        objectFit: 'cover',
-                                        borderRadius: '8px'
-                                    }}
-                                />
-                            )}
-                        </div>
+                        />
                     </div>
                 );
             })}
-        </>
+        </div>
     );
 }
 

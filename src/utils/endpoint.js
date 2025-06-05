@@ -103,3 +103,25 @@ export const DRAFT_FIND_ID = DRAFT_PATH + 'find-id/';
 export const DRAFT_FIND_TEAM = DRAFT_PATH + 'find-team/';
 export const DRAFT_FIND_GAME = DRAFT_PATH + 'find-game/';
 export const DRAFT_FIND_ROOM = DRAFT_PATH + 'find-room/';
+
+//ENDPOINT PICKS
+const PICK_PATH = BASE_PATH + 'pick/';
+export const PICK_SAVE = PICK_PATH + 'save';
+export const PICK_UPDATE = PICK_PATH + 'update';
+export const PICK_DELETE = PICK_PATH + 'delete/';
+export const PICK_FIND_ALL = PICK_PATH + 'find-all';
+export const PICK_FIND_ID = PICK_PATH + 'find-id/';
+export const PICK_FIND_DRAFT = PICK_PATH + 'find-draft/';
+export const PICK_FIND_SIDE = PICK_PATH + 'find-side/';
+export const PICK_FIND_CHAMP = PICK_PATH + 'find-champ/';
+
+//ENDPOINT BANS
+const BAN_PATH = BASE_PATH + 'ban/';
+export const BAN_SAVE = BAN_PATH + 'save';
+export const BAN_UPDATE = BAN_PATH + 'update';
+export const BAN_DELETE = BAN_PATH + 'delete/';
+export const BAN_FIND_ALL = BAN_PATH + 'find-all';
+export const BAN_FIND_ID = BAN_PATH + 'find-id/';
+export const BAN_FIND_DRAFT = BAN_PATH + 'find-draft/';
+export const BAN_FIND_SIDE = BAN_PATH + 'find-side/';
+export const BAN_FIND_CHAMP = BAN_PATH + 'find-champ/';

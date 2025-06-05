@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { LOGIN, TEAM, HOME, COMP_BUILDER, TEAM_COMP, ACCOUNT, POOL, TEAM_FORM, TEAMS } from "../utils/routes";
 import { resetTeam, setTeam } from "../store/slice/teamSlice";
-import miniLogo from '../img/mini_logo.png';
+import miniLogo from '../img/mini.png';
 import topIco from '../img/roles/top_ico.png';
 import jngIco from '../img/roles/jng_ico.png';
 import midIco from '../img/roles/mid_ico.png';
@@ -76,7 +76,7 @@ function Navbar() {
                 <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
                     <div className="container px-4">
                         <a className="navbar-brand" onClick={() => navigate(HOME)}>
-                            <img src={miniLogo} style={{ width: '8%', height: '8%', display: 'block' }} />
+                            <img src={miniLogo} style={{ width: '23%', height: '23%', display: 'block' }} />
                         </a>
                         <button
                             className="navbar-toggler"
