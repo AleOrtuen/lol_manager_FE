@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { champFindAll } from "../../service/championsService";
 import Champions from "../Champions";
 import { useParams } from "react-router-dom";
@@ -11,6 +11,8 @@ import Bans from "./Bans";
 import { draftFindRoom } from "../../service/draftService";
 import ReadyCheck from "./ReadyCheck";
 import Timer from "./Timer";
+import { banFindByDraft } from "../../service/banService";
+import { pickFindByDraft } from "../../service/pickService";
 
 
 function Draft() {
@@ -38,29 +40,6 @@ function Draft() {
     const [redPicks, setRedPicks] = useState(
         Array(5).fill({ champ: null, locked: false })
     );
-
-    const [draftEvents, setDraftEvents] = useState({
-        blueBan1: false,
-        redBan1: false,
-        blueBan2: false,
-        redBan2: false,
-        blueBan3: false,
-        redBan3: false,
-        bluePick1: false,
-        redPick1: false,
-        redPick2: false,
-        bluePick2: false,
-        bluePick3: false,
-        redPick3: false,
-        redBan4: false,
-        blueBan4: false,
-        redBan5: false,
-        blueBan5: false,
-        redPick4: false,
-        bluePick4: false,
-        bluePick5: false,
-        redPick5: false
-    })
 
     //WEBSOCKET EVENTS
     const onWebSocketMessage = useCallback((msg) => {
@@ -189,13 +168,58 @@ function Draft() {
 
     }, [game, role]);
 
-    // CHECK WHAT SIDE THE TEAM IS PLAYING
+    // CHECK WHAT SIDE THE TEAM IS PLAYING AND RETRIEVE PICKS AND BANS
     useEffect(() => {
         if (!draft || !game) return;
         const yourTeam = role === "player1" ? game.team1 : game.team2;
         const side = yourTeam?.idTeam === draft?.teamBlue?.idTeam ? "blue" : "red";
         yourSideRef.current = side;
         setYourSide(side);
+
+        banFindByDraft(draft.idDraft)
+            .then((response) => {
+                const bans = response.data.objResponse;
+
+                const blue = bans.filter(b => b.side === 'blue');
+                const red = bans.filter(b => b.side === 'red');
+
+                const blueMapped = Array(5).fill({ champ: null, locked: false }).map((_, i) => {
+                    return blue[i] ? { champ: blue[i].ban, locked: true } : { champ: null, locked: false };
+                });
+
+                const redMapped = Array(5).fill({ champ: null, locked: false }).map((_, i) => {
+                    return red[i] ? { champ: red[i].ban, locked: true } : { champ: null, locked: false };
+                });
+
+                setBlueBans(blueMapped);
+                setRedBans(redMapped);
+            })
+            .catch(error => {
+                console.log(error.response?.data?.response || error.message);
+            });
+
+        pickFindByDraft(draft.idDraft)
+            .then((response) => {
+                const picks = response.data.objResponse;
+
+                const blue = picks.filter(b => b.side === 'blue');
+                const red = picks.filter(b => b.side === 'red');
+
+                const blueMapped = Array(5).fill({ champ: null, locked: false }).map((_, i) => {
+                    return blue[i] ? { champ: blue[i].pick, locked: true } : { champ: null, locked: false };
+                });
+
+                const redMapped = Array(5).fill({ champ: null, locked: false }).map((_, i) => {
+                    return red[i] ? { champ: red[i].pick, locked: true } : { champ: null, locked: false };
+                });
+
+                setBluePicks(blueMapped);
+                setRedPicks(redMapped);
+            })
+            .catch(error => {
+                console.log(error.response?.data?.response || error.message);
+            });
+
     }, [draft, role]);
 
     // FIRST EVENT START AFTER READY CHECK
@@ -229,6 +253,14 @@ function Draft() {
             });
         }
     }, [selectedChampion, passiveState]);
+
+    const lockedChampions = useMemo(() => {
+        const allLockedIds = [...blueBans, ...redBans, ...bluePicks, ...redPicks]
+            .filter(slot => slot.champ !== null)
+            .map(slot => typeof slot.champ === 'object' ? slot.champ.idChamp : slot.champ);
+
+        return new Set(allLockedIds);
+    }, [blueBans, redBans, bluePicks, redPicks]);
 
     // METHOD TO LOCK CHAMPS(BANS AND PICKS)
     const lockChampion = () => {
@@ -291,6 +323,7 @@ function Draft() {
                         {/* PICKS BLUE SIDE */}
                         <div className="col-2">
                             <Picks
+                                side="blue"
                                 selectedChampion={
                                     currentPhase?.startsWith("bluePick")
                                         ? (passiveState ? remoteSelectedChampion : selectedChampion)
@@ -327,7 +360,7 @@ function Draft() {
                                         }}
                                     >
                                         {champions && champions.length > 0 ? (
-                                            <Champions champions={champions} onSelectChampion={(champ) => setSelectedChampion(champ)} />
+                                            <Champions champions={champions} onSelectChampion={(champ) => setSelectedChampion(champ)} lockedChampions={lockedChampions}/>
                                         ) : null}
                                     </div>
                                 </div>
@@ -341,6 +374,7 @@ function Draft() {
                         {/* PICKS RED SIDE */}
                         <div className="col-2">
                             <Picks
+                                side="red"
                                 selectedChampion={
                                     currentPhase?.startsWith("redPick")
                                         ? (passiveState ? remoteSelectedChampion : selectedChampion)
@@ -357,6 +391,7 @@ function Draft() {
                         {/* BLUE BANS */}
                         <div className="col-5 d-flex justify-content-center align-items-center" style={{ display: 'flex', gap: '10px' }}>
                             <Bans
+                                side="blue"
                                 selectedChampion={
                                     currentPhase?.startsWith("blueBan")
                                         ? (passiveState ? remoteSelectedChampion : selectedChampion)
@@ -384,6 +419,7 @@ function Draft() {
                         {/* RED BANS */}
                         <div className="col-5 d-flex justify-content-center align-items-center" style={{ display: 'flex', gap: '10px' }}>
                             <Bans
+                                side="red"
                                 selectedChampion={
                                     currentPhase?.startsWith("redBan")
                                         ? (passiveState ? remoteSelectedChampion : selectedChampion)

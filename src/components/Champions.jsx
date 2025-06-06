@@ -1,89 +1,76 @@
 import { useEffect, useState } from 'react';
 
-function Champions({champions, onSelectChampion }) {
+function Champions({ champions, onSelectChampion, lockedChampions = new Set() }) {
   const [imagesMap, setImagesMap] = useState({});
 
   useEffect(() => {
-    // Crea una mappa con le immagini usando i nomi dei file
     const importImages = async () => {
-      const imagesContext = {}; // Oggetto per mappare nome_campione -> url_immagine
-      
+      const imagesContext = {};
+
       try {
-        // Importa tutte le immagini disponibili
         const championsImages = import.meta.glob('../img/champions/*.webp');
-        
+
         for (const path in championsImages) {
           const championName = path.split('/').pop().replace('.webp', '');
           const imageModule = await championsImages[path]();
-          imagesContext[championName] = imageModule.default;
+          imagesContext[championName.toLowerCase()] = imageModule.default;
         }
-        
+
         setImagesMap(imagesContext);
       } catch (error) {
         console.error("Errore nel caricamento delle immagini:", error);
       }
     };
-    
+
     importImages();
   }, []);
-  
+
   return (
     <div>
-        <div 
-          style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: '8px',
-            justifyContent: 'center'
-          }}
-        >
-          {/* Mostra tutti i campioni dell'utente */}
-          {champions.map((champion, index) => (
-            <div 
+      <div
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: '8px',
+          justifyContent: 'center'
+        }}
+      >
+        {champions.map((champion, index) => {
+          const isLocked = lockedChampions.has(champion.idChamp);
+          const imgSrc = imagesMap[champion.name.toLowerCase()] || `/img/champions/${champion.img}`;
+
+          return (
+            <div
               key={index}
               style={{
                 minWidth: '67px',
                 textAlign: 'center',
-                cursor: 'pointer',
+                cursor: isLocked ? 'not-allowed' : 'pointer',
+                filter: isLocked ? 'grayscale(100%) brightness(0.6)' : 'none',
+                pointerEvents: isLocked ? 'none' : 'auto'
               }}
-              onClick={() => onSelectChampion(champion)}
+              onClick={() => {
+                if (!isLocked) onSelectChampion(champion);
+              }}
             >
-              {/* Verifica se l'immagine è disponibile basandosi sul nome */}
-              {imagesMap[champion.name.toLowerCase()] ? (
-                <img 
-                  src={imagesMap[champion.name.toLowerCase()]} 
-                  alt={champion.name}
-                  style={{
-                    width: '67px',
-                    height: '67px',
-                    objectFit: 'cover',
-                    borderRadius: '8px'
-                  }}
-                  className="image-hover"
-                />
-              ) : (
-                /* Mostra l'immagine dal percorso indicato nell'oggetto champion, se presente */
-                champion.img ? (
-                  <img 
-                    src={`/img/champions/${champion.img}`} 
-                    alt={champion.name}
-                    style={{
-                      width: '67px',
-                      height: '67px',
-                      objectFit: 'cover',
-                      borderRadius: '8px'
-                    }}
-                    className="image-hover"
-                    onError={(e) => {
-                      e.target.style.display = 'none';
-                      e.target.nextSibling.style.display = 'block';
-                    }}
-                  />
-                ) : null
-              )}
+              <img
+                src={imgSrc}
+                alt={champion.name}
+                style={{
+                  width: '67px',
+                  height: '67px',
+                  objectFit: 'cover',
+                  borderRadius: '8px'
+                }}
+                className="image-hover"
+                onError={(e) => {
+                  e.target.style.display = 'none';
+                }}
+              />
             </div>
-          ))}
-        </div>
+          );
+        })}
+      </div>
     </div>
   );
 }

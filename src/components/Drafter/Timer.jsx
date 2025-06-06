@@ -44,6 +44,14 @@ function Timer({ currentPhase }) {
 
   }, [currentPhase, connected]);
 
+  useEffect(() => {
+    if (currentPhase === "end") {
+      clearInterval(timerRef.current);
+      setTimeLeft(0); 
+    }
+  }, [currentPhase]);
+
+
   return (
     <div>
       <h1>{timeLeft !== null ? `${timeLeft}` : "—"}</h1>

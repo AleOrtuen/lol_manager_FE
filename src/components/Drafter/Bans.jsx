@@ -1,4 +1,4 @@
-function Bans({ selectedChampion, lockedChampions = [], currentPhase }) {
+function Bans({ selectedChampion, lockedChampions = [], currentPhase, side }) {
     const phaseToIndex = {
         blueBan1: 0,
         blueBan2: 1,
@@ -12,7 +12,7 @@ function Bans({ selectedChampion, lockedChampions = [], currentPhase }) {
         redBan5: 4
     };
 
-    const activeIndex = phaseToIndex[currentPhase];
+    const activeIndex = currentPhase?.startsWith(side) ? phaseToIndex[currentPhase] : null;
 
     return (
         <>
@@ -28,7 +28,8 @@ function Bans({ selectedChampion, lockedChampions = [], currentPhase }) {
                     <div key={index} style={{
                         width: '85px',
                         height: '85px',
-                        border: '2px solid #555',
+                        border: isActive ? '3px solid limegreen' : '2px solid #555',
+                        boxShadow: isActive ? '0 0 5px limegreen' : 'none',
                         display: 'flex',
                         justifyContent: 'center',
                         alignItems: 'center',
