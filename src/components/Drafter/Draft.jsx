@@ -287,17 +287,17 @@ function Draft() {
 
     return (
 
-        <div>
+        <div className="wide-component">
             {pageLoading && pageLoading === true ?
                 <div>
                     {/* TEAMS E PHASE */}
                     <div className="row justify-content-center">
                         {/* TEAM BLUE SIDE */}
-                        <div className="col-4">
+                        <div className="col-4 div-blue">
                             {draft && draft.teamBlue !== null ?
-                                <h1 className="text-primary display-6">{draft.teamBlue.name}</h1>
+                                <h1 className="display-6">{draft.teamBlue.name}</h1>
                                 :
-                                <h1 className="text-primary display-6">BLUE</h1>
+                                <h1 className="display-6">BLUE</h1>
                             }
                         </div>
                         {/* TIMER AND SERIES */}
@@ -309,11 +309,11 @@ function Draft() {
                             <button onClick={consoleLogs}>LOGS</button>
                         </div>
                         {/* TEAM RED SIDE */}
-                        <div className="col-4">
+                        <div className="col-4 div-red">
                             {draft && draft.teamRed !== null ?
-                                <h1 className="text-danger display-6">{draft.teamRed.name}</h1>
+                                <h1 className="display-6">{draft.teamRed.name}</h1>
                                 :
-                                <h1 className="text-danger display-6">RED</h1>
+                                <h1 className="display-6">RED</h1>
                             }
                         </div>
                     </div>
@@ -340,17 +340,16 @@ function Draft() {
                             }}
                         >
 
-                            {draft && draft.teamBlue != null && draft.teamRed != null ?
+                            {currentPhase !== 'end' && draft && draft.teamBlue != null && draft.teamRed != null ? (
                                 <div
                                     className="rounded-top d-flex flex-column h-100"
-                                    style={{
-                                        border: '5px solid #242424',
-                                    }}
+                                    style={{ border: '5px solid #242424' }}
                                 >
                                     <div className="bg-dark text-white text-center p-2">
                                         Champions
                                     </div>
-                                    <div className="flex-grow-1 overflow-auto p-2 text-center"
+                                    <div
+                                        className="flex-grow-1 overflow-auto p-2 text-center"
                                         style={{
                                             display: 'flex',
                                             flexWrap: 'wrap',
@@ -360,16 +359,21 @@ function Draft() {
                                         }}
                                     >
                                         {champions && champions.length > 0 ? (
-                                            <Champions champions={champions} onSelectChampion={(champ) => setSelectedChampion(champ)} lockedChampions={lockedChampions}/>
+                                            <Champions
+                                                champions={champions}
+                                                onSelectChampion={(champ) => setSelectedChampion(champ)}
+                                                lockedChampions={lockedChampions}
+                                                passiveState={passiveState}
+                                            />
                                         ) : null}
                                     </div>
                                 </div>
-                                :
-                                (game && game.team1 != null && game.team2 != null ?
-                                    <SideSelection game={game} />
-                                    : <h5>Waiting for other team to join the game</h5>
-                                )
-                            }
+                            ) : currentPhase !== 'end' && game && game.team1 != null && game.team2 != null ? (
+                                <SideSelection game={game} />
+                            ) : currentPhase !== 'end' ? (
+                                <h5>Waiting for other team to join the game</h5>
+                            ) : null}
+
                         </div>
                         {/* PICKS RED SIDE */}
                         <div className="col-2">
@@ -408,7 +412,7 @@ function Draft() {
                                 :
                                 <button
                                     className="btn btn-secondary btn-lg"
-                                    disabled={passiveState}
+                                    disabled={passiveState || selectedChampion === null}
                                     onClick={lockChampion}
                                 >
                                     Lock

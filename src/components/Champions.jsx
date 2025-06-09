@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-function Champions({ champions, onSelectChampion, lockedChampions = new Set() }) {
+function Champions({ champions, onSelectChampion, lockedChampions = new Set(), passiveState }) {
   const [imagesMap, setImagesMap] = useState({});
 
   useEffect(() => {
@@ -45,8 +45,8 @@ function Champions({ champions, onSelectChampion, lockedChampions = new Set() })
               style={{
                 minWidth: '67px',
                 textAlign: 'center',
-                cursor: isLocked ? 'not-allowed' : 'pointer',
-                filter: isLocked ? 'grayscale(100%) brightness(0.6)' : 'none',
+                cursor: isLocked || passiveState ? 'not-allowed' : 'pointer',
+                filter: isLocked || passiveState ? 'grayscale(100%) brightness(0.6)' : 'none',
                 pointerEvents: isLocked ? 'none' : 'auto'
               }}
               onClick={() => {

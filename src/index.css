@@ -124,3 +124,36 @@ header {
   color: gray !important; /* Colore quando il campo è selezionato (es. blu Bootstrap) */
 }
 
+.div-blue {
+  background-color: rgb(97, 97, 255);
+  clip-path: polygon(0 0, 90% 0, 100% 100%, 0% 100%);
+  color: white;
+  display: flex;
+  align-items: center; 
+  justify-content: flex-start;
+  padding-left: 10px;      /* spazio dal bordo sinistro */
+  padding-top: 5px;
+  padding-bottom: 5px;
+  box-sizing: border-box;
+  margin-bottom: 10px;
+}
+
+.div-red {
+  background-color: rgb(255, 31, 31);
+  clip-path: polygon(10% 0, 100% 0, 100% 100%, 0% 100%);
+  color: white;
+  display: flex;
+  align-items: center; 
+  justify-content: flex-end; 
+  padding-right: 20px;      /* spazio dal bordo sinistro */
+  padding-top: 5px;
+  padding-bottom: 5px;
+  box-sizing: border-box;
+  margin-bottom: 10px;
+}
+
+.wide-component {
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+  padding: 1rem 2rem;
+}
