@@ -44,7 +44,7 @@ function Picks({ selectedChampion, lockedChampions = [], currentPhase, side }) {
                             backgroundColor: '#333',
                             borderRadius: '8px',
                             cursor: 'pointer',
-                            marginBottom: '10px'
+                            marginBottom: '3px'
                         }}
                     >
                         <img

@@ -125,3 +125,11 @@ export const BAN_FIND_ID = BAN_PATH + 'find-id/';
 export const BAN_FIND_DRAFT = BAN_PATH + 'find-draft/';
 export const BAN_FIND_SIDE = BAN_PATH + 'find-side/';
 export const BAN_FIND_CHAMP = BAN_PATH + 'find-champ/';
+
+//ENDPOINT LEAGUE ROLES
+const LEAGUE_ROLE_PATH = BASE_PATH + 'league-role/';
+export const LEAGUE_ROLE_SAVE = LEAGUE_ROLE_PATH + 'save';
+export const LEAGUE_ROLE_UPDATE = LEAGUE_ROLE_PATH + 'update';
+export const LEAGUE_ROLE_DELETE = LEAGUE_ROLE_PATH + 'delete/';
+export const LEAGUE_ROLE_FIND_ALL = LEAGUE_ROLE_PATH + 'find-all';
+export const LEAGUE_ROLE_FIND_ID = LEAGUE_ROLE_PATH + 'find-id/';

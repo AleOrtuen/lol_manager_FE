@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { champFindAll } from "../../service/championsService";
+import { leagueRoleFindAll } from "../../service/leagueRoleService";
 import Champions from "../Champions";
 import { useParams } from "react-router-dom";
 import { gameRoomFindId } from "../../service/gameRoomService";
@@ -13,11 +14,14 @@ import ReadyCheck from "./ReadyCheck";
 import Timer from "./Timer";
 import { banFindByDraft } from "../../service/banService";
 import { pickFindByDraft } from "../../service/pickService";
+import ChampionGallery from "./ChampionGallery";
+import WinnerSelection from "./WinnerSelection";
 
 
 function Draft() {
     const { idRoom, role } = useParams();
     const [champions, setChampions] = useState([]);
+    const [leagueRoles, setLeagueRoles] = useState([]);
     const [game, setGame] = useState();
     const [draft, setDraft] = useState();
     const [selectedChampion, setSelectedChampion] = useState(null);
@@ -27,6 +31,7 @@ function Draft() {
     const [passiveState, setPassiveState] = useState();
     const [yourSide, setYourSide] = useState();
     const yourSideRef = useRef();
+    const [searchTerm, setSearchTerm] = useState("");
 
     const [blueBans, setBlueBans] = useState(
         Array(5).fill({ champ: null, locked: false })
@@ -152,6 +157,15 @@ function Draft() {
             .catch(error => {
                 console.log(error.response.data.response);
             })
+
+        leagueRoleFindAll()
+            .then((response) => {
+                setLeagueRoles(response.data.objResponse);
+            })
+            .catch(error => {
+                consoleLogs.log(error.response.data.response);
+            })
+
     }, []);
 
     // VERIFY IF THE GAME EXIST BEFORE LOAD THE PAGE
@@ -276,13 +290,18 @@ function Draft() {
         }
     }
 
+    const handleSearchChange = (e) => {
+        setSearchTerm(e.target.value);
+    };
+
     const consoleLogs = () => {
         // console.log(passiveState);
         console.log(currentPhase);
+        // console.log(leagueRoles);
         // console.log(yourSide);
         // console.log(draft);
-        console.log(blueBans);
-        console.log(redBans);
+        // console.log(blueBans);
+        // console.log(redBans);
     };
 
     return (
@@ -306,7 +325,7 @@ function Draft() {
                                 <Timer currentPhase={currentPhase} />
                                 : null
                             }
-                            <button onClick={consoleLogs}>LOGS</button>
+                            {/* <button onClick={consoleLogs}>LOGS</button> */}
                         </div>
                         {/* TEAM RED SIDE */}
                         <div className="col-4 div-red">
@@ -321,7 +340,7 @@ function Draft() {
                     {/* PICKS E ALL CHAMPS */}
                     <div className="row">
                         {/* PICKS BLUE SIDE */}
-                        <div className="col-2">
+                        <div className="col-1">
                             <Picks
                                 side="blue"
                                 selectedChampion={
@@ -334,49 +353,32 @@ function Draft() {
                             />
                         </div>
                         {/* CHAMPIONS AND SIDE SELECTION */}
-                        <div className="col-8"
+                        <div className="col-10"
                             style={{
                                 maxHeight: '60vh'
                             }}
                         >
-
                             {currentPhase !== 'end' && draft && draft.teamBlue != null && draft.teamRed != null ? (
-                                <div
-                                    className="rounded-top d-flex flex-column h-100"
-                                    style={{ border: '5px solid #242424' }}
-                                >
-                                    <div className="bg-dark text-white text-center p-2">
-                                        Champions
-                                    </div>
-                                    <div
-                                        className="flex-grow-1 overflow-auto p-2 text-center"
-                                        style={{
-                                            display: 'flex',
-                                            flexWrap: 'wrap',
-                                            gap: '3px',
-                                            justifyContent: 'center',
-                                            alignContent: 'flex-start'
-                                        }}
-                                    >
-                                        {champions && champions.length > 0 ? (
-                                            <Champions
-                                                champions={champions}
-                                                onSelectChampion={(champ) => setSelectedChampion(champ)}
-                                                lockedChampions={lockedChampions}
-                                                passiveState={passiveState}
-                                            />
-                                        ) : null}
-                                    </div>
-                                </div>
+                                <ChampionGallery
+                                    champions={champions}
+                                    leagueRoles={leagueRoles}
+                                    onSelectChampion={(champ) => setSelectedChampion(champ)}
+                                    lockedChampions={lockedChampions}
+                                    passiveState={passiveState}
+                                    searchTerm={searchTerm}
+                                    onSearchChange={handleSearchChange}
+                                    selectedChampion={selectedChampion}
+                                />
                             ) : currentPhase !== 'end' && game && game.team1 != null && game.team2 != null ? (
                                 <SideSelection game={game} />
                             ) : currentPhase !== 'end' ? (
                                 <h5>Waiting for other team to join the game</h5>
-                            ) : null}
-
+                            ) : 
+                                <WinnerSelection draft={draft} />                   
+                            }
                         </div>
                         {/* PICKS RED SIDE */}
-                        <div className="col-2">
+                        <div className="col-1">
                             <Picks
                                 side="red"
                                 selectedChampion={
@@ -391,7 +393,7 @@ function Draft() {
                     </div>
 
                     {/* BANS E BUTTON */}
-                    <div className="row align-items-center">
+                    <div className="row align-items-center" style={{ marginTop: '20px' }}>
                         {/* BLUE BANS */}
                         <div className="col-5 d-flex justify-content-center align-items-center" style={{ display: 'flex', gap: '10px' }}>
                             <Bans
