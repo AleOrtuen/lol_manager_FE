@@ -10,13 +10,19 @@ function Timer({ currentPhase }) {
 
   const onWebSocketMessage = useCallback((msg) => {
     if (msg.type === "TIMER_START" && msg.startTime) {
+      const now = Date.now();
       const endTime = msg.startTime + 30_000;
+
+      if (endTime <= now || currentPhase === "end") {
+        setTimeLeft(0);
+        clearInterval(timerRef.current);
+        return;
+      }
 
       clearInterval(timerRef.current);
 
       const updateTimer = () => {
-        const now = Date.now();
-        const diff = Math.max(0, Math.floor((endTime - now) / 1000));
+        const diff = Math.max(0, Math.floor((endTime - Date.now()) / 1000));
         setTimeLeft(diff);
 
         if (diff <= 0) {
@@ -27,12 +33,13 @@ function Timer({ currentPhase }) {
       updateTimer();
       timerRef.current = setInterval(updateTimer, 1000);
     }
-  }, []);
+
+  }, [currentPhase]);
 
   const { sendMessage, connected } = useWebSocketDraft(idRoom, onWebSocketMessage);
 
   useEffect(() => {
-    if (!connected || currentPhase === lastPhase) return;
+    if (!connected || currentPhase === lastPhase || currentPhase === "end" || !currentPhase) return;
 
     sendMessage({
       idRoom,
@@ -41,16 +48,14 @@ function Timer({ currentPhase }) {
     });
 
     setLastPhase(currentPhase);
-
   }, [currentPhase, connected]);
 
   useEffect(() => {
     if (currentPhase === "end") {
       clearInterval(timerRef.current);
-      setTimeLeft(0); 
+      setTimeLeft(0);
     }
   }, [currentPhase]);
-
 
   return (
     <div>

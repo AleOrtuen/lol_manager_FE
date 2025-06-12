@@ -18,7 +18,6 @@ import Comp from './components/Comp';
 import Footer from './components/Footer';
 import Draft from './components/Drafter/Draft';
 import CreateGame from './components/Drafter/CreateGame';
-import GuestSelection from './components/Drafter/GuestSelection';
 
 function App() {
 
@@ -36,8 +35,7 @@ function App() {
     {path: COMP_FORM, element: <CompForm />},
     {path: COMP, element: <Comp />},
     {path: CREATE_GAME, element: <CreateGame />},
-    {path: "/game/:idRoom/:role", element: <Draft />},
-    {path: "/guest", element: <GuestSelection />}
+    {path: "/game/:idRoom/:role", element: <Draft />}
   ])
 
   return (

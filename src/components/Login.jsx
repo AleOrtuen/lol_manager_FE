@@ -1,19 +1,28 @@
-import { useState } from "react"
 import Logo from "./Logo"
 import { useNavigate } from "react-router-dom";
 import { HOME, SIGNUP } from "../utils/routes";
 import { userAuth } from "../service/userService";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../store/slice/userSlice";
 import { resetTeam } from "../store/slice/teamSlice";
+import { resetGame } from "../store/slice/gameSlice";
+import { useEffect, useState } from "react";
 
 function Login() {
 
+    const user = useSelector((state) => state.user);
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+
+    useEffect(() => {
+        if (!user || Object.keys(user).length !== 0) {
+            navigate(HOME);
+            return; 
+        }
+    }, []);
 
     function login() {
         if (email && email !== ''

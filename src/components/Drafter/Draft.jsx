@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { champFindAll } from "../../service/championsService";
 import { leagueRoleFindAll } from "../../service/leagueRoleService";
-import Champions from "../Champions";
 import { useParams } from "react-router-dom";
 import { gameRoomFindId } from "../../service/gameRoomService";
 import { useWebSocketDraft } from "../web_socket/useWebSocketGame";
@@ -16,9 +15,12 @@ import { banFindByDraft } from "../../service/banService";
 import { pickFindByDraft } from "../../service/pickService";
 import ChampionGallery from "./ChampionGallery";
 import WinnerSelection from "./WinnerSelection";
+import { resetGame, setGameData, updateDraft, updateGame } from "../../store/slice/gameSlice";
+import { useDispatch } from "react-redux";
 
 
 function Draft() {
+    const dispatch = useDispatch();
     const { idRoom, role } = useParams();
     const [champions, setChampions] = useState([]);
     const [leagueRoles, setLeagueRoles] = useState([]);
@@ -134,6 +136,7 @@ function Draft() {
 
     //FIND ALL CHAMPS, GAME AND DRAFT
     useEffect(() => {
+        dispatch(resetGame());
         champFindAll()
             .then((response) => {
                 setChampions(response.data.objResponse);
@@ -145,6 +148,7 @@ function Draft() {
         gameRoomFindId(idRoom)
             .then((response) => {
                 setGame(response.data.objResponse.game);
+                dispatch(updateGame(response.data.objResponse.game));
             })
             .catch(error => {
                 console.log(error.response.data.response);
@@ -153,6 +157,7 @@ function Draft() {
         draftFindRoom(idRoom)
             .then((response) => {
                 setDraft(response.data.objResponse);
+                dispatch(updateDraft(response.data.objResponse));
             })
             .catch(error => {
                 console.log(error.response.data.response);
@@ -299,7 +304,8 @@ function Draft() {
         console.log(currentPhase);
         // console.log(leagueRoles);
         // console.log(yourSide);
-        // console.log(draft);
+        console.log(draft);
+        console.log(game);
         // console.log(blueBans);
         // console.log(redBans);
     };
@@ -321,11 +327,11 @@ function Draft() {
                         </div>
                         {/* TIMER AND SERIES */}
                         <div className="col-4">
-                            {draft && draft.ready ?
+                            {draft && draft.ready && (currentPhase !== undefined && currentPhase !== 'end') ?
                                 <Timer currentPhase={currentPhase} />
                                 : null
                             }
-                            {/* <button onClick={consoleLogs}>LOGS</button> */}
+                            <button onClick={consoleLogs}>LOGS</button>
                         </div>
                         {/* TEAM RED SIDE */}
                         <div className="col-4 div-red">
@@ -373,8 +379,8 @@ function Draft() {
                                 <SideSelection game={game} />
                             ) : currentPhase !== 'end' ? (
                                 <h5>Waiting for other team to join the game</h5>
-                            ) : 
-                                <WinnerSelection draft={draft} />                   
+                            ) :
+                                <WinnerSelection draft={draft} />
                             }
                         </div>
                         {/* PICKS RED SIDE */}
