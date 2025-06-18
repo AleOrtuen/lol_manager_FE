@@ -17,6 +17,7 @@ import ChampionGallery from "./ChampionGallery";
 import WinnerSelection from "./WinnerSelection";
 import { resetGame, setGameData, updateDraft, updateGame } from "../../store/slice/gameSlice";
 import { useDispatch } from "react-redux";
+import DraftSelection from "./DraftSelection";
 
 
 function Draft() {
@@ -26,6 +27,8 @@ function Draft() {
     const [leagueRoles, setLeagueRoles] = useState([]);
     const [game, setGame] = useState();
     const [draft, setDraft] = useState();
+    const [draftList, setDraftList] = useState();
+    const [selectedDraftIndex, setSelectedDraftIndex] = useState(0);
     const [selectedChampion, setSelectedChampion] = useState(null);
     const [remoteSelectedChampion, setRemoteSelectedChampion] = useState(null);
     const [currentPhase, setCurrentPhase] = useState();
@@ -57,7 +60,26 @@ function Draft() {
 
         if (msg.type === "DRAFT_UPDATE" && msg.draft) {
             console.log("🆕 DRAFT_UPDATE received", msg.draft);
-            setDraft(msg.draft);
+
+            setDraft(prev => {
+                if (!prev || prev.idDraft !== msg.draft.idDraft) return msg.draft;
+                return { ...prev, ...msg.draft }; // Merge changes se serve
+            });
+
+            setDraftList(prevList => {
+                if (!prevList) return [msg.draft];
+
+                const index = prevList.findIndex(d => d.idDraft === msg.draft.idDraft);
+                if (index !== -1) {
+                    // draft già presente: aggiorna
+                    const updated = [...prevList];
+                    updated[index] = msg.draft;
+                    return updated;
+                } else {
+                    // nuova draft: aggiungila
+                    return [...prevList, msg.draft];
+                }
+            });
         }
 
         if (msg.type === "EVENT_CHANGE" && msg.events) {
@@ -156,12 +178,20 @@ function Draft() {
 
         draftFindRoom(idRoom)
             .then((response) => {
-                setDraft(response.data.objResponse);
-                dispatch(updateDraft(response.data.objResponse));
+                const drafts = response.data.objResponse;
+                const defaultIndex = drafts.findIndex(d => d.winner === null); // oppure scegli in base a logica
+
+                const selected = drafts[defaultIndex !== -1 ? defaultIndex : 0];
+
+                setDraftList(drafts);
+                setSelectedDraftIndex(defaultIndex !== -1 ? defaultIndex : 0);
+                setDraft(selected);
+
+                dispatch(updateDraft(drafts));
             })
             .catch(error => {
                 console.log(error.response.data.response);
-            })
+            });
 
         leagueRoleFindAll()
             .then((response) => {
@@ -315,11 +345,19 @@ function Draft() {
         <div className="wide-component">
             {pageLoading && pageLoading === true ?
                 <div>
+                    {game && draftList?.length > 0 && (
+                        <DraftSelection
+                            game={game}
+                            draftList={draftList}
+                            onSelect={(index) => setSelectedDraftIndex(index)}
+                        />
+                    )}
+
                     {/* TEAMS E PHASE */}
                     <div className="row justify-content-center">
                         {/* TEAM BLUE SIDE */}
                         <div className="col-4 div-blue">
-                            {draft && draft.teamBlue !== null ?
+                            {draft?.teamBlue?.name ?
                                 <h1 className="display-6">{draft.teamBlue.name}</h1>
                                 :
                                 <h1 className="display-6">BLUE</h1>
@@ -331,11 +369,13 @@ function Draft() {
                                 <Timer currentPhase={currentPhase} />
                                 : null
                             }
-                            <button onClick={consoleLogs}>LOGS</button>
+                            {/* <button onClick={consoleLogs}>LOGS</button> */}
+
+
                         </div>
                         {/* TEAM RED SIDE */}
                         <div className="col-4 div-red">
-                            {draft && draft.teamRed !== null ?
+                            {draft?.teamRed?.name ?
                                 <h1 className="display-6">{draft.teamRed.name}</h1>
                                 :
                                 <h1 className="display-6">RED</h1>
@@ -364,7 +404,9 @@ function Draft() {
                                 maxHeight: '60vh'
                             }}
                         >
-                            {currentPhase !== 'end' && draft && draft.teamBlue != null && draft.teamRed != null ? (
+                            {draft?.closed ? (
+                                <WinnerSelection draft={draft} />
+                            ) : draft && draft.teamBlue && draft.teamRed ? (
                                 <ChampionGallery
                                     champions={champions}
                                     leagueRoles={leagueRoles}
@@ -375,13 +417,11 @@ function Draft() {
                                     onSearchChange={handleSearchChange}
                                     selectedChampion={selectedChampion}
                                 />
-                            ) : currentPhase !== 'end' && game && game.team1 != null && game.team2 != null ? (
+                            ) : game && game.team1 && game.team2 ? (
                                 <SideSelection game={game} />
-                            ) : currentPhase !== 'end' ? (
+                            ) : (
                                 <h5>Waiting for other team to join the game</h5>
-                            ) :
-                                <WinnerSelection draft={draft} />
-                            }
+                            )}
                         </div>
                         {/* PICKS RED SIDE */}
                         <div className="col-1">
