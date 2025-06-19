@@ -97,6 +97,7 @@ export const GAME_ROOM_FIND_GAME = GAME_ROOM_PATH + 'find-game/';
 const DRAFT_PATH = BASE_PATH + 'draft/';
 export const DRAFT_SAVE = DRAFT_PATH + 'save';
 export const DRAFT_UPDATE = DRAFT_PATH + 'update';
+export const DRAFT_WINNER = DRAFT_PATH + 'winner';
 export const DRAFT_DELETE = DRAFT_PATH + 'delete/';
 export const DRAFT_FIND_ALL = DRAFT_PATH + 'find-all';
 export const DRAFT_FIND_ID = DRAFT_PATH + 'find-id/';

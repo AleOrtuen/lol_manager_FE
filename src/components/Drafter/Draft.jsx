@@ -179,7 +179,7 @@ function Draft() {
         draftFindRoom(idRoom)
             .then((response) => {
                 const drafts = response.data.objResponse;
-                const defaultIndex = drafts.findIndex(d => d.winner === null); // oppure scegli in base a logica
+                const defaultIndex = drafts.findIndex(d => d.winner === null);
 
                 const selected = drafts[defaultIndex !== -1 ? defaultIndex : 0];
 
@@ -217,9 +217,23 @@ function Draft() {
 
     }, [game, role]);
 
+    useEffect(() => {
+        if (draftList && draftList.length > 0 && selectedDraftIndex >= 0) {
+            const selected = draftList[selectedDraftIndex];
+            setDraft(selected);
+        }
+    }, [selectedDraftIndex, draftList]);
+
     // CHECK WHAT SIDE THE TEAM IS PLAYING AND RETRIEVE PICKS AND BANS
     useEffect(() => {
         if (!draft || !game) return;
+
+        // ✅ RESET IMMEDIATO dei pick e ban PRIMA di caricare quelli nuovi
+        setBlueBans(Array(5).fill({ champ: null, locked: false }));
+        setRedBans(Array(5).fill({ champ: null, locked: false }));
+        setBluePicks(Array(5).fill({ champ: null, locked: false }));
+        setRedPicks(Array(5).fill({ champ: null, locked: false }));
+
         const yourTeam = role === "player1" ? game.team1 : game.team2;
         const side = yourTeam?.idTeam === draft?.teamBlue?.idTeam ? "blue" : "red";
         yourSideRef.current = side;
@@ -269,18 +283,20 @@ function Draft() {
                 console.log(error.response?.data?.response || error.message);
             });
 
-    }, [draft, role]);
+    }, [draft, role, game]);
+
 
     // FIRST EVENT START AFTER READY CHECK
     useEffect(() => {
-        if (draft?.ready && role === "player1") {
+        if (draft?.ready && !draft?.closed && role === "player1" && !currentPhase) {
             sendMessage({
                 idRoom,
                 type: "EVENT",
                 sender: role
             });
         }
-    }, [draft?.ready]);
+    }, [draft?.ready, draft?.closed, currentPhase]);
+
 
     // RETRIEVE CURRENT EVENT ON UPDATE
     useEffect(() => {
@@ -331,11 +347,13 @@ function Draft() {
 
     const consoleLogs = () => {
         // console.log(passiveState);
-        console.log(currentPhase);
+        // console.log(currentPhase);
         // console.log(leagueRoles);
         // console.log(yourSide);
         console.log(draft);
-        console.log(game);
+        console.log(draftList);
+        // console.log(game);
+        // console.log(selectedDraftIndex);
         // console.log(blueBans);
         // console.log(redBans);
     };
@@ -350,6 +368,7 @@ function Draft() {
                             game={game}
                             draftList={draftList}
                             onSelect={(index) => setSelectedDraftIndex(index)}
+                            currentPhase={currentPhase}
                         />
                     )}
 
@@ -369,9 +388,7 @@ function Draft() {
                                 <Timer currentPhase={currentPhase} />
                                 : null
                             }
-                            {/* <button onClick={consoleLogs}>LOGS</button> */}
-
-
+                            <button onClick={consoleLogs}>LOGS</button>
                         </div>
                         {/* TEAM RED SIDE */}
                         <div className="col-4 div-red">
@@ -418,7 +435,7 @@ function Draft() {
                                     selectedChampion={selectedChampion}
                                 />
                             ) : game && game.team1 && game.team2 ? (
-                                <SideSelection game={game} />
+                                <SideSelection game={game} draft={draft} />
                             ) : (
                                 <h5>Waiting for other team to join the game</h5>
                             )}
@@ -455,7 +472,7 @@ function Draft() {
                         </div>
 
                         <div className="col-2">
-                            {draft && draft.ready === false ?
+                            {draft && draft.ready === false && draft.teamBlue !== null ?
                                 <ReadyCheck draft={draft} setDraft={setDraft} />
                                 :
                                 <button

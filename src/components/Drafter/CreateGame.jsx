@@ -2,6 +2,7 @@ import { useState } from "react"
 import { gameSave } from "../../service/gameService";
 import { gameRoomSave } from "../../service/gameRoomService";
 import Logo from "../Logo";
+import { draftSave } from "../../service/draftService";
 
 function CreateGame() {
     const baseUrl = import.meta.env.VITE_FRONTEND_BASE_URL;
@@ -28,10 +29,12 @@ function CreateGame() {
             style: form.style,
             fearless: form.fearless
         };
-
+        
+        let game;
         await gameSave(gameForm)
             .then((response) => {
                 gameRoom.game = response.data.objResponse;
+                game = response.data.objResponse;
             })
             .catch(error => {
                 console.log(error.response.data.response);
@@ -46,11 +49,21 @@ function CreateGame() {
                 alert('Errore nella creazione della stanza');
                 console.log(error.response.data.response);
             })
+
+        const draft = {
+            game: game
+        }
+        await draftSave(draft)
+            .then((response) => {
+            })
+            .catch(error => {
+                console.log(error.response.data.response);
+            })
     }
     return (
         <>
             {/* <Logo /> */}
-            <br/>
+            <br />
             <div className="d-flex align-items-center justify-content-center">
                 <div className="col-10 col-md-6 text-center">
                     <h1 className="display-6">CREATE GAME</h1>

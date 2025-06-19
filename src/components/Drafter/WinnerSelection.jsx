@@ -1,4 +1,4 @@
-import { draftUpdate } from "../../service/draftService.js";
+import { draftUpdate, draftWinner } from "../../service/draftService.js";
 
 function WinnerSelection({ draft }) {
 
@@ -11,7 +11,7 @@ function WinnerSelection({ draft }) {
             winner: side === 'blue' ? draft.teamBlue : draft.teamRed
         }
 
-        draftUpdate(updatedDraft)
+        draftWinner(updatedDraft)
             .then((response) => {
             })
             .catch(error => {

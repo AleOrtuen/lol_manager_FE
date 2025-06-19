@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
-import {draftSave} from "../../service/draftService.js";
+import {draftSave, draftUpdate} from "../../service/draftService.js";
 
-function SideSelection({ game }) {
+function SideSelection({ game, draft }) {
 
     const { idRoom, role } = useParams();
 
@@ -20,13 +20,14 @@ function SideSelection({ game }) {
         const teamSelecting = side === "blue" ? "teamBlue" : "teamRed";
         const teamWaiting = side === "blue" ? "teamRed" : "teamBlue";
 
-        const draft = {
+        const updateDraft = {
+            idDraft: draft.idDraft,
             game: game,
             [teamSelecting]: yourTeam,
             [teamWaiting]: oppositeTeam
         }
 
-        draftSave(draft)
+        draftUpdate(updateDraft)
             .then((response) => {
             })
             .catch(error => {
