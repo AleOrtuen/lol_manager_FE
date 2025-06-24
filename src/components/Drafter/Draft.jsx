@@ -31,6 +31,8 @@ function Draft() {
     const [selectedDraftIndex, setSelectedDraftIndex] = useState(0);
     const [selectedChampion, setSelectedChampion] = useState(null);
     const [remoteSelectedChampion, setRemoteSelectedChampion] = useState(null);
+    const [blueWins, setBlueWins] = useState(0);
+    const [redWins, setRedWins] = useState(0);
     const [currentPhase, setCurrentPhase] = useState();
     const [pageLoading, setPageLoading] = useState(false);
     const [passiveState, setPassiveState] = useState();
@@ -285,17 +287,40 @@ function Draft() {
 
     }, [draft, role, game]);
 
+    useEffect(() => {
+        if (!draftList || !draft) return;
+
+        const teamBlueId = draft.teamBlue?.idTeam;
+        const teamRedId = draft.teamRed?.idTeam;
+
+        let blue = 0;
+        let red = 0;
+
+        draftList.forEach(d => {
+            if (!d.winner) return;
+
+            if (d.winner.idTeam === teamBlueId) {
+                blue++;
+            } else if (d.winner.idTeam === teamRedId) {
+                red++;
+            }
+        });
+
+        setBlueWins(blue);
+        setRedWins(red);
+    }, [draftList, draft]);
+
 
     // FIRST EVENT START AFTER READY CHECK
     useEffect(() => {
-        if (draft?.ready && !draft?.closed && role === "player1" && !currentPhase) {
+        if (draft?.ready && !draft?.closed && role === "player1") {
             sendMessage({
                 idRoom,
                 type: "EVENT",
                 sender: role
             });
         }
-    }, [draft?.ready, draft?.closed, currentPhase]);
+    }, [draft?.ready, draft?.closed]);
 
 
     // RETRIEVE CURRENT EVENT ON UPDATE
@@ -383,12 +408,18 @@ function Draft() {
                             }
                         </div>
                         {/* TIMER AND SERIES */}
-                        <div className="col-4">
+                        <div className="col-1 d-flex align-items-center justify-content-start">
+                            <h2>{blueWins}</h2>
+                        </div>
+                        <div className="col-2">
                             {draft && draft.ready && (currentPhase !== undefined && currentPhase !== 'end') ?
                                 <Timer currentPhase={currentPhase} />
                                 : null
                             }
-                            <button onClick={consoleLogs}>LOGS</button>
+                            {/* <button onClick={consoleLogs}>LOGS</button> */}
+                        </div>
+                        <div className="col-1 d-flex align-items-center justify-content-end">
+                            <h2>{redWins}</h2>
                         </div>
                         {/* TEAM RED SIDE */}
                         <div className="col-4 div-red">
