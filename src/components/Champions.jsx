@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-function Champions({ champions, onSelectChampion, lockedChampions = new Set(), passiveState }) {
+function Champions({ champions, onSelectChampion, lockedChampions = new Set(), passiveState, size }) {
   const [imagesMap, setImagesMap] = useState({});
 
   useEffect(() => {
@@ -31,7 +31,7 @@ function Champions({ champions, onSelectChampion, lockedChampions = new Set(), p
         style={{
           display: 'flex',
           flexWrap: 'wrap',
-          gap: '8px',
+          gap: '2px',
           justifyContent: 'center'
         }}
       >
@@ -57,8 +57,8 @@ function Champions({ champions, onSelectChampion, lockedChampions = new Set(), p
                 src={imgSrc}
                 alt={champion.name}
                 style={{
-                  width: '67px',
-                  height: '67px',
+                  width: size ?? '67px',
+                  height: size ?? '67px',
                   objectFit: 'cover',
                   borderRadius: '8px'
                 }}

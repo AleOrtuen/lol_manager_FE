@@ -115,6 +115,7 @@ export const PICK_FIND_ID = PICK_PATH + 'find-id/';
 export const PICK_FIND_DRAFT = PICK_PATH + 'find-draft/';
 export const PICK_FIND_SIDE = PICK_PATH + 'find-side/';
 export const PICK_FIND_CHAMP = PICK_PATH + 'find-champ/';
+export const PICK_FIND_FEARLESS = PICK_PATH + 'find-fearless/';
 
 //ENDPOINT BANS
 const BAN_PATH = BASE_PATH + 'ban/';

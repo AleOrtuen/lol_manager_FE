@@ -82,7 +82,8 @@ function GuestSelection({ game }) {
             [teamKey]: {
                 idTeam: idTeam
             },
-            style: game.style
+            style: game.style,
+            fearless: game.fearless
         }
         gameUpdate(updateTeam)
             .then((response) => {
@@ -125,7 +126,8 @@ function GuestSelection({ game }) {
             [teamKey]: {
                 idTeam: newTeam.idTeam
             },
-            style: game.style
+            style: game.style,
+            fearless: game.fearless
         }
 
         await gameUpdate(updateTeam)

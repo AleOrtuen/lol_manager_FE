@@ -12,16 +12,22 @@ import { draftFindRoom } from "../../service/draftService";
 import ReadyCheck from "./ReadyCheck";
 import Timer from "./Timer";
 import { banFindByDraft } from "../../service/banService";
-import { pickFindByDraft } from "../../service/pickService";
+import { pickFindByDraft, pickFindByGame } from "../../service/pickService";
 import ChampionGallery from "./ChampionGallery";
 import WinnerSelection from "./WinnerSelection";
 import { resetGame, setGameData, updateDraft, updateGame } from "../../store/slice/gameSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import DraftSelection from "./DraftSelection";
+import Score from "./Score";
+import { teamCompFindTeam } from "../../service/teamCompService";
+import { champRoleFindComp } from "../../service/champRoleService";
 
 
 function Draft() {
     const dispatch = useDispatch();
+    const teams = useSelector((state) => Object.values(state.team));
+    const [comps, setComps] = useState([]);
+    const [champRoles, setChampRoles] = useState([]);
     const { idRoom, role } = useParams();
     const [champions, setChampions] = useState([]);
     const [leagueRoles, setLeagueRoles] = useState([]);
@@ -38,6 +44,7 @@ function Draft() {
     const [passiveState, setPassiveState] = useState();
     const [yourSide, setYourSide] = useState();
     const yourSideRef = useRef();
+    const [registeredTeam, setRegisteredTeam] = useState();
     const [searchTerm, setSearchTerm] = useState("");
 
     const [blueBans, setBlueBans] = useState(
@@ -52,6 +59,7 @@ function Draft() {
     const [redPicks, setRedPicks] = useState(
         Array(5).fill({ champ: null, locked: false })
     );
+    const [fearlessPicks, setFearlessPicks] = useState([]);
 
     //WEBSOCKET EVENTS
     const onWebSocketMessage = useCallback((msg) => {
@@ -219,6 +227,7 @@ function Draft() {
 
     }, [game, role]);
 
+    // SELECT CORRECT DRAFT FROM THE MULTI BUTTON RESULT
     useEffect(() => {
         if (draftList && draftList.length > 0 && selectedDraftIndex >= 0) {
             const selected = draftList[selectedDraftIndex];
@@ -226,11 +235,10 @@ function Draft() {
         }
     }, [selectedDraftIndex, draftList]);
 
-    // CHECK WHAT SIDE THE TEAM IS PLAYING AND RETRIEVE PICKS AND BANS
+    // CHECK WHAT SIDE THE TEAM IS PLAYING AND SET REGISTERED TEAM. RETRIEVE PICKS AND BANS
     useEffect(() => {
         if (!draft || !game) return;
 
-        // ✅ RESET IMMEDIATO dei pick e ban PRIMA di caricare quelli nuovi
         setBlueBans(Array(5).fill({ champ: null, locked: false }));
         setRedBans(Array(5).fill({ champ: null, locked: false }));
         setBluePicks(Array(5).fill({ champ: null, locked: false }));
@@ -240,6 +248,10 @@ function Draft() {
         const side = yourTeam?.idTeam === draft?.teamBlue?.idTeam ? "blue" : "red";
         yourSideRef.current = side;
         setYourSide(side);
+
+        if (teams.some(team => team.idTeam === yourTeam.idTeam)) {
+            setRegisteredTeam(yourTeam);
+        }
 
         banFindByDraft(draft.idDraft)
             .then((response) => {
@@ -285,8 +297,50 @@ function Draft() {
                 console.log(error.response?.data?.response || error.message);
             });
 
+        if (game && game.fearless) {
+            pickFindByGame(game.idGame)
+                .then((response) => {
+                    setFearlessPicks(response.data.objResponse);
+                })
+                .catch(error => {
+                    console.log(error.response?.data?.response || error.message);
+                });
+        }
+
     }, [draft, role, game]);
 
+    // RETRIEVE TEAM COMPS
+    useEffect(() => {
+        if (registeredTeam && registeredTeam.idTeam) {
+            teamCompFindTeam(registeredTeam.idTeam)
+                .then((response) => {
+                    setComps(response.data.objResponse);
+                })
+                .catch(error => {
+                    console.log(error.response.data.response)
+                })
+        }
+    }, [registeredTeam])
+
+    // RETRIEVE CHAMP ROLES
+    useEffect(() => {
+        if (comps && comps.length > 0) {
+            comps.forEach((comp) => {
+                champRoleFindComp(comp.idComp)
+                    .then((response) => {
+                        setChampRoles(prevChampRoles => [
+                            ...prevChampRoles,
+                            ...response.data.objResponse
+                        ]);
+                    })
+                    .catch(error => {
+                        console.log(error.response.data);
+                    });
+            });
+        }
+    }, [comps])
+
+    // SET SCORE FOR BOTH TEAMS
     useEffect(() => {
         if (!draftList || !draft) return;
 
@@ -310,7 +364,6 @@ function Draft() {
         setRedWins(red);
     }, [draftList, draft]);
 
-
     // FIRST EVENT START AFTER READY CHECK
     useEffect(() => {
         if (draft?.ready && !draft?.closed && role === "player1") {
@@ -321,7 +374,6 @@ function Draft() {
             });
         }
     }, [draft?.ready, draft?.closed]);
-
 
     // RETRIEVE CURRENT EVENT ON UPDATE
     useEffect(() => {
@@ -345,12 +397,16 @@ function Draft() {
     }, [selectedChampion, passiveState]);
 
     const lockedChampions = useMemo(() => {
-        const allLockedIds = [...blueBans, ...redBans, ...bluePicks, ...redPicks]
+        const normalSlots = [...blueBans, ...redBans, ...bluePicks, ...redPicks];
+        const normalIds = normalSlots
             .filter(slot => slot.champ !== null)
             .map(slot => typeof slot.champ === 'object' ? slot.champ.idChamp : slot.champ);
 
-        return new Set(allLockedIds);
-    }, [blueBans, redBans, bluePicks, redPicks]);
+        const fearlessIds = fearlessPicks
+            .map(p => typeof p.pick === 'object' ? p.pick.idChamp : p.pick); // adattare in base alla struttura
+
+        return new Set([...normalIds, ...fearlessIds]);
+    }, [blueBans, redBans, bluePicks, redPicks, fearlessPicks]);
 
     // METHOD TO LOCK CHAMPS(BANS AND PICKS)
     const lockChampion = () => {
@@ -375,9 +431,10 @@ function Draft() {
         // console.log(currentPhase);
         // console.log(leagueRoles);
         // console.log(yourSide);
-        console.log(draft);
-        console.log(draftList);
-        // console.log(game);
+        // console.log(draft);
+        // console.log(draftList);
+        console.log(comps);
+        console.log(champRoles);
         // console.log(selectedDraftIndex);
         // console.log(blueBans);
         // console.log(redBans);
@@ -388,18 +445,41 @@ function Draft() {
         <div className="wide-component">
             {pageLoading && pageLoading === true ?
                 <div>
-                    {game && draftList?.length > 0 && (
-                        <DraftSelection
-                            game={game}
-                            draftList={draftList}
-                            onSelect={(index) => setSelectedDraftIndex(index)}
-                            currentPhase={currentPhase}
-                        />
-                    )}
+                    <div className="row justify-content-center">
+                        {/* <div className="col-2 div-blue-tag">
+                            {draft?.teamBlue?.tag ?
+                                <h1 className="display-6">{draft.teamBlue.tag}</h1>
+                                :
+                                null
+                            }
+                        </div> */}
+                        <div className="col-8 ">
+                            {game && draftList?.length > 0 && (
+                                <DraftSelection
+                                    game={game}
+                                    draftList={draftList}
+                                    onSelect={(index) => setSelectedDraftIndex(index)}
+                                    currentPhase={currentPhase}
+                                />
+                            )}
+                            {registeredTeam ?
+                                <h3>TEAM REGISTRATO</h3>
+                                : null
+                            }
 
+                        </div>
+                        {/* <div className="col-2 div-red-tag">
+                            {draft?.teamRed?.tag ?
+                                <h1 className="display-6">{draft.teamRed.tag}</h1>
+                                :
+                                null
+                            }
+                        </div> */}
+                    </div>
                     {/* TEAMS E PHASE */}
                     <div className="row justify-content-center">
                         {/* TEAM BLUE SIDE */}
+
                         <div className="col-4 div-blue">
                             {draft?.teamBlue?.name ?
                                 <h1 className="display-6">{draft.teamBlue.name}</h1>
@@ -416,7 +496,7 @@ function Draft() {
                                 <Timer currentPhase={currentPhase} />
                                 : null
                             }
-                            {/* <button onClick={consoleLogs}>LOGS</button> */}
+                            <button onClick={consoleLogs}>LOGS</button>
                         </div>
                         <div className="col-1 d-flex align-items-center justify-content-end">
                             <h2>{redWins}</h2>

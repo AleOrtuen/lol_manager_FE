@@ -127,33 +127,82 @@ header {
 .div-blue {
   background-color: rgb(97, 97, 255);
   clip-path: polygon(0 0, 90% 0, 100% 100%, 0% 100%);
+  /* border-radius: 3px; */
   color: white;
   display: flex;
   align-items: center; 
   justify-content: flex-start;
-  padding-left: 10px;      /* spazio dal bordo sinistro */
+  padding-left: 20px;   
   padding-top: 5px;
   padding-bottom: 5px;
   box-sizing: border-box;
   margin-bottom: 10px;
+  position: relative;
 }
 
 .div-red {
   background-color: rgb(255, 31, 31);
   clip-path: polygon(10% 0, 100% 0, 100% 100%, 0% 100%);
+  /* border-radius: 3px; */
   color: white;
   display: flex;
   align-items: center; 
   justify-content: flex-end; 
-  padding-right: 20px;      /* spazio dal bordo sinistro */
+  padding-right: 20px;
   padding-top: 5px;
   padding-bottom: 5px;
   box-sizing: border-box;
   margin-bottom: 10px;
+  position: relative;
 }
 
 .wide-component {
-  width: 100vw;
+  width: 99.7vw;
   margin-left: calc(-50vw + 50%);
-  padding: 1rem 2rem;
+  margin-top: -20px;
+  padding: 0rem 0.8rem;
+}
+
+/* Score container posizionato a lato e full height */
+.score-container {
+  position: absolute;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* distribuisce equamente */
+  height: 100%;
+  width: 40px;
+  pointer-events: none; /* non blocca interazioni */
+  padding-bottom: 10px;
+}
+
+.score-container.blue {
+  right: -40px;
+}
+
+.score-container.red {
+  left: -40px;
+}
+
+/* Box base */
+.score-box {
+  flex: 1;
+  background: transparent;
+  border: 1px solid gray;
+  transition: background 0.3s ease;
+  width: 70%;
+}
+
+/* Stesso angolo di .div-blue */
+.score-box.blue {
+  clip-path: polygon(0 0, 10% 0, 100% 100%, 10% 100%);
+}
+
+/* Stesso angolo di .div-red */
+.score-box.red {
+  clip-path: polygon(10% 0, 100% 0, 100% 100%, 10% 100%);
+}
+
+.score-box.win {
+  background: #4CAF50;
 }

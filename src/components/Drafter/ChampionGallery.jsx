@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import top from '../../img/roles/top.webp';
 import jng from '../../img/roles/jng.webp';
 import mid from '../../img/roles/mid.webp';
@@ -16,9 +16,8 @@ function ChampionGallery({
     onSearchChange,
     selectedChampion = null 
 }) {
-    const [activeTab, setActiveTab] = useState("all");
+    const [activeTab, setActiveTab] = useState(null); // Nessun filtro attivo di default
 
-    // Lista ruoli con immagini
     const rolesData = [
         { role: 'top', image: top },
         { role: 'jng', image: jng },
@@ -27,45 +26,35 @@ function ChampionGallery({
         { role: 'sup', image: sup }
     ];
 
-    // Filtra i campioni per il ruolo selezionato
     const getDisplayedChampions = useMemo(() => {
         let filteredChampions = champions;
 
-        // Filtra per termine di ricerca se presente
-        if (searchTerm && searchTerm.trim() !== "") {
+        if (searchTerm.trim()) {
             const term = searchTerm.toLowerCase();
             filteredChampions = filteredChampions.filter(champion =>
                 champion.name.toLowerCase().includes(term)
             );
         }
 
-        // Se è selezionato "all", mostra tutti i campioni filtrati
-        if (activeTab === "all") {
-            return filteredChampions;
-        }
+        if (!activeTab) return filteredChampions;
 
-        // Altrimenti filtra per ruolo specifico
         const championsForRole = leagueRoles
             .filter(leagueRole => leagueRole.role === activeTab)
             .map(leagueRole => leagueRole.champ)
             .filter(champ => {
-                // Applica anche il filtro di ricerca se presente
-                if (searchTerm && searchTerm.trim() !== "") {
+                if (searchTerm.trim()) {
                     return champ.name.toLowerCase().includes(searchTerm.toLowerCase());
                 }
                 return true;
             });
 
-        // Rimuovi duplicati basandosi sull'ID del campione
         return Array.from(new Map(championsForRole.map(item => [item.idChamp, item])).values());
     }, [champions, leagueRoles, activeTab, searchTerm]);
 
-    // Gestisce il cambio di tab
     const handleTabChange = (tab) => {
-        setActiveTab(tab);
+        setActiveTab(prev => (prev === tab ? null : tab)); // Toggle: disattiva se è già selezionato
     };
 
-    // Gestisce la pulizia della ricerca
     const handleClearSearch = () => {
         if (onSearchChange) {
             onSearchChange({ target: { value: "" } });
@@ -77,21 +66,7 @@ function ChampionGallery({
             className="rounded-top d-flex flex-column h-100"
             style={{ border: '5px solid #242424' }}
         >
-            {/* Header con tabs e barra di ricerca */}
             <div className="bg-dark d-flex">
-                {/* Tab ALL */}
-                <div
-                    className={`tab-item py-2 px-3 text-center ${activeTab === 'all' ? 'bg-secondary' : ''}`}
-                    onClick={() => handleTabChange('all')}
-                    style={{
-                        cursor: 'pointer',
-                        minWidth: '50px',
-                        borderLeft: '1px solid #333'
-                    }}
-                >
-                    <span className="text-white">ALL</span>
-                </div>
-
                 {/* Tabs per ruoli */}
                 {rolesData.map((roleInfo) => (
                     <div
@@ -102,7 +77,6 @@ function ChampionGallery({
                             cursor: 'pointer',
                             minWidth: '50px',
                             borderLeft: '1px solid #333',
-                            
                         }}
                     >
                         <img
@@ -140,7 +114,7 @@ function ChampionGallery({
                 </div>
             </div>
 
-            {/* Area di visualizzazione champions */}
+            {/* Visualizzazione dei campioni */}
             <div
                 className="flex-grow-1 overflow-auto p-2 text-center"
                 style={{
@@ -157,12 +131,13 @@ function ChampionGallery({
                         onSelectChampion={onSelectChampion}
                         lockedChampions={lockedChampions}
                         passiveState={passiveState}
+                        size={"90px"}
                     />
                 ) : (
                     <div className="text-white-50 mt-4">
                         {searchTerm 
                             ? "Nessun campione trovato" 
-                            : `Nessun campione disponibile ${activeTab !== 'all' ? `per il ruolo ${activeTab}` : ''}`
+                            : `Nessun campione disponibile${activeTab ? ` per il ruolo ${activeTab}` : ''}`
                         }
                     </div>
                 )}

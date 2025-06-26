@@ -55,10 +55,10 @@ function Picks({ selectedChampion, lockedChampions = [], currentPhase, side }) {
                             }
                             alt={champToShow?.name || 'No Champion'}
                             style={{ 
-                                width: '67px', 
-                                height: '67px', 
-                                borderRadius: '8px',
-                                objectFit: 'cover' 
+                                width: '95%',
+                                height: '95%',
+                                objectFit: 'contain',
+                                borderRadius: '8px'
                             }}
                         />
                     </div>

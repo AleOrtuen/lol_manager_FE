@@ -15,7 +15,17 @@ function Bans({ selectedChampion, lockedChampions = [], currentPhase, side }) {
     const activeIndex = currentPhase?.startsWith(side) ? phaseToIndex[currentPhase] : null;
 
     return (
-        <>
+        <div
+            style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: '3px',
+                justifyContent: 'center',
+                width: '100%',
+                maxWidth: '600px', // opzionale
+                margin: '0 auto'
+            }}
+        >
             {lockedChampions.map((ban, index) => {
                 const isActive = index === activeIndex;
                 const champToShow = ban.champ
@@ -25,19 +35,25 @@ function Bans({ selectedChampion, lockedChampions = [], currentPhase, side }) {
                         : null;
 
                 return (
-                    <div key={index} style={{
-                        width: '85px',
-                        height: '85px',
-                        border: isActive ? '3px solid limegreen' : '2px solid #555',
-                        boxShadow: isActive ? '0 0 5px limegreen' : 'none',
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        backgroundColor: '#333',
-                        borderRadius: '8px',
-                        cursor: 'pointer',
-                        marginBottom: '10px'
-                    }}>
+                    <div
+                        key={index}
+                        style={{
+                            flex: '1 1 0',               // permette a tutti i box di adattarsi uniformemente
+                            minWidth: '40px',            // minimo 40px
+                            maxWidth: '85px',            // massimo 85px
+                            aspectRatio: '1 / 1',        // mantiene il box quadrato
+                            width: '100%',               // necessario in flexbox per rispettare min/max
+                            border: isActive ? '3px solid limegreen' : '2px solid #555',
+                            boxShadow: isActive ? '0 0 5px limegreen' : 'none',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            backgroundColor: '#333',
+                            borderRadius: '8px',
+                            cursor: 'pointer'
+                        }}
+                    >
+
                         <img
                             src={
                                 champToShow
@@ -45,14 +61,17 @@ function Bans({ selectedChampion, lockedChampions = [], currentPhase, side }) {
                                     : '/img/champions/champless.png'
                             }
                             alt={champToShow?.name || 'No Champion'}
-                            style={{ width: '67px', height: '67px', borderRadius: '8px' }}
+                            style={{
+                                width: '95%',
+                                height: '95%',
+                                objectFit: 'contain',
+                                borderRadius: '8px'
+                            }}
                         />
                     </div>
                 );
             })}
-        </>
+        </div>
     );
 }
-
-
 export default Bans

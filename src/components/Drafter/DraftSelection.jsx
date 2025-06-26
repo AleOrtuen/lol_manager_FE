@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 
 function DraftSelection({ game, draftList = [], onSelect, currentPhase }) {
     const [selectedIndex, setSelectedIndex] = useState(0);
-    const initialized = useRef(false); 
+    const initialized = useRef(false);
 
     useEffect(() => {
         if (draftList.length > 0 && !initialized.current) {
@@ -31,7 +31,7 @@ function DraftSelection({ game, draftList = [], onSelect, currentPhase }) {
                 <button
                     key={index}
                     type="button"
-                    disabled={currentPhase !== "end" && currentPhase !== undefined}
+                    disabled={!draftList[index] || (currentPhase !== "end" && currentPhase !== undefined)}
                     className={`btn ${index === selectedIndex ? 'btn-secondary btn-sm' : 'btn-outline-secondary btn-sm'}`}
                     onClick={() => {
                         setSelectedIndex(index);
