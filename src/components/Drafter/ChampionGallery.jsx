@@ -6,17 +6,22 @@ import adc from '../../img/roles/adc.webp';
 import sup from '../../img/roles/sup.webp';
 import Champions from '../Champions';
 
-function ChampionGallery({ 
-    champions = [], 
-    leagueRoles = [], 
-    onSelectChampion, 
-    lockedChampions = new Set(), 
+import ChampionInfoHoverBox from './ChampionInfoHoverBox';
+
+function ChampionGallery({
+    champions = [],
+    leagueRoles = [],
+    onSelectChampion,
+    lockedChampions = new Set(),
     passiveState = false,
     searchTerm = "",
     onSearchChange,
-    selectedChampion = null 
+    selectedChampion = null,
+    registeredTeam,
+    champRoles = []
 }) {
-    const [activeTab, setActiveTab] = useState(null); // Nessun filtro attivo di default
+    const [activeTab, setActiveTab] = useState(null);
+    const [useTeamRoles, setUseTeamRoles] = useState(false);
 
     const rolesData = [
         { role: 'top', image: top },
@@ -36,23 +41,55 @@ function ChampionGallery({
             );
         }
 
-        if (!activeTab) return filteredChampions;
+        if (!activeTab) {
+            if (useTeamRoles) {
+                const uniqueChamps = Array.from(
+                    new Map(
+                        champRoles
+                            .filter(roleObj => roleObj.champion || roleObj.champ)
+                            .map(roleObj => {
+                                const champ = roleObj.champion || roleObj.champ;
+                                return [champ.idChamp, champ];
+                            })
+                    ).values()
+                );
 
-        const championsForRole = leagueRoles
-            .filter(leagueRole => leagueRole.role === activeTab)
-            .map(leagueRole => leagueRole.champ)
+                return uniqueChamps
+                    .filter(champ =>
+                        champ && champ.name.toLowerCase().includes(searchTerm.toLowerCase())
+                    )
+                    .sort((a, b) => a.name.localeCompare(b.name)); // 👈 Ordina alfabeticamente
+            }
+
+            return filteredChampions.sort((a, b) => a.name.localeCompare(b.name));
+
+        }
+
+
+        const selectedRoles = useTeamRoles ? champRoles : leagueRoles;
+
+        const championsForRole = selectedRoles
+            .filter(roleObj => roleObj.role === activeTab && (roleObj.champ || roleObj.champion))
+            .map(roleObj => roleObj.champ || roleObj.champion)
             .filter(champ => {
+                if (!champ) return false;
                 if (searchTerm.trim()) {
                     return champ.name.toLowerCase().includes(searchTerm.toLowerCase());
                 }
                 return true;
             });
 
-        return Array.from(new Map(championsForRole.map(item => [item.idChamp, item])).values());
-    }, [champions, leagueRoles, activeTab, searchTerm]);
+        return Array.from(
+            new Map(
+                championsForRole
+                    .filter(item => item && item.idChamp)
+                    .map(item => [item.idChamp, item])
+            ).values()
+        );
+    }, [champions, leagueRoles, champRoles, activeTab, searchTerm, useTeamRoles]);
 
     const handleTabChange = (tab) => {
-        setActiveTab(prev => (prev === tab ? null : tab)); // Toggle: disattiva se è già selezionato
+        setActiveTab(prev => (prev === tab ? null : tab));
     };
 
     const handleClearSearch = () => {
@@ -66,7 +103,7 @@ function ChampionGallery({
             className="rounded-top d-flex flex-column h-100"
             style={{ border: '5px solid #242424' }}
         >
-            <div className="bg-dark d-flex">
+            <div className="bg-dark d-flex align-items-center">
                 {/* Tabs per ruoli */}
                 {rolesData.map((roleInfo) => (
                     <div
@@ -83,13 +120,25 @@ function ChampionGallery({
                             src={roleInfo.image}
                             alt={roleInfo.role}
                             className="img-fluid mx-auto image-hover"
-                            style={{
-                                maxHeight: '20px',
-                                objectFit: 'contain'
-                            }}
+                            style={{ maxHeight: '20px', objectFit: 'contain' }}
                         />
                     </div>
                 ))}
+
+                {/* Switch team */}
+                {registeredTeam && registeredTeam.idTeam && (
+                    <div className="form-check form-switch py-2 ms-auto px-3">
+                        <label className="form-check-label text-white" htmlFor="switchCheckDefault">Team</label>
+                        <input
+                            className="form-check-input"
+                            type="checkbox"
+                            role="switch"
+                            id="switchCheckDefault"
+                            checked={useTeamRoles}
+                            onChange={(e) => setUseTeamRoles(e.target.checked)}
+                        />
+                    </div>
+                )}
 
                 {/* Barra di ricerca */}
                 <div className="ms-auto px-2" style={{ maxWidth: '250px' }}>
@@ -112,6 +161,7 @@ function ChampionGallery({
                         )}
                     </div>
                 </div>
+
             </div>
 
             {/* Visualizzazione dei campioni */}
@@ -120,25 +170,38 @@ function ChampionGallery({
                 style={{
                     display: 'flex',
                     flexWrap: 'wrap',
-                    gap: '3px',
+                    gap: '2px',
                     justifyContent: 'center',
                     alignContent: 'flex-start'
                 }}
             >
                 {getDisplayedChampions.length > 0 ? (
-                    <Champions
-                        champions={getDisplayedChampions}
-                        onSelectChampion={onSelectChampion}
-                        lockedChampions={lockedChampions}
-                        passiveState={passiveState}
-                        size={"90px"}
-                    />
+                    useTeamRoles ? (
+                        getDisplayedChampions.map((champ, index) => (
+                            <ChampionInfoHoverBox
+                                key={champ.idChamp}
+                                champion={champ}
+                                onSelectChampion={onSelectChampion}
+                                champRoles={champRoles}
+                                locked={lockedChampions.has(champ.idChamp)}
+                                passiveState={passiveState}
+                                size={"90px"}
+                            />
+                        ))
+                    ) : (
+                        <Champions
+                            champions={getDisplayedChampions}
+                            onSelectChampion={onSelectChampion}
+                            lockedChampions={lockedChampions}
+                            passiveState={passiveState}
+                            size={"90px"}
+                        />
+                    )
                 ) : (
                     <div className="text-white-50 mt-4">
-                        {searchTerm 
-                            ? "Nessun campione trovato" 
-                            : `Nessun campione disponibile${activeTab ? ` per il ruolo ${activeTab}` : ''}`
-                        }
+                        {searchTerm
+                            ? "Nessun campione trovato"
+                            : `Nessun campione disponibile${activeTab ? ` per il ruolo ${activeTab}` : ''}`}
                     </div>
                 )}
             </div>

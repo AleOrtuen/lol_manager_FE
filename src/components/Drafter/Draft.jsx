@@ -46,6 +46,13 @@ function Draft() {
     const yourSideRef = useRef();
     const [registeredTeam, setRegisteredTeam] = useState();
     const [searchTerm, setSearchTerm] = useState("");
+    const [uniqueChamp, setUniqueChamp] = useState({
+        top: [],
+        jng: [],
+        mid: [],
+        adc: [],
+        sup: []
+    });
 
     const [blueBans, setBlueBans] = useState(
         Array(5).fill({ champ: null, locked: false })
@@ -245,11 +252,15 @@ function Draft() {
         setRedPicks(Array(5).fill({ champ: null, locked: false }));
 
         const yourTeam = role === "player1" ? game.team1 : game.team2;
-        const side = yourTeam?.idTeam === draft?.teamBlue?.idTeam ? "blue" : "red";
+
+        const yourTeamId = yourTeam?.idTeam;
+        const teamBlueId = draft?.teamBlue?.idTeam;
+
+        const side = yourTeamId && teamBlueId && yourTeamId === teamBlueId ? "blue" : "red";
         yourSideRef.current = side;
         setYourSide(side);
 
-        if (teams.some(team => team.idTeam === yourTeam.idTeam)) {
+        if (yourTeamId && teams.some(team => team.idTeam === yourTeamId)) {
             setRegisteredTeam(yourTeam);
         }
 
@@ -340,6 +351,33 @@ function Draft() {
         }
     }, [comps])
 
+    //POPOLA LE LISTE DEI RUOLI CON NOMI CHAMP UNICI
+    useEffect(() => {
+        if (champRoles && champRoles.length > 0) {
+            const newUniqueChamp = {
+                top: [],
+                jng: [],
+                mid: [],
+                adc: [],
+                sup: []
+            };
+
+            champRoles.forEach((champ) => {
+                const role = champ.role;
+                const champName = champ.champion.name;
+
+                // Verifica se il champion è già presente nel ruolo
+                if (role && champName &&
+                    !newUniqueChamp[role].some(existingChamp => existingChamp === champName)) {
+                    newUniqueChamp[role].push(champName);
+                }
+            });
+
+            setUniqueChamp(newUniqueChamp);
+        }
+
+    }, [champRoles]);
+
     // SET SCORE FOR BOTH TEAMS
     useEffect(() => {
         if (!draftList || !draft) return;
@@ -429,7 +467,7 @@ function Draft() {
     const consoleLogs = () => {
         // console.log(passiveState);
         // console.log(currentPhase);
-        // console.log(leagueRoles);
+        console.log(leagueRoles);
         // console.log(yourSide);
         // console.log(draft);
         // console.log(draftList);
@@ -446,13 +484,6 @@ function Draft() {
             {pageLoading && pageLoading === true ?
                 <div>
                     <div className="row justify-content-center">
-                        {/* <div className="col-2 div-blue-tag">
-                            {draft?.teamBlue?.tag ?
-                                <h1 className="display-6">{draft.teamBlue.tag}</h1>
-                                :
-                                null
-                            }
-                        </div> */}
                         <div className="col-8 ">
                             {game && draftList?.length > 0 && (
                                 <DraftSelection
@@ -462,19 +493,7 @@ function Draft() {
                                     currentPhase={currentPhase}
                                 />
                             )}
-                            {registeredTeam ?
-                                <h3>TEAM REGISTRATO</h3>
-                                : null
-                            }
-
                         </div>
-                        {/* <div className="col-2 div-red-tag">
-                            {draft?.teamRed?.tag ?
-                                <h1 className="display-6">{draft.teamRed.tag}</h1>
-                                :
-                                null
-                            }
-                        </div> */}
                     </div>
                     {/* TEAMS E PHASE */}
                     <div className="row justify-content-center">
@@ -496,7 +515,7 @@ function Draft() {
                                 <Timer currentPhase={currentPhase} />
                                 : null
                             }
-                            <button onClick={consoleLogs}>LOGS</button>
+                            {/* <button onClick={consoleLogs}>LOGS</button> */}
                         </div>
                         <div className="col-1 d-flex align-items-center justify-content-end">
                             <h2>{redWins}</h2>
@@ -544,6 +563,8 @@ function Draft() {
                                     searchTerm={searchTerm}
                                     onSearchChange={handleSearchChange}
                                     selectedChampion={selectedChampion}
+                                    registeredTeam={registeredTeam}
+                                    champRoles={champRoles}
                                 />
                             ) : game && game.team1 && game.team2 ? (
                                 <SideSelection game={game} draft={draft} />
