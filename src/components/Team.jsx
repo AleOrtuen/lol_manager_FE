@@ -11,12 +11,14 @@ import midIco from '../img/roles/mid_ico.png';
 import adcIco from '../img/roles/adc_ico.png';
 import supIco from '../img/roles/sup_ico.png';
 import ModaleTeamData from "./ModaleTeamData";
+import { teamAnalysisFindTeam } from "../service/teamAnalysisService";
 
 function Team() {
 
     const teams = useSelector((state) => state.team);
     const [champs, setChamps] = useState();
     const [members, setMembers] = useState([]);
+    const [teamData, setTeamData] = useState();
     const location = useLocation();
     const [dataToUpdate, setDataToUpdate] = useState(null);
     const navigate = useNavigate();
@@ -46,6 +48,14 @@ function Team() {
                 .catch(error => {
                     console.log('Error fetching members:', error.response?.data?.response || error.message);
                 });
+            
+            teamAnalysisFindTeam(location.state.idTeam)
+                .then((response) => {
+                    setTeamData(response.data.objResponse);
+                })
+                .catch(error => {
+                    console.log(error.response.data.response);
+                })
         }
     }, [location.state]);
 
@@ -58,6 +68,11 @@ function Team() {
                         <div key={team.idTeam}>
                             <h1 className="display-6">{team.name}</h1>
                             <p>{team.tag}</p>
+                            <span>Winrate</span>
+                            {teamData && teamData.winRate ? 
+                            <p>{teamData.winRate}%</p>
+                            : null
+                            }
                             <button className="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 Modifica team
                             </button>

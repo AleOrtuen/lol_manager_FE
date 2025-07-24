@@ -1,7 +1,8 @@
 import { useState } from "react"
 import { gameSave } from "../../service/gameService";
 import { gameRoomSave } from "../../service/gameRoomService";
-import Logo from "../Logo";
+import logo from '../../img/logo.png';
+import drafter from '../../img/drafter_logo.png';
 import { draftSave } from "../../service/draftService";
 
 function CreateGame() {
@@ -29,7 +30,7 @@ function CreateGame() {
             style: form.style,
             fearless: form.fearless
         };
-        
+
         let game;
         await gameSave(gameForm)
             .then((response) => {
@@ -62,12 +63,13 @@ function CreateGame() {
     }
     return (
         <>
-            {/* <Logo /> */}
+            <img src={logo} style={{ maxWidth: '200px', marginTop: '-50px', }} />
+            <br />
+            <img src={drafter} style={{ maxWidth: '150px' }} />
+            <br />
             <br />
             <div className="d-flex align-items-center justify-content-center">
                 <div className="col-10 col-md-6 text-center">
-                    <h1 className="display-6">CREATE GAME</h1>
-                    <br />
                     <h5 className="fw-bolder">Draft type</h5>
                     <form>
                         <div className="form-check form-check-inline">
@@ -123,6 +125,7 @@ function CreateGame() {
                                 name="fearless"
                                 checked={form.fearless}
                                 onChange={handleChange}
+                                disabled={form.style === 'bo1'}
                             />
                             <label className="form-check-label ms-2" htmlFor="checkNativeSwitch">
                                 Fearless

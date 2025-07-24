@@ -1,7 +1,13 @@
-
 body {
   background-color: #1e1e1e !important;
   color: rgb(215, 215, 215) !important;
+}
+
+@media (max-width: 767.98px) {
+  #root {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
 }
 
 a {
@@ -17,13 +23,16 @@ a {
 }
 
 .dropdown-item:hover {
-  background-color: #333 !important; /* Colore di sfondo più scuro */
+  background-color: #333 !important;
+  /* Colore di sfondo più scuro */
 }
 
 /* Modifica lo sfondo della modale */
 .custom-modal-bg {
-  background-color: #242424 !important; /* Colore scuro per lo sfondo della modale */
-  color: rgb(215, 215, 215) !important; /* Colore del testo chiaro */
+  background-color: #242424 !important;
+  /* Colore scuro per lo sfondo della modale */
+  color: rgb(215, 215, 215) !important;
+  /* Colore del testo chiaro */
 }
 
 /* Navbar.css */
@@ -42,8 +51,10 @@ a {
 }
 
 ::-webkit-scrollbar {
-  width: 10px; /* Larghezza della scrollbar */
-  height: 12px; /* Altezza della scrollbar (per gli elementi orizzontali) */
+  width: 10px;
+  /* Larghezza della scrollbar */
+  height: 12px;
+  /* Altezza della scrollbar (per gli elementi orizzontali) */
 }
 
 /* Stile per il "track" (la parte grigia dietro la scrollbar) */
@@ -54,26 +65,30 @@ a {
 
 /* Stile per il "thumb" (la parte che si sposta) */
 ::-webkit-scrollbar-thumb {
-  background: #888; /* Colore dello "thumb" */
-  border-radius: 10px; 
+  background: #888;
+  /* Colore dello "thumb" */
+  border-radius: 10px;
 }
 
 /* Stile quando il "thumb" è in hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: #555; /* Colore più scuro quando si passa sopra */
+  background: #555;
+  /* Colore più scuro quando si passa sopra */
 }
 
 .image-hover {
-  transition: filter 0.3s ease, transform 0.2s ease; /* Aggiungi una transizione fluida */
+  transition: filter 0.3s ease, transform 0.2s ease;
+  /* Aggiungi una transizione fluida */
 }
 
 .image-hover:hover {
-  filter: brightness(1.2); /* Aumenta la luminosità dell'immagine */
+  filter: brightness(1.2);
+  /* Aumenta la luminosità dell'immagine */
   transform: scale(1.05);
 }
 
 header {
-  padding-top: 80px;
+  padding-top: 30px;
   /* padding-bottom: 10px; */
   /* padding-left: 5px;
   padding-right: 5px; */
@@ -86,7 +101,8 @@ header {
 
 /* Mantiene lo sfondo scuro e il colore del testo bianco quando l'accordion è aperto */
 .accordion-button:not(.collapsed) {
-  background-color: #343a40; /* Questo è il colore bg-dark di Bootstrap */
+  background-color: #343a40;
+  /* Questo è il colore bg-dark di Bootstrap */
   /* color: white; */
 }
 
@@ -97,10 +113,13 @@ header {
 }
 
 /* Cambia il colore di sfondo del corpo dell'accordion (dove c'è la descrizione) */
-.accordion-body, .custom-accordion-body {
-  background-color: #353535 !important; /* Stesso colore del bottone (bg-dark) */
-  color: white !important; /* Mantiene il testo bianco */
-  
+.accordion-body,
+.custom-accordion-body {
+  background-color: #353535 !important;
+  /* Stesso colore del bottone (bg-dark) */
+  color: white !important;
+  /* Mantiene il testo bianco */
+
 }
 
 /* Rimuove i bordi dagli elementi dell'accordion */
@@ -108,20 +127,24 @@ header {
   border-color: gray !important;
 }
 
-.form-floating input:not(:focus) + label {
-  color: gray; /* Colore della label quando non in focus */
+.form-floating input:not(:focus)+label {
+  color: gray;
+  /* Colore della label quando non in focus */
 }
 
-.form-floating input:focus + label {
-  color: gray !important; /* Colore quando il campo è selezionato (es. blu Bootstrap) */
+.form-floating input:focus+label {
+  color: gray !important;
+  /* Colore quando il campo è selezionato (es. blu Bootstrap) */
 }
 
-.form-floating textarea:not(:focus) + label {
-  color: gray; /* Colore della label quando non in focus */
+.form-floating textarea:not(:focus)+label {
+  color: gray;
+  /* Colore della label quando non in focus */
 }
 
-.form-floating textarea:focus + label {
-  color: gray !important; /* Colore quando il campo è selezionato (es. blu Bootstrap) */
+.form-floating textarea:focus+label {
+  color: gray !important;
+  /* Colore quando il campo è selezionato (es. blu Bootstrap) */
 }
 
 .div-blue {
@@ -130,9 +153,9 @@ header {
   /* border-radius: 3px; */
   color: white;
   display: flex;
-  align-items: center; 
+  align-items: center;
   justify-content: flex-start;
-  padding-left: 20px;   
+  padding-left: 20px;
   padding-top: 5px;
   padding-bottom: 5px;
   box-sizing: border-box;
@@ -146,8 +169,8 @@ header {
   /* border-radius: 3px; */
   color: white;
   display: flex;
-  align-items: center; 
-  justify-content: flex-end; 
+  align-items: center;
+  justify-content: flex-end;
   padding-right: 20px;
   padding-top: 5px;
   padding-bottom: 5px;
@@ -163,46 +186,59 @@ header {
   padding: 0rem 0.8rem;
 }
 
-/* Score container posizionato a lato e full height */
-.score-container {
-  position: absolute;
-  top: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between; /* distribuisce equamente */
-  height: 100%;
-  width: 40px;
-  pointer-events: none; /* non blocca interazioni */
-  padding-bottom: 10px;
+.col-champion {
+  width: 25%;
+  max-width: 25%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.score-container.blue {
-  right: -40px;
+.col-stat {
+  width: 25%;
+  text-align: center;
 }
 
-.score-container.red {
-  left: -40px;
+.col-reset {
+  width: 1%;
+  white-space: nowrap;
 }
 
-/* Box base */
-.score-box {
+.linea-sx {
   flex: 1;
-  background: transparent;
-  border: 1px solid gray;
-  transition: background 0.3s ease;
-  width: 70%;
+  height: 2px;
+  background: linear-gradient(to right,
+      transparent,
+      #8A2BE2);
 }
 
-/* Stesso angolo di .div-blue */
-.score-box.blue {
-  clip-path: polygon(0 0, 10% 0, 100% 100%, 10% 100%);
+.linea-dx {
+  flex: 1;
+  height: 2px;
+  background: linear-gradient(to left,
+      transparent,
+      #8A2BE2);
 }
 
-/* Stesso angolo di .div-red */
-.score-box.red {
-  clip-path: polygon(10% 0, 100% 0, 100% 100%, 10% 100%);
+.glow-hover {
+  transition: filter 0.3s ease, transform 0.1s ease;
 }
 
-.score-box.win {
-  background: #4CAF50;
+.glow-hover:hover {
+  /* filter: drop-shadow(0 0 15px rgba(138, 43, 226, 1)) drop-shadow(0 0 25px rgba(138, 43, 226, 0.6)); */
+
+  filter: drop-shadow(0 0 15px rgba(138, 43, 226, 1));
+
+  /* transform: scale(1.01); */
+}
+
+.dropdown-submenu {
+  position: relative;
+}
+
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-left: 0.1rem;
+  margin-right: 0.1rem;
 }

@@ -125,9 +125,8 @@ function SignUp() {
     return (
         <div>
             <Logo />
-            <h1 className="display-6">TEAM MANAGER</h1>
             <br/>
-            <h5 className="fw-bolder">Registrazione utente</h5>
+            <h5>Registrazione utente</h5>
             <div className="row justify-content-center">
                 <div className="col-8 col-lg-4 col-md-6 col-sm-6">
                     <form>

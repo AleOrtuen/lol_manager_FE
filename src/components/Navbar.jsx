@@ -1,8 +1,10 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { LOGIN, TEAM, HOME, COMP_BUILDER, TEAM_COMP, ACCOUNT, POOL, TEAM_FORM, TEAMS } from "../utils/routes";
+import { LOGIN, TEAM, HOME, COMP_BUILDER, TEAM_COMP, ACCOUNT, POOL, TEAM_FORM, TEAMS, CHAMP_DATA, CREATE_GAME, TEAM_GAMES } from "../utils/routes";
 import { resetTeam, setTeam } from "../store/slice/teamSlice";
 import miniLogo from '../img/mini.png';
+import drafterIcon from '../img/draft_icon.png';
+import teamIcon from '../img/team_icon.png';
 import topIco from '../img/roles/top_ico.png';
 import jngIco from '../img/roles/jng_ico.png';
 import midIco from '../img/roles/mid_ico.png';
@@ -25,7 +27,7 @@ function Navbar() {
 
         if (!user || Object.keys(user).length === 0) {
             navigate(LOGIN);
-            return; 
+            return;
         }
         if (user && user.idUser && user.admin === false) {
             userFindTeams(user.idUser).then((response) => {
@@ -50,7 +52,6 @@ function Navbar() {
 
     }, []);
 
-    // Oggetto che mappa i ruoli alle immagini
     const roleImages = {
         top: topIco,
         jng: jngIco,
@@ -59,7 +60,6 @@ function Navbar() {
         sup: supIco,
     };
 
-    // Ottieni l'immagine del ruolo in base a user.pRole
     const roleImage = user && user.pRole ? roleImages[user.pRole] : null;
 
     const logOut = () => {
@@ -73,10 +73,13 @@ function Navbar() {
             {user && user != null ?
 
                 // NAVBAR             
-                <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
-                    <div className="container px-4">
+                <nav
+                    className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav"
+                    style={{ paddingLeft: '45px', paddingRight: '45px' }}
+                >
+                    <div className="container-fluid px-0">
                         <a className="navbar-brand" onClick={() => navigate(HOME)}>
-                            <img src={miniLogo} style={{ width: '23%', height: '23%', display: 'block' }} />
+                            <img src={miniLogo} className="glow-hover" style={{ width: '23%', height: '23%', display: 'block' }} />
                         </a>
                         <button
                             className="navbar-toggler"
@@ -92,9 +95,26 @@ function Navbar() {
 
                         <div className="collapse navbar-collapse" id="navbarResponsive">
                             <ul className="navbar-nav ms-auto">
-                                {teams && teams.length > 0 ?
-                                    (teams.map((team) =>
+                                <li className="nav-item dropdown">
+                                    <a
+                                        className="nav-link  ms-auto glow-hover"
+                                        href={CREATE_GAME}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        <img
+                                            src={drafterIcon}
 
+                                            style={{ maxWidth: '20px' }}
+                                            alt="DRAFTER"
+                                        />
+                                        <span>  Drafter</span>
+                                    </a>
+
+                                </li>
+                                {/* {teams && teams.length > 0 ?
+                                    (teams.map((team) =>
+                                        (teams.length === 1 ?
                                         <li className="nav-item dropdown" key={team.idTeam}>
                                             <a
                                                 className="nav-link dropdown-toggle"
@@ -103,6 +123,17 @@ function Navbar() {
                                                 data-bs-toggle="dropdown"
                                                 aria-expanded="false"
                                             >
+                                                <img
+                                                    src={teamIcon}
+                                                    style={{
+                                                        width: '20px',
+                                                        height: '20px',
+                                                        maxWidth: '20px',
+                                                        maxHeight: '20px',
+                                                        marginRight: '5px'
+                                                    }}
+                                                    alt="Team icon"
+                                                />
                                                 {team.tag}
                                             </a>
                                             <ul className="dropdown-menu bg-dark" aria-labelledby="navbarDropdownMenuLink">
@@ -115,11 +146,92 @@ function Navbar() {
                                                 <li>
                                                     <a className="dropdown-item text-light" onClick={() => navigate(COMP_BUILDER, { state: { idTeam: team.idTeam } })}>Comp builder</a>
                                                 </li>
+                                                <li>
+                                                    <a className="dropdown-item text-light" onClick={() => navigate(CHAMP_DATA, { state: { idTeam: team.idTeam } })}>Champion Stats</a>
+                                                </li>
                                             </ul>
                                         </li>
+                                        : null
+                                        )
                                     ))
                                     : null
-                                }
+                                } */}
+                                {teams && teams.length > 0 && (
+                                    <li className="nav-item dropdown">
+                                        <a
+                                            className="nav-link dropdown-toggle"
+                                            id="navbarDropdownMenuLink"
+                                            role="button"
+                                            data-bs-toggle="dropdown"
+                                            aria-expanded="false"
+                                        >
+                                            <img
+                                                src={teamIcon}
+                                                style={{
+                                                    width: '20px',
+                                                    height: '20px',
+                                                    maxWidth: '20px',
+                                                    maxHeight: '20px',
+                                                    marginRight: '5px'
+                                                }}
+                                                alt="Team icon"
+                                            />
+                                            {teams.length === 1 ? teams[0].tag : "Teams"}
+                                        </a>
+
+                                        <ul className="dropdown-menu bg-dark" aria-labelledby="navbarDropdownMenuLink">
+                                            {teams.length === 1 ? (
+                                                <>
+                                                    <li>
+                                                        <a className="dropdown-item text-light" onClick={() => navigate(TEAM, { state: { idTeam: teams[0].idTeam } })}>Profilo</a>
+                                                    </li>
+                                                    <li>
+                                                        <a className="dropdown-item text-light" onClick={() => navigate(TEAM_COMP, { state: { idTeam: teams[0].idTeam } })}>Team Comp</a>
+                                                    </li>
+                                                    <li>
+                                                        <a className="dropdown-item text-light" onClick={() => navigate(COMP_BUILDER, { state: { idTeam: teams[0].idTeam } })}>Comp builder</a>
+                                                    </li>
+                                                    <li>
+                                                        <a className="dropdown-item text-light" onClick={() => navigate(TEAM_GAMES, { state: { idTeam: teams[0].idTeam } })}>Games</a>
+                                                    </li>
+                                                    <li>
+                                                        <a className="dropdown-item text-light" onClick={() => navigate(CHAMP_DATA, { state: { idTeam: teams[0].idTeam } })}>Champion Stats</a>
+                                                    </li>
+                                                </>
+                                            ) : (
+                                                teams.map((team) => (
+                                                    <li className="dropdown-submenu" key={team.idTeam}>
+                                                        <a
+                                                            className="dropdown-item dropdown-toggle text-light"
+                                                            href="#"
+                                                            role="button"
+                                                            data-bs-toggle="dropdown"
+                                                            aria-expanded="false"
+                                                        >
+                                                            {team.tag}
+                                                        </a>
+                                                        <ul className="dropdown-menu bg-dark">
+                                                            <li>
+                                                                <a className="dropdown-item text-light" onClick={() => navigate(TEAM, { state: { idTeam: team.idTeam } })}>Profilo</a>
+                                                            </li>
+                                                            <li>
+                                                                <a className="dropdown-item text-light" onClick={() => navigate(TEAM_COMP, { state: { idTeam: team.idTeam } })}>Team Comp</a>
+                                                            </li>
+                                                            <li>
+                                                                <a className="dropdown-item text-light" onClick={() => navigate(COMP_BUILDER, { state: { idTeam: team.idTeam } })}>Comp builder</a>
+                                                            </li>
+                                                            <li>
+                                                                <a className="dropdown-item text-light" onClick={() => navigate(CHAMP_DATA, { state: { idTeam: team.idTeam } })}>Champion Stats</a>
+                                                            </li>
+                                                        </ul>
+                                                    </li>
+                                                ))
+                                            )}
+                                        </ul>
+                                    </li>
+                                )}
+
+
                                 {user.admin ?
                                     <li className="nav-item dropdown">
                                         <a

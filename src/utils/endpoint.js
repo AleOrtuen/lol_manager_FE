@@ -92,6 +92,7 @@ export const GAME_ROOM_DELETE = GAME_ROOM_PATH + 'delete/';
 export const GAME_ROOM_FIND_ALL = GAME_ROOM_PATH + 'find-all';
 export const GAME_ROOM_FIND_ID = GAME_ROOM_PATH + 'find-id/';
 export const GAME_ROOM_FIND_GAME = GAME_ROOM_PATH + 'find-game/';
+export const GAME_ROOM_FIND_TEAM = GAME_ROOM_PATH + 'find-team/';
 
 //ENDPOINT DRAFT 
 const DRAFT_PATH = BASE_PATH + 'draft/';
@@ -135,3 +136,9 @@ export const LEAGUE_ROLE_UPDATE = LEAGUE_ROLE_PATH + 'update';
 export const LEAGUE_ROLE_DELETE = LEAGUE_ROLE_PATH + 'delete/';
 export const LEAGUE_ROLE_FIND_ALL = LEAGUE_ROLE_PATH + 'find-all';
 export const LEAGUE_ROLE_FIND_ID = LEAGUE_ROLE_PATH + 'find-id/';
+
+//ENDPOINT TEAM ANALYSIS
+const TEAM_ANALYSIS_PATH = BASE_PATH + 'team-analysis/';
+export const TEAM_ANALYSIS_FIND_TEAM = TEAM_ANALYSIS_PATH + 'find-team/';
+export const TEAM_ANALYSIS_CHAMP_ANALYSIS = TEAM_ANALYSIS_PATH + 'champ-analysis/';
+

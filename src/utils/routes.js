@@ -12,3 +12,5 @@ export const COMP_FORM = '/comp-form';
 export const COMP = '/comp';
 export const CREATE_GAME = '/create-game';
 export const DRAFT = '/draft';
+export const CHAMP_DATA = '/champ-data';
+export const TEAM_GAMES = '/team-games';
