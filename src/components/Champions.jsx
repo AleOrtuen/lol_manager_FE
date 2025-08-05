@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 
 function Champions({ champions, onSelectChampion, lockedChampions = new Set(), passiveState, size }) {
   const [imagesMap, setImagesMap] = useState({});
+  const { idRoom, role } = useParams();
 
   useEffect(() => {
     const importImages = async () => {
@@ -46,7 +48,7 @@ function Champions({ champions, onSelectChampion, lockedChampions = new Set(), p
                 minWidth: '67px',
                 textAlign: 'center',
                 cursor: isLocked || passiveState ? 'not-allowed' : 'pointer',
-                filter: isLocked || passiveState ? 'grayscale(100%) brightness(0.6)' : 'none',
+                filter: isLocked || (passiveState && role !== 'spectate') ? 'grayscale(100%) brightness(0.6)' : 'none',
                 pointerEvents: isLocked ? 'none' : 'auto'
               }}
               onClick={() => {

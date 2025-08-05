@@ -106,10 +106,12 @@ function Draft() {
             setCurrentPhase(nextPhase);
             setSelectedChampion(null);
             setRemoteSelectedChampion(null);
-            setPassiveState(
-                (side === 'blue' && nextPhase.startsWith("blue")) ||
-                    (side === 'red' && nextPhase.startsWith("red")) ? false : true
-            );
+            if (role !== 'spectate') {
+                setPassiveState(
+                    (side === 'blue' && nextPhase.startsWith("blue")) ||
+                        (side === 'red' && nextPhase.startsWith("red")) ? false : true
+                );
+            }
         }
 
         if (msg.type === "CURRENT_EVENT" && msg.events) {
@@ -123,10 +125,12 @@ function Draft() {
                 return;
             }
 
-            setPassiveState(
-                (side === 'blue' && current.startsWith("blue")) ||
-                    (side === 'red' && current.startsWith("red")) ? false : true
-            );
+            if (role !== 'spectate') {
+                setPassiveState(
+                    (side === 'blue' && nextPhase.startsWith("blue")) ||
+                        (side === 'red' && nextPhase.startsWith("red")) ? false : true
+                );
+            }
         }
 
         if (msg.type === "SELECTED_CHAMP" && msg.champion && role !== msg.sender) {
@@ -222,6 +226,11 @@ function Draft() {
 
     // VERIFY IF THE GAME EXIST BEFORE LOAD THE PAGE
     useEffect(() => {
+        if (role === 'spectate') {
+            setPageLoading(true);
+            setPassiveState(true);
+            return
+        }
         if (!game) return;
 
         if (role === 'player1' && game.team1 !== null) {
@@ -465,14 +474,14 @@ function Draft() {
     };
 
     const consoleLogs = () => {
-        // console.log(passiveState);
+        console.log(passiveState);
         // console.log(currentPhase);
-        console.log(leagueRoles);
+        // console.log(leagueRoles);
         // console.log(yourSide);
         // console.log(draft);
         // console.log(draftList);
-        console.log(comps);
-        console.log(champRoles);
+        // console.log(comps);
+        // console.log(champRoles);
         // console.log(selectedDraftIndex);
         // console.log(blueBans);
         // console.log(redBans);
@@ -481,6 +490,7 @@ function Draft() {
     return (
 
         <div className="wide-component">
+            {/* <button onClick={consoleLogs}>logs</button> */}
             {pageLoading && pageLoading === true ?
                 <div>
                     <div className="row justify-content-center">
@@ -515,7 +525,6 @@ function Draft() {
                                 <Timer currentPhase={currentPhase} />
                                 : null
                             }
-                            {/* <button onClick={consoleLogs}>LOGS</button> */}
                         </div>
                         <div className="col-1 d-flex align-items-center justify-content-end">
                             <h2>{redWins}</h2>
@@ -551,9 +560,9 @@ function Draft() {
                                 maxHeight: '60vh'
                             }}
                         >
-                            {draft?.closed ? (
+                            {draft?.closed && role !== 'spectate' ? (
                                 <WinnerSelection draft={draft} />
-                            ) : draft && draft.teamBlue && draft.teamRed ? (
+                            ) : (draft && draft.teamBlue && draft.teamRed) || role === 'spectate' ? (
                                 <ChampionGallery
                                     champions={champions}
                                     leagueRoles={leagueRoles}
@@ -604,16 +613,19 @@ function Draft() {
                         </div>
 
                         <div className="col-2">
-                            {draft && draft.ready === false && draft.teamBlue !== null ?
-                                <ReadyCheck draft={draft} setDraft={setDraft} />
-                                :
-                                <button
-                                    className="btn btn-secondary btn-lg"
-                                    disabled={passiveState || selectedChampion === null}
-                                    onClick={lockChampion}
-                                >
-                                    Lock
-                                </button>
+                            {role !== 'spectate' ?
+                                (draft && draft.ready === false && draft.teamBlue !== null ?
+                                    <ReadyCheck draft={draft} setDraft={setDraft} />
+                                    :
+                                    <button
+                                        className="btn btn-secondary btn-lg"
+                                        disabled={passiveState || selectedChampion === null}
+                                        onClick={lockChampion}
+                                    >
+                                        Lock
+                                    </button>
+                                )
+                                : null
                             }
                         </div>
 

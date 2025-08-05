@@ -63,7 +63,7 @@ function CreateGame() {
     }
     return (
         <>
-            <img src={logo} style={{ maxWidth: '200px', marginTop: '-50px', }} />
+            <img src={logo} style={{ maxWidth: '150px', marginTop: '-50px', }} />
             <br />
             <img src={drafter} style={{ maxWidth: '150px' }} />
             <br />
@@ -180,6 +180,26 @@ function CreateGame() {
                                         className="btn btn-outline-secondary"
                                         type="button"
                                         onClick={() => navigator.clipboard.writeText(`${baseUrl}${room.player2Link}`)}
+                                    >
+                                        Copy
+                                    </button>
+                                </div>
+                            </div>
+                            <div className="mb-3">
+                                <label className="form-label fw-bold">Spectate link:</label>
+                                <div className="input-group">
+                                    <a
+                                        href={`${baseUrl}${room.spectateLink}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="form-control text-decoration-none text-primary"
+                                    >
+                                        {`${baseUrl}${room.spectateLink}`}
+                                    </a>
+                                    <button
+                                        className="btn btn-outline-secondary"
+                                        type="button"
+                                        onClick={() => navigator.clipboard.writeText(`${baseUrl}${room.spectateLink}`)}
                                     >
                                         Copy
                                     </button>
