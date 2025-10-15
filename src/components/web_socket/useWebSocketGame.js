@@ -10,7 +10,7 @@ export function useWebSocketDraft(idRoom, onMessage) {
     if (!idRoom) return;
 
     const stompClient = new Client({
-      webSocketFactory: () => new SockJS(`${import.meta.env.VITE_API_BASE_URL}ws`),
+      webSocketFactory: () => new SockJS(`${import.meta.env.VITE_API_BASE_URL}/ws`),
       reconnectDelay: 5000,
       debug: (str) => console.log("💬 STOMP:", str),
     });

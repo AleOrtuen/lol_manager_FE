@@ -7,8 +7,7 @@ function Logo() {
             <img src={logo} 
                 style={{
                     maxWidth: '250px',
-                    marginBottom: '-30px',
-                    marginTop: '-30px'
+                    marginBottom: '-30px'
                 }}
             />
         </div>

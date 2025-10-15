@@ -1,22 +1,23 @@
 import axios from "axios";
 import { GAME_DELETE, GAME_FIND_ALL, GAME_FIND_ID, GAME_SAVE, GAME_UPDATE } from "../utils/endpoint";
+import api from "./axiosInstance";
 
 export function gameSave(game) {
-    return axios.post(GAME_SAVE, game);
+    return api.post(GAME_SAVE, game);
 }
 
 export function gameUpdate(game) {
-    return axios.put(GAME_UPDATE, game);
+    return api.put(GAME_UPDATE, game);
 }
 
 export function gameDelete(idGame) {
-    return axios.delete(`${GAME_DELETE}${idGame}`);
+    return api.delete(`${GAME_DELETE}${idGame}`);
 }
 
 export function gameFindAll() {
-    return axios.get(GAME_FIND_ALL);
+    return api.get(GAME_FIND_ALL);
 }
 
 export function gameFindId(idGame) {
-    return axios.get(`${GAME_FIND_ID}${idGame}`);
+    return api.get(`${GAME_FIND_ID}${idGame}`);
 }

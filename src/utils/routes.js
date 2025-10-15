@@ -14,3 +14,5 @@ export const CREATE_GAME = '/create-game';
 export const DRAFT = '/draft';
 export const CHAMP_DATA = '/champ-data';
 export const TEAM_GAMES = '/team-games';
+export const PSW_RESET = '/psw-request';
+export const TEAM_UPDATE = '/team-update';

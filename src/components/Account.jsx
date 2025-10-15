@@ -8,6 +8,7 @@ import jngIco from '../img/roles/jng.webp';
 import midIco from '../img/roles/mid.webp';
 import adcIco from '../img/roles/adc.webp';
 import supIco from '../img/roles/sup.webp';
+import fillIco from '../img/roles/fill.webp';
 
 function Account() {
 
@@ -21,6 +22,7 @@ function Account() {
         mid: midIco,
         adc: adcIco,
         sup: supIco,
+        fill: fillIco
     };
 
     const roleImage = user && user.pRole ? roleImages[user.pRole] : null;
@@ -62,8 +64,8 @@ function Account() {
 
                         <br />
 
-                        <button className="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Modifica dati personali
+                        <button className="btn btn-purple btn-sm  dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Edit Profile
                         </button>
                         <ul className="dropdown-menu bg-dark">
                             <li>

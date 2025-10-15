@@ -15,7 +15,6 @@ import { banFindByDraft } from "../../service/banService";
 import { pickFindByDraft, pickFindByGame } from "../../service/pickService";
 import ChampionGallery from "./ChampionGallery";
 import WinnerSelection from "./WinnerSelection";
-import { resetGame, setGameData, updateDraft, updateGame } from "../../store/slice/gameSlice";
 import { useDispatch, useSelector } from "react-redux";
 import DraftSelection from "./DraftSelection";
 import Score from "./Score";
@@ -179,7 +178,6 @@ function Draft() {
 
     //FIND ALL CHAMPS, GAME AND DRAFT
     useEffect(() => {
-        dispatch(resetGame());
         champFindAll()
             .then((response) => {
                 setChampions(response.data.objResponse);
@@ -191,7 +189,6 @@ function Draft() {
         gameRoomFindId(idRoom)
             .then((response) => {
                 setGame(response.data.objResponse.game);
-                dispatch(updateGame(response.data.objResponse.game));
             })
             .catch(error => {
                 console.log(error.response.data.response);
@@ -208,7 +205,6 @@ function Draft() {
                 setSelectedDraftIndex(defaultIndex !== -1 ? defaultIndex : 0);
                 setDraft(selected);
 
-                dispatch(updateDraft(drafts));
             })
             .catch(error => {
                 console.log(error.response.data.response);
@@ -226,6 +222,7 @@ function Draft() {
 
     // VERIFY IF THE GAME EXIST BEFORE LOAD THE PAGE
     useEffect(() => {
+                console.log(game);
         if (role === 'spectate') {
             setPageLoading(true);
             setPassiveState(true);
@@ -240,7 +237,7 @@ function Draft() {
         if (role === 'player2' && game.team2 !== null) {
             setPageLoading(true);
         }
-
+        console.log(game);
     }, [game, role]);
 
     // SELECT CORRECT DRAFT FROM THE MULTI BUTTON RESULT

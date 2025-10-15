@@ -4,12 +4,15 @@ import Navbar from "./Navbar";
 import { useLocation } from "react-router-dom";
 import Champions from "./Champions";
 import React from "react";
+import RateBar from "./RateBar";
 
 function ChampData() {
     const location = useLocation();
     const [champsData, setChampsData] = useState([]);
     const [expandedRows, setExpandedRows] = useState({});
     const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 20;
 
     useEffect(() => {
         if (location.state && location.state.idTeam) {
@@ -35,17 +38,18 @@ function ChampData() {
             key,
             direction: prev.key === key && prev.direction === 'asc' ? 'desc' : 'asc',
         }));
+        setCurrentPage(1);
     };
 
     const resetSort = () => {
         setSortConfig({ key: null, direction: 'asc' });
+        setCurrentPage(1);
     };
 
     const sortedData = [...champsData].sort((a, b) => {
         if (!sortConfig.key) return 0;
 
         let valA, valB;
-
         if (sortConfig.key === "name") {
             valA = a.champ.name.toLowerCase();
             valB = b.champ.name.toLowerCase();
@@ -59,9 +63,14 @@ function ChampData() {
         return 0;
     });
 
+    // PAGINAZIONE
+    const totalPages = Math.ceil(sortedData.length / itemsPerPage);
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const currentData = sortedData.slice(startIndex, startIndex + itemsPerPage);
+
     const renderSortIcon = (key) => {
         if (sortConfig.key !== key) return "⇅";
-        return sortConfig.direction === 'asc' ? <i class="bi bi-sort-up"></i> : <i class="bi bi-sort-down-alt"></i>;
+        return sortConfig.direction === 'asc' ? <i className="bi bi-sort-up"></i> : <i className="bi bi-sort-down-alt"></i>;
     };
 
     return (
@@ -121,21 +130,18 @@ function ChampData() {
                         </tr>
                     </thead>
                     <tbody>
-                        {sortedData.map((champ, index) => (
-                            <React.Fragment key={index}>
+                        {currentData.map((champ, index) => (
+                            <React.Fragment key={startIndex + index}>
                                 <tr
-                                    onClick={() => toggleRow(index)}
+                                    onClick={() => toggleRow(startIndex + index)}
                                     style={{ cursor: 'pointer' }}
                                 >
                                     <td>
                                         <div style={{ display: 'flex', alignItems: 'center' }}>
-                                            <Champions
-                                                champions={[champ.champ]}
-                                                size={"35px"}
-                                            />
+                                            <Champions champions={[champ.champ]} size={"35px"} />
                                             <span className="ms-2">{champ.champ.name}</span>
                                             <span className="ms-2">
-                                                {expandedRows[index] ? (
+                                                {expandedRows[startIndex + index] ? (
                                                     <i className="bi bi-caret-down-fill" />
                                                 ) : (
                                                     <i className="bi bi-caret-right-fill" />
@@ -143,86 +149,70 @@ function ChampData() {
                                             </span>
                                         </div>
                                     </td>
-                                    <td>
-                                        {champ.winRatePick !== null
-                                            ? Math.floor(champ.winRatePick * 100) / 100
-                                            : "0"}% ({champ.winCountPick})
-                                    </td>
-                                    <td>
-                                        {champ.pickRate !== null
-                                            ? Math.floor(champ.pickRate * 100) / 100
-                                            : "0"}% ({champ.pickCount})
-                                    </td>
-                                    <td>
-                                        {champ.banRate !== null
-                                            ? Math.floor(champ.banRate * 100) / 100
-                                            : "0"}% ({champ.banCount})
-                                    </td>
-                                    <td>
-
-                                    </td>
+                                      <td>{champ.winRatePick !== null ? <RateBar rate={champ.winRatePick} count={champ.winCountPick}/> : <RateBar rate={0}/>}</td>
+                                      <td>{champ.pickRate !== null ? <RateBar rate={champ.pickRate} count={champ.pickCount}/> : <RateBar rate={0} />}</td>
+                                      <td>{champ.banRate !== null ? <RateBar rate={champ.banRate} count={champ.banCount}/> : <RateBar rate={0} />}</td>
+                                    <td></td>
                                 </tr>
-                                {expandedRows[index] && (
+                                {expandedRows[startIndex + index] && (
                                     <tr>
+                                        <td style={{ backgroundColor: '#2a2a2a' }}><strong>Side:</strong></td>
                                         <td style={{ backgroundColor: '#2a2a2a' }}>
-                                            <strong>Side:</strong>
+                                            <span className="text-primary">
+                                                Blue: {champ.winRatePickBlue !== null ? Math.floor(champ.winRatePickBlue * 100) / 100 : "0"}% ({champ.winCountPickBlue})
+                                            </span><br />
+                                            <span className="text-danger">
+                                                Red: {champ.winRatePickRed !== null ? Math.floor(champ.winRatePickRed * 100) / 100 : "0"}% ({champ.winCountPickRed})
+                                            </span>
                                         </td>
                                         <td style={{ backgroundColor: '#2a2a2a' }}>
-                                            <div>
-                                                <span className="text-primary">
-                                                    Blue: {champ.winRatePickBlue !== null
-                                                        ? Math.floor(champ.winRatePickBlue * 100) / 100
-                                                        : "0"}% ({champ.winCountPickBlue})
-                                                </span>
-                                                <br />
-                                                <span className="text-danger">
-                                                    Red: {champ.winRatePickRed !== null
-                                                        ? Math.floor(champ.winRatePickRed * 100) / 100
-                                                        : "0"}% ({champ.winCountPickRed})
-                                                </span>
-                                            </div>
+                                            <span className="text-primary">
+                                                Blue: {champ.pickRateBlue !== null ? Math.floor(champ.pickRateBlue * 100) / 100 : "0"}% ({champ.pickCountBlue})
+                                            </span><br />
+                                            <span className="text-danger">
+                                                Red: {champ.pickRateRed !== null ? Math.floor(champ.pickRateRed * 100) / 100 : "0"}% ({champ.pickCountRed})
+                                            </span>
                                         </td>
                                         <td style={{ backgroundColor: '#2a2a2a' }}>
-                                            <div>
-                                                <span className="text-primary">
-                                                    Blue: {champ.pickRateBlue !== null
-                                                        ? Math.floor(champ.pickRateBlue * 100) / 100
-                                                        : "0"}% ({champ.pickCountBlue})
-                                                </span>
-                                                <br />
-                                                <span className="text-danger">
-                                                    Red: {champ.pickRateRed !== null
-                                                        ? Math.floor(champ.pickRateRed * 100) / 100
-                                                        : "0"}% ({champ.pickCountRed})
-                                                </span>
-                                            </div>
+                                            <span className="text-primary">
+                                                Blue: {champ.banRateBlue !== null ? Math.floor(champ.banRateBlue * 100) / 100 : "0"}% ({champ.banCountBlue})
+                                            </span><br />
+                                            <span className="text-danger">
+                                                Red: {champ.banRateRed !== null ? Math.floor(champ.banRateRed * 100) / 100 : "0"}% ({champ.banCountRed})
+                                            </span>
                                         </td>
-                                        <td style={{ backgroundColor: '#2a2a2a' }}>
-                                            <div>
-                                                <span className="text-primary">
-                                                    Blue: {champ.banRateBlue !== null
-                                                        ? Math.floor(champ.banRateBlue * 100) / 100
-                                                        : "0"}% ({champ.banCountBlue})
-                                                </span>
-                                                <br />
-                                                <span className="text-danger">
-                                                    Red: {champ.banRateRed !== null
-                                                        ? Math.floor(champ.banRateRed * 100) / 100
-                                                        : "0"}% ({champ.banCountRed})
-                                                </span>
-                                            </div>
-                                        </td>
-                                        <td style={{ backgroundColor: '#2a2a2a' }}>
-                                        </td>
+                                        <td style={{ backgroundColor: '#2a2a2a' }}></td>
                                     </tr>
                                 )}
                             </React.Fragment>
                         ))}
                     </tbody>
                 </table>
+
+                {/* PAGINATION CONTROLS */}
+                <div className="d-flex justify-content-center mt-3">
+                    <button
+                        className="btn btn-sm btn-secondary me-2"
+                        disabled={currentPage === 1}
+                        onClick={() => setCurrentPage((prev) => prev - 1)}
+                    >
+                        Prev
+                    </button>
+                    <span className="align-self-center">
+                        Page {currentPage} of {totalPages}
+                    </span>
+                    <button
+                        className="btn btn-sm btn-secondary ms-2"
+                        disabled={currentPage === totalPages}
+                        onClick={() => setCurrentPage((prev) => prev + 1)}
+                    >
+                        Next
+                    </button>
+                </div>
             </header>
         </div>
     );
 }
+
 
 export default ChampData;

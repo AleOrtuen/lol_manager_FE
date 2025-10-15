@@ -4,7 +4,7 @@ import { setUser } from "../../store/slice/userSlice";
 import { setTeam, resetTeam } from "../../store/slice/teamSlice";
 import { teamFindAll, teamSave } from "../../service/teamService";
 import { useNavigate, useParams } from "react-router-dom";
-import { SIGNUP } from "../../utils/routes";
+import { SIGNUP, PSW_RESET } from "../../utils/routes";
 import { gameUpdate } from "../../service/gameService";
 import { userAuth, userFindTeams } from "../../service/userService";
 
@@ -20,6 +20,7 @@ function GuestSelection({ game }) {
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [error, setError] = useState(false);
 
     useEffect(() => {
 
@@ -60,12 +61,13 @@ function GuestSelection({ game }) {
             await userAuth(email, password).then((response) => {
                 dispatch(setUser(response.data.objResponse))
                 dispatch(resetTeam());
+                setError(false);
             }).catch(error => {
                 console.log(error.response.data.response)
-                alert('Credenziali errate')
+                setError(true);
             })
         } else {
-            alert('Inserire email e password')
+            alert('Please enter email and password')
         }
     }
 
@@ -148,7 +150,6 @@ function GuestSelection({ game }) {
         }
     }
 
-    // LOGIN ALLA PRESSIONE DI INVIO
     function handleKey(e) {
         if (e.key === "Enter") {
             login();
@@ -156,101 +157,126 @@ function GuestSelection({ game }) {
     }
 
     return (
-        <div>
-            <div>
-                <h1 className="display-6">ACCESSO AL GAME</h1>
-                <br />
-                <div className="row justify-content-center">
-                    <div className="col-8 col-lg-4 col-md-6 col-sm-6">
-                        <form>
-                            {user && Object.keys(user).length === 0 ?
-                                <>
-                                    <h5 className="fw-bolder">Login</h5>
-                                    <div className="form-floating mb-2">
-                                        <input
-                                            className="form-control"
-                                            type="text"
-                                            id="email"
-                                            value={email}
-                                            placeholder="Email"
-                                            onChange={(e) => setEmail(e.target.value)}
-                                            onKeyDown={handleKey}
-                                        />
-                                        <label htmlFor="email">Email</label>
-                                    </div>
-                                    <div className="form-floating mb-2">
-                                        <input
-                                            className="form-control"
-                                            type="password"
-                                            id="password"
-                                            value={password}
-                                            placeholder="Password"
-                                            onChange={(e) => setPassword(e.target.value)}
-                                            onKeyDown={handleKey}
-                                        />
-                                        <label htmlFor="password">Password</label>
-                                    </div>
+        <div className="container" style={{ paddingTop: "20px", minHeight: "70vh" }}>
+            <div className="d-flex flex-column align-items-center justify-content-center px-4">
+                
+                {/* Titolo */}
+                <h1 className="display-6 mb-4 text-center">GAME ACCESS</h1>
 
-                                </>
-                                :
-                                (teams && teams.length > 0 ? (
-                                    <>
-                                        <p>Benvenuto {user.username}, seleziona un team.</p>
-                                        <div className="form-floating">
-                                            <select
-                                                className="form-select"
-                                                id="floatingSelect"
-                                                name="team"
-                                                value={idTeam || ''} // fallback se undefined
-                                                onChange={(e) => setIdTeam(Number(e.target.value))}
-                                                aria-label="Floating label select example"
-                                            >
-                                                {teams.map((team) => (
-                                                    <option value={team.idTeam} key={team.idTeam}>
-                                                        {team.name}
-                                                    </option>
-                                                ))}
-                                            </select>
-
-                                            <label htmlFor="floatingSelect">Team</label>
-                                        </div>
-                                    </>
-                                )
-                                    : <p>Non hai teams continua come guest</p>
-                                )
-                            }
-                        </form>
-                        {user && Object.keys(user).length === 0 ?
+                {/* Box Login/Team Selection */}
+                <div 
+                    className="login-box p-4 rounded shadow" 
+                    style={{ 
+                        backgroundColor: "rgba(0,0,0,0.7)",
+                        minWidth: "300px", 
+                        maxWidth: "450px",
+                        width: "100%"
+                    }}
+                >
+                    <form>
+                        {user && Object.keys(user).length === 0 ? (
                             <>
-                                <br />
-                                <button className="btn btn-outline-secondary btn-lg" onClick={() => login()}>
-                                    Entra
+                                <h4 className="fw-bold mb-4">SIGN IN</h4>
+                                <div className="form-floating mb-3">
+                                    <input
+                                        className="form-control"
+                                        type="text"
+                                        id="email"
+                                        value={email}
+                                        placeholder="Email"
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        onKeyDown={handleKey}
+                                    />
+                                    <label htmlFor="email">Email</label>
+                                </div>
+                                <div className="form-floating mb-3">
+                                    <input
+                                        className="form-control"
+                                        type="password"
+                                        id="password"
+                                        value={password}
+                                        placeholder="Password"
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        onKeyDown={handleKey}
+                                    />
+                                    <label htmlFor="password">Password</label>
+                                </div>
+                                <div className={`error-msg ${!error ? 'hidden' : ''}`}>
+                                    Invalid credentials.{" "}
+                                    <span
+                                        className="text-warning"
+                                        style={{ cursor: "pointer" }}
+                                        onClick={() => navigate(PSW_RESET)}
+                                    >
+                                        Forgot password?
+                                    </span>
+                                </div>
+                                <button 
+                                    type="button"
+                                    className="btn btn-purple w-100 fw-bold mb-3" 
+                                    onClick={() => login()}
+                                >
+                                    LOGIN
                                 </button>
-                                <br /><br />
-                                Non hai un account?
-                                <a className="a-custom" onClick={() => navigate(SIGNUP)}> Registrati!</a><br />
+                                <div className="text-center">
+                                    Don't have an account?{" "}
+                                    <span
+                                        className="text-warning"
+                                        style={{ cursor: "pointer" }}
+                                        onClick={() => navigate(SIGNUP)}
+                                    >
+                                        Sign up
+                                    </span>
+                                </div>
                             </>
-                            : (teams && teams.length > 0 ?
+                        ) : (
+                            teams && teams.length > 0 ? (
                                 <>
-                                    <br />
-                                    <button className="btn btn-outline-secondary btn-lg" onClick={() => teamSelection()}>
-                                        Entra
+                                    <p className="mb-3">Welcome <strong>{user.username}</strong>, select a team.</p>
+                                    <div className="form-floating mb-3">
+                                        <select
+                                            className="form-select"
+                                            id="floatingSelect"
+                                            name="team"
+                                            value={idTeam || ''}
+                                            onChange={(e) => setIdTeam(Number(e.target.value))}
+                                            aria-label="Floating label select example"
+                                        >
+                                            {teams.map((team) => (
+                                                <option value={team.idTeam} key={team.idTeam}>
+                                                    {team.name}
+                                                </option>
+                                            ))}
+                                        </select>
+                                        <label htmlFor="floatingSelect">Team</label>
+                                    </div>
+                                    <button 
+                                        className="btn btn-purple w-100 fw-bold" 
+                                        onClick={() => teamSelection()}
+                                    >
+                                        ENTER
                                     </button>
                                 </>
-                                : null
+                            ) : (
+                                <p className="text-center">You don't have any teams, continue as guest</p>
                             )
-                        }
-                        <br /><br />
+                        )}
+                    </form>
+                    
+                    <hr className="my-4" style={{ borderColor: "rgba(255,255,255,0.3)" }} />
+                    
+                    {/* Sezione Guest */}
+                    <div className="text-center">
                         <button
-                            className="btn btn-outline-secondary btn-lg"
+                            className="btn btn-warning w-100 fw-bold mb-3"
                             onClick={() => viewForm()}
                         >
-                            Continua come guest
+                            {guestView === 0 ? 'CONTINUE AS GUEST' : 'CANCEL'}
                         </button>
-                        <br /><br />
-                        {guestView && guestView === 1 ?
+                        
+                        {guestView === 1 && (
                             <>
-                                <div className="form-floating mb-2">
+                                <div className="form-floating mb-3">
                                     <input
                                         className="form-control"
                                         type="text"
@@ -261,14 +287,16 @@ function GuestSelection({ game }) {
                                     />
                                     <label htmlFor="guestName">Team name</label>
                                 </div>
-                                <button className="btn btn-outline-secondary btn-lg" onClick={() => guestTeamSelection()}>
-                                    Entra
+                                <button 
+                                    className="btn btn-purple w-100 fw-bold" 
+                                    onClick={() => guestTeamSelection()}
+                                >
+                                    ENTER AS GUEST
                                 </button>
                             </>
-                            : null}
+                        )}
                     </div>
                 </div>
-
             </div>
         </div>
     )
