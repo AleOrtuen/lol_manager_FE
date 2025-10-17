@@ -2,7 +2,7 @@ import { useState } from 'react'
 import './App.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import { ACCOUNT, COMP, COMP_BUILDER, COMP_FORM, HOME, LOGIN, POOL, SIGNUP, TEAM, TEAM_COMP, TEAM_FORM, TEAMS } from './utils/routes'
+import { ACCOUNT, CHAMP_DATA, COMP, COMP_BUILDER, COMP_FORM, CREATE_GAME, DRAFT, HOME, LOGIN, POOL, PSW_RESET, SIGNUP, TEAM, TEAM_COMP, TEAM_FORM, TEAM_GAMES, TEAM_UPDATE, TEAMS } from './utils/routes'
 import Login from './components/Login'
 import SignUp from './components/SignUp';
 import Home from './components/Home';
@@ -16,6 +16,13 @@ import Teams from './components/Teams';
 import CompForm from './components/CompForm';
 import Comp from './components/Comp';
 import Footer from './components/Footer';
+import Draft from './components/Drafter/Draft';
+import CreateGame from './components/Drafter/CreateGame';
+import ChampData from './components/ChampData';
+import TeamGames from './components/TeamGames';
+import PswReset from './components/PswReset';
+import PswRequest from './components/PswRequest';
+import TeamUpdatePage from './components/TeamUpdatePage';
 
 function App() {
 
@@ -31,7 +38,14 @@ function App() {
     {path: TEAM_FORM, element: <TeamForm />},
     {path: TEAMS, element: <Teams />},
     {path: COMP_FORM, element: <CompForm />},
-    {path: COMP, element: <Comp />}
+    {path: COMP, element: <Comp />},
+    {path: CREATE_GAME, element: <CreateGame />},
+    {path: CHAMP_DATA, element: <ChampData />},
+    {path: TEAM_GAMES, element: <TeamGames />},
+    {path: "/game/:idRoom/:role", element: <Draft />},
+    {path: "/reset-password/:token", element: <PswReset />},
+    {path: PSW_RESET, element: <PswRequest />},
+    {path: TEAM_UPDATE, element: <TeamUpdatePage />}
   ])
 
   return (

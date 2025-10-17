@@ -5,26 +5,47 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { teamCompDelete, teamCompFindTeam } from "../service/teamCompService";
 import { COMP, COMP_FORM } from "../utils/routes";
 import { useSelector } from "react-redux";
+import { teamMemberFindUser } from "../service/teamMemberService";
 
 function TeamComp() {
     const user = useSelector((state) => state.user);
     const location = useLocation();
     const navigate = useNavigate();
     const [comps, setComps] = useState([]);
+    const [memberRoles, setMemberRoles] = useState()
+    const [isTeamAdmin, setIsTeamAdmin] = useState(false);
+
 
     //TROVA TUTTE LE COMP DEL TEAM
     useEffect(() => {
         if (location.state && location.state.idTeam) {
             setComps(null);
+
             teamCompFindTeam(location.state.idTeam)
                 .then((response) => {
                     setComps(response.data.objResponse);
                 })
                 .catch(error => {
-                    console.log(error.response.data.response)
+                    console.log(error.response?.data?.response || error);
+                });
+
+            teamMemberFindUser(user.idUser)
+                .then((response) => {
+                    const roles = response.data.objResponse || [];
+                    setMemberRoles(roles);
+
+
+                    const isAdmin = Array.isArray(roles) &&
+                        roles.some(mr => mr.idTeam === location.state.idTeam && mr.admin);
+
+                    setIsTeamAdmin(isAdmin);
                 })
+                .catch(error => {
+                    console.log(error.response?.data?.response || error);
+                });
         }
     }, [location.state]);
+
 
     const compDelete = (idComp) => {
         const confirmed = window.confirm("Sei sicuro di voler eliminare questa comp?");
@@ -79,12 +100,16 @@ function TeamComp() {
                                                         <button className="btn btn-secondary btn-sm" onClick={() => navigate(COMP, { state: { comp: comp } })}>
                                                             Info
                                                         </button>
-                                                        {user && user.admin ?
-                                                        <button className="btn btn-danger btn-sm" onClick={() => compDelete(comp.idComp)}>
-                                                            Elimina
-                                                        </button>
-                                                        : null
-                                                        }
+                                                        {isTeamAdmin && (
+                                                            <button
+                                                                className="btn btn-danger btn-sm"
+                                                                onClick={() => compDelete(comp.idComp)}
+                                                            >
+                                                                Elimina
+                                                            </button>
+                                                        )}
+
+
                                                     </div>
                                                 </div>
                                             </div>
@@ -94,12 +119,15 @@ function TeamComp() {
                             </div>
                         </div>
                         <br /><br />
-                        {user && user.admin ?
-                            <button className="btn btn-secondary btn-sm" onClick={() => navigate(COMP_FORM, { state: { idTeam: location.state.idTeam } })}>
+                        {isTeamAdmin && (
+                            <button
+                                className="btn btn-secondary btn-sm"
+                                onClick={() => navigate(COMP_FORM, { state: { idTeam: location.state.idTeam } })}
+                            >
                                 Crea Comp
                             </button>
-                            : null
-                        }
+                        )}
+
                     </>
                     : <p>Nessun team selezionato</p>
                 }

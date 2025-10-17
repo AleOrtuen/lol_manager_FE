@@ -3,6 +3,8 @@ import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import storage from 'redux-persist/es/storage'; // ✅ versione compatibile con Vite
 import { userSlice } from "./slice/userSlice";
 import { teamSlice } from "./slice/teamSlice";
+import { gameSlice } from "./slice/gameSlice";
+import { loadingSlice } from "./slice/loadingSlice";
 import {
   persistStore,
   persistReducer,
@@ -14,17 +16,20 @@ import {
   REGISTER,
 } from 'redux-persist';
 
+
 // Combinazione dei reducer
 const rootReducer = combineReducers({
   user: userSlice.reducer,
   team: teamSlice.reducer,
+  game: gameSlice.reducer,
+  loading: loadingSlice.reducer,
 });
 
 // Config persist
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["user", "team"], // solo questi slice verranno salvati
+  whitelist: ["user", "team", "game", "loading"], // solo questi slice verranno salvati
 };
 
 // Reducer persistente

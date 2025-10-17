@@ -1,7 +1,13 @@
-
 body {
   background-color: #1e1e1e !important;
   color: rgb(215, 215, 215) !important;
+}
+
+@media (max-width: 767.98px) {
+  #root {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
 }
 
 a {
@@ -17,13 +23,16 @@ a {
 }
 
 .dropdown-item:hover {
-  background-color: #333 !important; /* Colore di sfondo più scuro */
+  background-color: #333 !important;
+  /* Colore di sfondo più scuro */
 }
 
 /* Modifica lo sfondo della modale */
 .custom-modal-bg {
-  background-color: #242424 !important; /* Colore scuro per lo sfondo della modale */
-  color: rgb(215, 215, 215) !important; /* Colore del testo chiaro */
+  background-color: #242424 !important;
+  /* Colore scuro per lo sfondo della modale */
+  color: rgb(215, 215, 215) !important;
+  /* Colore del testo chiaro */
 }
 
 /* Navbar.css */
@@ -32,48 +41,48 @@ a {
   padding: 10px;
 }
 
-/*
-.dropdown-menu li {
-  padding: 4px 8px;
-} */
+.navbar .dropdown-menu {
+    right: 0;
+    left: auto;
+}
 
 .dropdown:hover .dropdown-menu {
   display: block;
 }
 
 ::-webkit-scrollbar {
-  width: 10px; /* Larghezza della scrollbar */
-  height: 12px; /* Altezza della scrollbar (per gli elementi orizzontali) */
-}
-
-/* Stile per il "track" (la parte grigia dietro la scrollbar) */
-::-webkit-scrollbar-track {
-  /* background: #f1f1f1; Colore di sfondo del track */
-  /* border-radius: 5px; Raggio del bordo per angoli arrotondati */
+  width: 10px;
+  /* Larghezza della scrollbar */
+  height: 12px;
+  /* Altezza della scrollbar (per gli elementi orizzontali) */
 }
 
 /* Stile per il "thumb" (la parte che si sposta) */
 ::-webkit-scrollbar-thumb {
-  background: #888; /* Colore dello "thumb" */
-  border-radius: 10px; 
+  background: #888;
+  /* Colore dello "thumb" */
+  border-radius: 10px;
 }
 
 /* Stile quando il "thumb" è in hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: #555; /* Colore più scuro quando si passa sopra */
+  background: #555;
+  /* Colore più scuro quando si passa sopra */
 }
 
 .image-hover {
-  transition: filter 0.3s ease, transform 0.2s ease; /* Aggiungi una transizione fluida */
+  transition: filter 0.3s ease, transform 0.2s ease;
+  /* Aggiungi una transizione fluida */
 }
 
 .image-hover:hover {
-  filter: brightness(1.2); /* Aumenta la luminosità dell'immagine */
+  filter: brightness(1.2);
+  /* Aumenta la luminosità dell'immagine */
   transform: scale(1.05);
 }
 
 header {
-  padding-top: 80px;
+  padding-top: 30px;
   /* padding-bottom: 10px; */
   /* padding-left: 5px;
   padding-right: 5px; */
@@ -86,7 +95,8 @@ header {
 
 /* Mantiene lo sfondo scuro e il colore del testo bianco quando l'accordion è aperto */
 .accordion-button:not(.collapsed) {
-  background-color: #343a40; /* Questo è il colore bg-dark di Bootstrap */
+  background-color: #343a40;
+  /* Questo è il colore bg-dark di Bootstrap */
   /* color: white; */
 }
 
@@ -97,10 +107,13 @@ header {
 }
 
 /* Cambia il colore di sfondo del corpo dell'accordion (dove c'è la descrizione) */
-.accordion-body, .custom-accordion-body {
-  background-color: #353535 !important; /* Stesso colore del bottone (bg-dark) */
-  color: white !important; /* Mantiene il testo bianco */
-  
+.accordion-body,
+.custom-accordion-body {
+  background-color: #000000d5 !important;
+  /* Stesso colore del bottone (bg-dark) */
+  color: white !important;
+  /* Mantiene il testo bianco */
+
 }
 
 /* Rimuove i bordi dagli elementi dell'accordion */
@@ -108,21 +121,179 @@ header {
   border-color: gray !important;
 }
 
-.form-floating input:not(:focus) + label {
-  color: gray; /* Colore della label quando non in focus */
+.form-floating input:not(:focus)+label {
+  color: gray;
+  /* Colore della label quando non in focus */
 }
 
-.form-floating input:focus + label {
-  color: gray !important; /* Colore quando il campo è selezionato (es. blu Bootstrap) */
+.form-floating input:focus+label {
+  color: gray !important;
+  /* Colore quando il campo è selezionato (es. blu Bootstrap) */
 }
 
-.form-floating textarea:not(:focus) + label {
-  color: gray; /* Colore della label quando non in focus */
+.form-floating textarea:not(:focus)+label {
+  color: gray;
+  /* Colore della label quando non in focus */
 }
 
-.form-floating textarea:focus + label {
-  color: gray !important; /* Colore quando il campo è selezionato (es. blu Bootstrap) */
+.form-floating textarea:focus+label {
+  color: gray !important;
+  /* Colore quando il campo è selezionato (es. blu Bootstrap) */
 }
 
+.div-blue {
+  background-color: rgb(97, 97, 255);
+  clip-path: polygon(0 0, 90% 0, 100% 100%, 0% 100%);
+  /* border-radius: 3px; */
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding-left: 20px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  box-sizing: border-box;
+  margin-bottom: 10px;
+  position: relative;
+}
+
+.div-red {
+  background-color: rgb(255, 31, 31);
+  clip-path: polygon(10% 0, 100% 0, 100% 100%, 0% 100%);
+  /* border-radius: 3px; */
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 20px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  box-sizing: border-box;
+  margin-bottom: 10px;
+  position: relative;
+}
+
+.wide-component {
+  width: 99.7vw;
+  margin-left: calc(-50vw + 50%);
+  margin-top: -20px;
+  padding: 0rem 0.8rem;
+}
+
+.col-champion {
+  width: 25%;
+  max-width: 25%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.col-stat {
+  width: 25%;
+  text-align: center;
+}
+
+.col-reset {
+  width: 1%;
+  white-space: nowrap;
+}
+
+.linea-sx {
+  flex: 1;
+  height: 2px;
+  background: linear-gradient(to right,
+      transparent,
+      #8A2BE2);
+}
+
+.linea-dx {
+  flex: 1;
+  height: 2px;
+  background: linear-gradient(to left,
+      transparent,
+      #8A2BE2);
+}
+
+.glow-hover {
+  transition: filter 0.3s ease, transform 0.1s ease;
+}
+
+.glow-hover:hover {
+  /* filter: drop-shadow(0 0 15px rgba(138, 43, 226, 1)) drop-shadow(0 0 25px rgba(138, 43, 226, 0.6)); */
+
+  filter: drop-shadow(0 0 15px rgba(138, 43, 226, 1));
+
+  /* transform: scale(1.01); */
+}
+
+.dropdown-submenu {
+  position: relative;
+}
+
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-left: 0.1rem;
+  margin-right: 0.1rem;
+}
+
+.btn-purple {
+  background-color: #8A2BE2 !important;    
+  border-color: #8A2BE2 !important;
+  color: #fff !important;         
+}
+
+.btn-purple:hover {
+  background-color: #7326b5 !important; 
+  border-color: #7326b5 !important;
+}
+
+.error-msg {
+  min-height: 1.5rem;         /* mantiene sempre lo spazio verticale */
+  color: inherit;             /* rosso per l’errore */
+  transition: opacity 0.3s ease;
+  opacity: 1;
+  white-space: normal;        /* consente l’andata a capo */
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  width: 100%;                /* impedisce allargamenti */
+  text-align: left;
+  display: block;             /* garantisce che occupi sempre la larghezza */
+}
+
+.error-msg.hidden {
+  opacity: 0;
+  pointer-events: none;       /* evita click su eventuali link invisibili */
+}
+
+/* Overlay che copre tutta la finestra */
+.loader-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.7); /* sfondo semi-trasparente */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999; /* sopra tutto */
+}
+
+/* Spinner puro CSS */
+.loader {
+  width: 60px;
+  height: 60px;
+  border: 6px solid #ccc;
+  border-top: 6px solid #007bff; /* colore blu */
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+/* Animazione */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
 
 

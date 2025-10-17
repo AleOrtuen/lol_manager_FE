@@ -115,7 +115,7 @@ function ChampionPool() {
                     })
                     .catch(error => {
                         console.log(error.response.data.response);
-                    })                
+                    })
             }
         }
 
@@ -127,7 +127,7 @@ function ChampionPool() {
                     },
                     champion: {
                         idChamp: element.idChamp
-                    }                
+                    }
                 }
                 await champPoolSave(champPool)
                     .then((response) => {
@@ -164,6 +164,10 @@ function ChampionPool() {
             <Navbar />
             <header className="bg-gray bg-gradient text-white">
                 <h1 className="display-6">CHAMPION MANAGEMENT</h1>
+                <p className=" text-center mx-auto" style={{ maxWidth: '900px' }}>
+                    Click champions on the left to add them to your <b>Champion Pool</b>,<br/>
+                    and click them on the right to remove. Don’t forget to <b>Save</b>!
+                </p>
                 <br />
 
                 {/* Barra di ricerca */}
@@ -174,7 +178,7 @@ function ChampionPool() {
                                 <input
                                     type="text"
                                     className="form-control"
-                                    placeholder="Cerca un campione..."
+                                    placeholder="Search champions..."
                                     value={searchTerm}
                                     onChange={handleSearchChange}
                                 />
@@ -193,11 +197,11 @@ function ChampionPool() {
                 </div>
 
                 <button
-                    className="btn btn-secondary btn-md"
+                    className="btn btn-purple btn-md"
                     type="button"
                     onClick={() => updateChampPool()}
                 >
-                    Salva
+                    Save
                 </button>
 
                 <div className="container-fluid">
@@ -223,7 +227,7 @@ function ChampionPool() {
                                         />
                                     ) : (
                                         <div className="text-white-50 mt-4">
-                                            {searchTerm ? "Nessun campione trovato" : "Nessun campione disponibile"}
+                                            {searchTerm ? "No champions found" : "No champions available"}
                                         </div>
                                     )}
                                 </div>
@@ -251,7 +255,7 @@ function ChampionPool() {
                                         />
                                     ) : (
                                         <div className="text-white-50 mt-4">
-                                            {searchTerm ? "Nessun campione trovato" : "La tua champion pool è vuota"}
+                                            {searchTerm ? "No champions found" : "Your Champion Pool is empty"}
                                         </div>
                                     )}
                                 </div>

@@ -1,216 +1,281 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import Navbar from "./Navbar";
-import { useEffect } from "react";
 import { teamFindChamps, teamFindMembers } from "../service/teamService";
+import { teamAnalysisFindTeam } from "../service/teamAnalysisService";
 import Champions from "./Champions";
-import topIco from '../img/roles/top_ico.png';
-import jngIco from '../img/roles/jng_ico.png';
-import midIco from '../img/roles/mid_ico.png';
-import adcIco from '../img/roles/adc_ico.png';
-import supIco from '../img/roles/sup_ico.png';
-import ModaleTeamData from "./ModaleTeamData";
+import topIco from "../img/roles/top_ico.png";
+import jngIco from "../img/roles/jng_ico.png";
+import midIco from "../img/roles/mid_ico.png";
+import adcIco from "../img/roles/adc_ico.png";
+import supIco from "../img/roles/sup_ico.png";
+import fillIco from "../img/roles/fill_ico.png";
+import opggLogo from "../img/opgg_logo.webp";
+import RateCircle from "./RateCircle";
+import { teamMemberDelete, teamMemberFindTeam } from "../service/teamMemberService";
+import { TEAM_UPDATE, TEAMS } from "../utils/routes";
+import { setTeam } from "../store/slice/teamSlice";
 
 function Team() {
+  const baseUrl = import.meta.env.VITE_API_BASE_URL;
+  const teams = useSelector((state) => state.team);
+  const user = useSelector((state) => state.user);
+  const [champs, setChamps] = useState();
+  const [members, setMembers] = useState([]);
+  const [membersRole, setMembersRole] = useState([]);
+  const [teamData, setTeamData] = useState();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-    const teams = useSelector((state) => state.team);
-    const [champs, setChamps] = useState();
-    const [members, setMembers] = useState([]);
-    const location = useLocation();
-    const [dataToUpdate, setDataToUpdate] = useState(null);
-    const navigate = useNavigate();
+  const rolesData = [
+    { role: "top", image: topIco },
+    { role: "jng", image: jngIco },
+    { role: "mid", image: midIco },
+    { role: "adc", image: adcIco },
+    { role: "sup", image: supIco },
+    { role: "fill", image: fillIco },
+  ];
 
-    //LISTA RUOLI E IMG
-    const rolesData = [
-        { role: 'top', image: topIco },
-        { role: 'jng', image: jngIco },
-        { role: 'mid', image: midIco },
-        { role: 'adc', image: adcIco },
-        { role: 'sup', image: supIco }
-    ];
+  useEffect(() => {
+    if (location.state?.idTeam) {
+      setChamps(null);
 
-    useEffect(() => {
-        if (location.state && location.state.idTeam) {
-            setChamps(null);
-            teamFindChamps(location.state.idTeam).then((response) => {
-                setChamps(response.data.objResponse);
-            }).catch(error => {
-                console.log('Error fetching champions:', error.response?.data?.response || error.message);
-            });
+      Promise.all([
+        teamFindChamps(location.state.idTeam),
+        teamMemberFindTeam(location.state.idTeam),
+        teamFindMembers(location.state.idTeam),
+        teamAnalysisFindTeam(location.state.idTeam),
+      ])
+        .then(([champsRes, membersRoleRes, membersRes, teamDataRes]) => {
+          setChamps(champsRes.data.objResponse);
+          setMembersRole(membersRoleRes.data.objResponse);
+          setTeamData(teamDataRes.data.objResponse);
 
-            teamFindMembers(location.state.idTeam)
-                .then((response) => {
-                    setMembers(response.data.objResponse);
-                })
-                .catch(error => {
-                    console.log('Error fetching members:', error.response?.data?.response || error.message);
-                });
-        }
-    }, [location.state]);
+          const membersRolesMap = membersRoleRes.data.objResponse.reduce((acc, mr) => {
+            acc[mr.idUser] = mr.role;
+            return acc;
+          }, {});
 
-    return (
-        <div>
-            <Navbar />
-            <header className="bg-gray bg-gradient text-white">
-                {teams.map((team) => (
-                    location.state && team.idTeam === location.state.idTeam ? (
-                        <div key={team.idTeam}>
-                            <h1 className="display-6">{team.name}</h1>
-                            <p>{team.tag}</p>
-                            <button className="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Modifica team
-                            </button>
-                            <ul className="dropdown-menu bg-dark">
-                                <li>
-                                    <a
-                                        className="dropdown-item text-light"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#modal"
-                                        onClick={() => setDataToUpdate({ field: 'nome', value: team.name })}
-                                    >
-                                        <b>Nome:</b> {team.name}
-                                    </a>
-                                </li>
-                                <li>
-                                    <a
-                                        className="dropdown-item text-light"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#modal"
-                                        onClick={() => setDataToUpdate({ field: 'tag', value: team.tag })}
-                                    >
-                                        <b>Tag:</b> {team.tag}
-                                    </a>
-                                </li>
-                                <li>
-                                    <a
-                                        className="dropdown-item text-light"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#modal"
-                                        onClick={() => setDataToUpdate({ field: 'membri', value: members })}
-                                    >
-                                        <b>Membri</b>
-                                    </a>
-                                </li>
-                            </ul>
-                            <ModaleTeamData toUpdate={dataToUpdate} team={team} />
-                        </div>
-                    ) : null
-                ))}
-                {!location.state ?
-                    <h1 className="display-6">Nessun team selezionato</h1>
-                    : null
-                }
-                <br />
-                <div className="container-fluid">
-                    <div className="row justify-content-center">
-                        <div className="col-12">
-                            <div className="d-flex flex-wrap justify-content-center">
-                                {rolesData.slice(0, 3).map((role) => (
-                                    <div key={role.role} className="role-item col-auto mx-4 mb-3">
-                                        <div className="d-flex align-items-center">
-                                            <div className="role-icon">
-                                                <img
-                                                    src={role.image}
-                                                    className="me-2"
-                                                    style={{
-                                                        width: '20px',
-                                                        height: '20px',
-                                                        maxWidth: '20px',
-                                                        maxHeight: '20px',
-                                                    }}
-                                                    alt="Role icon"
-                                                />
-                                            </div>
-                                            <div className="role-name">
-                                                {members && members.length > 0 ? (
-                                                    members
-                                                        .filter(member => member.pRole === role.role)
-                                                        .map(member => (
-                                                            <span key={member.id}>{member.username}</span>
-                                                        ))
-                                                ) : null}
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
+          const mergedMembers = membersRes.data.objResponse.map((member) => ({
+            ...member,
+            pRole: membersRolesMap[member.idUser] ?? member.pRole,
+          }));
 
-                                {/* Forzare gli ultimi due ruoli ad andare a capo quando lo spazio è limitato */}
-                                <div className="w-100 d-md-none"></div>
+          const ordered = mergedMembers.sort((a, b) => {
+            const indexA = rolesData.findIndex(r => r.role === a.pRole?.toLowerCase());
+            const indexB = rolesData.findIndex(r => r.role === b.pRole?.toLowerCase());
+            return (indexA === -1 ? rolesData.length : indexA) - (indexB === -1 ? rolesData.length : indexB);
+          });
 
-                                {rolesData.slice(3).map((role) => (
-                                    <div key={role.role} className="role-item col-auto mx-4 mb-3">
-                                        <div className="d-flex align-items-center">
-                                            <div className="role-icon">
-                                                <img
-                                                    src={role.image}
-                                                    className="me-2"
-                                                    style={{
-                                                        width: '20px',
-                                                        height: '20px',
-                                                        maxWidth: '20px',
-                                                        maxHeight: '20px',
-                                                    }}
-                                                    alt="Role icon"
-                                                />
-                                            </div>
-                                            <div className="role-name">
-                                                {members && members.length > 0 ? (
-                                                    members.map((member) => (
-                                                        member.pRole === role.role ? (
-                                                            <span key={member.id}>{member.username}</span>
-                                                        ) : null
-                                                    ))
-                                                ) : null}
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
+          setMembers(ordered);
+        })
+        .catch((error) => console.log("Errore nel caricamento dati team:", error));
+    }
+  }, [location.state]);
+
+  const leaveTeam = async () => {
+    const confirmed = window.confirm("Sei sicuro di voler lasciare questo team?");
+    if (!confirmed) return;
+
+    try {
+      await teamMemberDelete(user.idUser, location.state.idTeam);
+      const teamsListUpdate = teams.filter(team => team.idTeam !== location.state.idTeam);
+      dispatch(setTeam(teamsListUpdate));
+      alert("Hai lasciato il team con successo.");
+      navigate(TEAMS);
+    } catch (err) {
+      console.error(err);
+      alert("Errore durante la rimozione dal team.");
+    }
+  };
+
+  return (
+    <div>
+      <Navbar />
+      <header className="bg-dark bg-gradient text-white py-4">
+        {teams.map((team) =>
+          location.state && team.idTeam === location.state.idTeam ? (
+            <div className="container" key={team.idTeam}>
+              {/* BOX INFO */}
+              <div className="p-4 d-flex flex-wrap align-items-start justify-content-center" style={{
+                backgroundColor: "rgba(0,0,0,0.3)",
+                borderRadius: "8px",
+                boxShadow: "0 0 8px rgba(255,255,255,0.1)",
+                maxWidth: "900px",
+                margin: "0 auto",
+                gap: "2rem",
+              }}>
+                {/* COLONNA SINISTRA: LOGO + MODIFICA */}
+                <div className="d-flex flex-column align-items-center mb-3 mb-md-0">
+                  <img
+                    src={baseUrl + team.img}
+                    alt={team.name || "No Champion"}
+                    className="img-fluid"
+                    style={{
+                      maxWidth: "150px",
+                      width: "100%",
+                      height: "auto",
+                      borderRadius: "8px",
+                      objectFit: "cover",
+                      border: "2px solid rgba(255,255,255,0.2)",
+                    }}
+                    onError={(e) => {
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src = "../img/champions/champless.png";
+                    }}
+                  />
+                  {membersRole.some((mr) => mr.idUser === user.idUser && mr.admin) ? (
+                    // Se è admin → mostra "Modify team"
+                    <button
+                      className="btn btn-purple btn-sm mt-2 px-4 w-100"
+                      onClick={() =>
+                        navigate(TEAM_UPDATE, { state: { team, members, membersRole } })
+                      }
+                    >
+                      Edit Team
+                    </button>
+                  ) : (
+                    // Se non è admin → mostra "Leave team"
+                    <button
+                      className="btn btn-danger btn-sm mt-2 px-4"
+                      onClick={leaveTeam}
+                    >
+                      Leave team
+                    </button>
+                  )}
+
+
+                  <span className="fw-bold mt-2">Coach: Zefi</span>
+                  {team.opgg ? (
+
+                    <a href={team.opgg} target="_blank" rel="noopener noreferrer">
+                      <img
+                        src={opggLogo}
+                        alt="opgg link"
+                        className="img-fluid"
+                        style={{
+                          maxWidth: "150px",
+                          width: "100%",
+                          height: "auto",
+                          objectFit: "cover",
+                          transition: "filter 0.3s ease",
+                          cursor: "pointer",
+                        }}
+                      />
+                    </a>
+                  ) : (
+
+                    <img
+                      src={opggLogo}
+                      alt="opgg logo"
+                      className="img-fluid"
+                      style={{
+                        maxWidth: "150px",
+                        width: "100%",
+                        height: "auto",
+                        objectFit: "cover",
+                        filter: "grayscale(100%)",
+                        opacity: 0.5,
+                      }}
+                    />
+                  )}
+
                 </div>
-                <br />
-                <div className="container-fluid">
-                    <div className="row justify-content-center">
+
+                {/* COLONNA DESTRA: NAME + TAG + WINRATE */}
+                <div className="flex-grow-1 text-center text-md-start">
+                  <h1 className="display-6 mb-1">{team.name}</h1>
+                  <p className="mb-2"><strong>{team.tag}</strong></p>
+
+                  <div style={{
+                    display: "flex",
+                    justifyContent: "space-around",
+                    alignItems: "center",
+                    textAlign: "center",
+                    marginTop: "1.5rem",
+                    flexWrap: "wrap",
+                    gap: "1.5rem",
+                  }}>
+                    {/* TOTAL */}
+                    <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                      <p className="fw-bold mb-0">Total</p>
+                      <p className="mb-0">Played: {teamData?.gamesCount ?? "N/A"}</p>
+                      {teamData?.winRate ? (
+                        <RateCircle rate={teamData.winRate} count={teamData.winCount} size={120} />
+                      ) : "N/A"}
+                    </div>
+
+                    {/* BLUE SIDE */}
+                    <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                      <p className="fw-bold mb-0" style={{ color: "#0d6efd" }}>Blue Side</p>
+                      <p className="mb-0">Played: {teamData?.gamesCountBlue ?? "N/A"}</p>
+                      {teamData?.winRateBlue ? (
+                        <RateCircle rate={teamData.winRateBlue} count={teamData.winCountBlue} size={90} />
+                      ) : "N/A"}
+                    </div>
+
+                    {/* RED SIDE */}
+                    <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                      <p className="fw-bold mb-0" style={{ color: "#dc3545" }}>Red Side</p>
+                      <p className="mb-0">Played: {teamData?.gamesCountRed ?? "N/A"}</p>
+                      {teamData?.winRateRed ? (
+                        <RateCircle rate={teamData.winRateRed} count={teamData.winCountRed} size={90} />
+                      ) : "N/A"}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* MEMBRI TEAM */}
+              <div className="d-flex justify-content-center mt-4">
+                <div className="accordion bg-dark text-white w-100 w-md-75 w-lg-50" id="accordionExample">
+                  {members.map((member) => {
+                    // fallback su fillIco se non trova il ruolo
+                    const roleObj = rolesData.find(r => r.role === member.pRole?.toLowerCase()) || { role: "fill", image: fillIco };
+
+                    return (
+                      <div className="accordion-item" key={member.idUser}>
+                        <h2 className="accordion-header">
+                          <button
+                            className="accordion-button bg-dark text-white custom-accordion-button text-center"
+                            type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target={`#collapse${member.idUser}`}
+                            aria-expanded="false"
+                            aria-controls={`collapse${member.idUser}`}
+                            style={{ display: "flex", alignItems: "center", gap: "8px" }}
+                          >
+                            <img src={roleObj.image} alt={roleObj.role} style={{ width: "20px", height: "20px" }} />
+                            {member.username}
+                          </button>
+                        </h2>
                         <div
-                            className="col p-1"
-                            style={{
-                                maxHeight: '50vh',
-                                marginLeft: '10%',
-                                marginRight: '10%'
-                            }}
+                          id={`collapse${member.idUser}`}
+                          className="accordion-collapse collapse"
+                          aria-labelledby={`heading${member.idUser}`}
+                          data-bs-parent="#accordionExample"
                         >
-                            <div
-                                className="rounded-top d-flex flex-column h-100"
-                                style={{
-                                    border: '5px solid #242424',
-                                }}
-                            >
-                                <div className="bg-dark text-white text-center p-2">
-                                    Champion pool
-                                </div>
-                                <div className="flex-grow-1 overflow-auto p-2 text-center"
-                                    style={{
-                                        display: 'flex',
-                                        flexWrap: 'wrap',
-                                        gap: '3px',
-                                        justifyContent: 'center',
-                                        alignContent: 'flex-start'
-                                    }}
-                                >
-                                    {champs && champs.length > 0 ? (
-                                        <Champions champions={champs} />
-                                    ) : null}
-                                </div>
-                            </div>
+                          <div className="accordion-body custom-accordion-body text-center">
+                            <Champions champions={member.champions} />
+                          </div>
                         </div>
-                    </div>
+                      </div>
+                    );
+                  })}
                 </div>
-            </header>
-        </div>
-    );
+              </div>
+            </div>
+          ) : null
+        )}
 
+        {!location.state && (
+          <h1 className="display-6 text-center">Nessun team selezionato</h1>
+        )}
+      </header>
+    </div>
+  );
 }
 
 export default Team;
