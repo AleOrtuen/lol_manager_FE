@@ -9,6 +9,7 @@ import midIco from '../img/roles/mid.webp';
 import adcIco from '../img/roles/adc.webp';
 import supIco from '../img/roles/sup.webp';
 import fillIco from '../img/roles/fill.webp';
+import coachIco from '../img/roles/coach.png';
 
 function Account() {
 
@@ -22,7 +23,8 @@ function Account() {
         mid: midIco,
         adc: adcIco,
         sup: supIco,
-        fill: fillIco
+        fill: fillIco,
+        coach: coachIco
     };
 
     const roleImage = user && user.pRole ? roleImages[user.pRole] : null;
@@ -95,7 +97,7 @@ function Account() {
                                     data-bs-target="#modal"
                                     onClick={() => setDataToUpdate({ field: 'ruolo', value: user.pRole })}
                                 >
-                                    <b>Ruolo:</b> {user.pRole}
+                                    <b>Role:</b> {user.pRole}
                                 </a>
                             </li>
                             <li>

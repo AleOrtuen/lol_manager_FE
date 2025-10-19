@@ -30,8 +30,10 @@ function TeamForm() {
       const member = {
         user: { idUser: user.idUser },
         team: { idTeam: newTeamId },
+        role: user.pRole || "fill",
         admin: true,
       };
+
 
       try {
         await teamMemberSave(member);
@@ -155,8 +157,8 @@ function TeamForm() {
                             borderColor: isValidName(teamForm.name)
                               ? "green"
                               : teamForm.name
-                              ? "red"
-                              : "",
+                                ? "red"
+                                : "",
                             borderWidth: teamForm.name ? "3px" : "0",
                           }}
                         />
@@ -179,8 +181,8 @@ function TeamForm() {
                             borderColor: isValidTag(teamForm.tag)
                               ? "green"
                               : teamForm.tag
-                              ? "red"
-                              : "",
+                                ? "red"
+                                : "",
                             borderWidth: teamForm.tag ? "3px" : "0",
                           }}
                         />
