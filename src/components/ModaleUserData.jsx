@@ -257,6 +257,8 @@ function ModaleUserData({ toUpdate }) {
                                             <option value="mid">Mid</option>
                                             <option value="adc">Adc</option>
                                             <option value="sup">Support</option>
+                                            <option value="fill">Fill</option>
+                                            <option value="coach">Coach</option>
                                         </select>
                                         <label htmlFor="floatingSelect">Primary role</label>
                                     </div>

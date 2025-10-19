@@ -12,6 +12,7 @@ import midIco from '../img/roles/mid_ico.png';
 import adcIco from '../img/roles/adc_ico.png';
 import supIco from '../img/roles/sup_ico.png';
 import fillIco from '../img/roles/fill_ico.png';
+import coachIco from '../img/roles/coach_ico.png';
 import { resetAllSlices } from "../store/slice/resetAllSlice";
 import { userFindTeams } from "../service/userService";
 import { teamFindAll } from "../service/teamService";
@@ -59,7 +60,8 @@ function Navbar() {
         mid: midIco,
         adc: adcIco,
         sup: supIco,
-        fill: fillIco
+        fill: fillIco,
+        coach: coachIco
     };
 
     const roleImage = roleImages[user?.pRole] ?? roleImages.fill;

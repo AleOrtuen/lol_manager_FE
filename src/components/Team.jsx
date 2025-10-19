@@ -11,6 +11,7 @@ import midIco from "../img/roles/mid_ico.png";
 import adcIco from "../img/roles/adc_ico.png";
 import supIco from "../img/roles/sup_ico.png";
 import fillIco from "../img/roles/fill_ico.png";
+import coachIco from "../img/roles/coach_ico.png";
 import opggLogo from "../img/opgg_logo.webp";
 import RateCircle from "./RateCircle";
 import { teamMemberDelete, teamMemberFindTeam } from "../service/teamMemberService";
@@ -25,6 +26,7 @@ function Team() {
   const [members, setMembers] = useState([]);
   const [membersRole, setMembersRole] = useState([]);
   const [teamData, setTeamData] = useState();
+  const [isLoading, setIsLoading] = useState(true);
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -36,43 +38,67 @@ function Team() {
     { role: "adc", image: adcIco },
     { role: "sup", image: supIco },
     { role: "fill", image: fillIco },
+    { role: "coach", image: coachIco },
   ];
 
   useEffect(() => {
-    if (location.state?.idTeam) {
-      setChamps(null);
+    const idTeam = location.state?.idTeam;
+    if (!idTeam) return;
 
-      Promise.all([
-        teamFindChamps(location.state.idTeam),
-        teamMemberFindTeam(location.state.idTeam),
-        teamFindMembers(location.state.idTeam),
-        teamAnalysisFindTeam(location.state.idTeam),
-      ])
-        .then(([champsRes, membersRoleRes, membersRes, teamDataRes]) => {
-          setChamps(champsRes.data.objResponse);
-          setMembersRole(membersRoleRes.data.objResponse);
-          setTeamData(teamDataRes.data.objResponse);
+    setChamps(null);
+    setIsLoading(true);
 
-          const membersRolesMap = membersRoleRes.data.objResponse.reduce((acc, mr) => {
-            acc[mr.idUser] = mr.role;
-            return acc;
-          }, {});
+    Promise.allSettled([
+      teamFindChamps(idTeam),
+      teamMemberFindTeam(idTeam),
+      teamFindMembers(idTeam),
+      teamAnalysisFindTeam(idTeam),
+    ])
+      .then((results) => {
+        // Estrai i dati dalle promise risolte, usa valori di default per quelle fallite
+        const champsData = results[0].status === 'fulfilled' ? results[0].value.data.objResponse : null;
+        const membersRoleData = results[1].status === 'fulfilled' ? results[1].value.data.objResponse : [];
+        const membersData = results[2].status === 'fulfilled' ? results[2].value.data.objResponse : [];
+        const teamStats = results[3].status === 'fulfilled' ? results[3].value.data.objResponse : null;
 
-          const mergedMembers = membersRes.data.objResponse.map((member) => ({
-            ...member,
-            pRole: membersRolesMap[member.idUser] ?? member.pRole,
-          }));
+        // Log errori per debug
+        results.forEach((result, index) => {
+          if (result.status === 'rejected') {
+            const apiNames = ['teamFindChamps', 'teamMemberFindTeam', 'teamFindMembers', 'teamAnalysisFindTeam'];
+            console.warn(`${apiNames[index]} fallito:`, result.reason);
+          }
+        });
 
-          const ordered = mergedMembers.sort((a, b) => {
-            const indexA = rolesData.findIndex(r => r.role === a.pRole?.toLowerCase());
-            const indexB = rolesData.findIndex(r => r.role === b.pRole?.toLowerCase());
-            return (indexA === -1 ? rolesData.length : indexA) - (indexB === -1 ? rolesData.length : indexB);
-          });
+        // Mappa dei ruoli/admin
+        const membersRolesMap = membersRoleData.reduce((acc, mr) => {
+          acc[mr.idUser] = { role: mr.role, admin: mr.admin };
+          return acc;
+        }, {});
 
-          setMembers(ordered);
-        })
-        .catch((error) => console.log("Errore nel caricamento dati team:", error));
-    }
+        // Merge membri con ruolo e admin
+        const mergedMembers = membersData.map((member) => ({
+          ...member,
+          pRole: membersRolesMap[member.idUser]?.role ?? member.pRole,
+          isAdmin: membersRolesMap[member.idUser]?.admin ?? false,
+        }));
+
+        // Ordina membri per ruolo
+        const orderedMembers = mergedMembers.sort((a, b) => {
+          const indexA = rolesData.findIndex((r) => r.role === a.pRole?.toLowerCase());
+          const indexB = rolesData.findIndex((r) => r.role === b.pRole?.toLowerCase());
+          return (indexA === -1 ? rolesData.length : indexA) - (indexB === -1 ? rolesData.length : indexB);
+        });
+
+        setChamps(champsData);
+        setMembersRole(membersRoleData);
+        setMembers(orderedMembers);
+        setTeamData(teamStats);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        console.error("Errore imprevisto nel caricamento dati team:", err);
+        setIsLoading(false);
+      });
   }, [location.state]);
 
   const leaveTeam = async () => {
@@ -89,6 +115,30 @@ function Team() {
       console.error(err);
       alert("Errore durante la rimozione dal team.");
     }
+  };
+
+  // Determina se l'utente corrente è admin
+  // IMPORTANTE: usa membersRole, NON members (che potrebbe non includere user senza champion)
+  const isUserAdmin = () => {
+    console.log('=== DEBUG isUserAdmin ===');
+    console.log('user.idUser:', user.idUser);
+    console.log('user.admin:', user.admin);
+    console.log('membersRole:', membersRole);
+    
+    // Se è admin globale, mostra sempre Edit Team
+    if (user.admin === true) {
+      console.log('✅ User è admin globale');
+      return true;
+    }
+    
+    // Controlla se è admin del team specifico in membersRole
+    const userRole = membersRole.find(mr => mr.idUser === user.idUser);
+    console.log('userRole trovato:', userRole);
+    console.log('userRole?.admin:', userRole?.admin);
+    
+    const isAdmin = userRole?.admin === true;
+    console.log('Risultato finale isAdmin:', isAdmin);
+    return isAdmin;
   };
 
   return (
@@ -126,30 +176,30 @@ function Team() {
                       e.currentTarget.src = "../img/champions/champless.png";
                     }}
                   />
-                  {membersRole.some((mr) => mr.idUser === user.idUser && mr.admin) || user.admin === true ? (
-                    // Se è admin locale o globale → mostra "Edit Team"
-                    <button
-                      className="btn btn-purple btn-sm mt-2 px-4 w-100"
-                      onClick={() =>
-                        navigate(TEAM_UPDATE, { state: { team, members, membersRole } })
-                      }
-                    >
-                      Edit Team
-                    </button>
-                  ) : (
-                    // Se non è admin → mostra "Leave team"
-                    <button
-                      className="btn btn-danger btn-sm mt-2 px-4"
-                      onClick={leaveTeam}
-                    >
-                      Leave team
-                    </button>
+                  
+                  {/* Mostra il pulsante solo dopo il caricamento */}
+                  {!isLoading && (
+                    isUserAdmin() ? (
+                      <button
+                        className="btn btn-purple btn-sm mt-2 px-4 w-100"
+                        onClick={() =>
+                          navigate(TEAM_UPDATE, { state: { team, members, membersRole } })
+                        }
+                      >
+                        Edit Team
+                      </button>
+                    ) : (
+                      <button
+                        className="btn btn-danger btn-sm mt-2 px-4"
+                        onClick={leaveTeam}
+                      >
+                        Leave team
+                      </button>
+                    )
                   )}
-
 
                   <span className="fw-bold mt-2">Coach: Zefi</span>
                   {team.opgg ? (
-
                     <a href={team.opgg} target="_blank" rel="noopener noreferrer">
                       <img
                         src={opggLogo}
@@ -166,7 +216,6 @@ function Team() {
                       />
                     </a>
                   ) : (
-
                     <img
                       src={opggLogo}
                       alt="opgg logo"
@@ -181,7 +230,6 @@ function Team() {
                       }}
                     />
                   )}
-
                 </div>
 
                 {/* COLONNA DESTRA: NAME + TAG + WINRATE */}
@@ -232,7 +280,6 @@ function Team() {
               <div className="d-flex justify-content-center mt-4">
                 <div className="accordion bg-dark text-white w-100 w-md-75 w-lg-50" id="accordionExample">
                   {members.map((member) => {
-                    // fallback su fillIco se non trova il ruolo
                     const roleObj = rolesData.find(r => r.role === member.pRole?.toLowerCase()) || { role: "fill", image: fillIco };
 
                     return (
