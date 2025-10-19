@@ -49,8 +49,12 @@ function Teams() {
 
     const isUserAdmin = (teamId) => {
         const membersRole = teamsMembersRole[teamId] || [];
-        return membersRole.some(mr => mr.idUser === user.idUser && mr.admin);
+        // true se è admin nel team o se l'utente ha admin globale
+        return membersRole.some(
+            (member) => member.idUser === user.idUser && member.admin === true
+        ) || user.admin === true;
     };
+
 
     return (
         <div>
