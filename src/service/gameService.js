@@ -7,7 +7,9 @@ export function gameSave(game) {
 }
 
 export function gameUpdate(game) {
-    return api.put(GAME_UPDATE, game);
+    return api.put(GAME_UPDATE, game, {
+        headers: { 'Content-Type': 'application/json' }
+    });
 }
 
 export function gameDelete(idGame) {

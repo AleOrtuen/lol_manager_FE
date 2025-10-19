@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../../store/slice/userSlice";
 import { setTeam, resetTeam } from "../../store/slice/teamSlice";
-import { teamFindAll, teamSave } from "../../service/teamService";
+import { teamFindAll, teamFindById, teamSave } from "../../service/teamService";
 import { useNavigate, useParams } from "react-router-dom";
 import { SIGNUP, PSW_RESET } from "../../utils/routes";
 import { gameUpdate } from "../../service/gameService";
@@ -71,7 +71,7 @@ function GuestSelection({ game }) {
         }
     }
 
-    const teamSelection = () => {
+    const teamSelection = async () => {
         let teamKey;
         if (role === 'player1') {
             teamKey = 'team1';
@@ -79,6 +79,7 @@ function GuestSelection({ game }) {
         if (role === 'player2') {
             teamKey = 'team2';
         }
+
         const updateTeam = {
             idGame: game.idGame,
             [teamKey]: {
@@ -87,14 +88,25 @@ function GuestSelection({ game }) {
             style: game.style,
             fearless: game.fearless
         }
-        gameUpdate(updateTeam)
-            .then((response) => {
 
-            })
-            .catch(error => {
+        try {
+            // ✅ Assicurati che la richiesta abbia il tempo di completarsi
+            const response = await gameUpdate(updateTeam);
+            console.log("Update successful:", response);
+
+            // ✅ Aspetta un attimo prima di eventuali redirect/navigazioni
+            await new Promise(resolve => setTimeout(resolve, 100));
+
+        } catch (error) {
+            console.error("Update error:", error);
+            if (error.response) {
                 console.log(error.response.data.response);
-            })
-
+            } else if (error.request) {
+                console.log("No response received");
+            } else {
+                console.log("Request setup error:", error.message);
+            }
+        }
     }
 
     const guestTeamSelection = async () => {
@@ -122,7 +134,7 @@ function GuestSelection({ game }) {
                 console.log(error.response.data.response);
                 alert("Registered team");
             })
-  
+
         const updateTeam = {
             idGame: game.idGame,
             [teamKey]: {
@@ -159,16 +171,16 @@ function GuestSelection({ game }) {
     return (
         <div className="container" style={{ paddingTop: "20px", minHeight: "70vh" }}>
             <div className="d-flex flex-column align-items-center justify-content-center px-4">
-                
+
                 {/* Titolo */}
                 <h1 className="display-6 mb-4 text-center">GAME ACCESS</h1>
 
                 {/* Box Login/Team Selection */}
-                <div 
-                    className="login-box p-4 rounded shadow" 
-                    style={{ 
+                <div
+                    className="login-box p-4 rounded shadow"
+                    style={{
                         backgroundColor: "rgba(0,0,0,0.7)",
-                        minWidth: "300px", 
+                        minWidth: "300px",
                         maxWidth: "450px",
                         width: "100%"
                     }}
@@ -211,9 +223,9 @@ function GuestSelection({ game }) {
                                         Forgot password?
                                     </span>
                                 </div>
-                                <button 
+                                <button
                                     type="button"
-                                    className="btn btn-purple w-100 fw-bold mb-3" 
+                                    className="btn btn-purple w-100 fw-bold mb-3"
                                     onClick={() => login()}
                                 >
                                     LOGIN
@@ -250,9 +262,13 @@ function GuestSelection({ game }) {
                                         </select>
                                         <label htmlFor="floatingSelect">Team</label>
                                     </div>
-                                    <button 
-                                        className="btn btn-purple w-100 fw-bold" 
-                                        onClick={() => teamSelection()}
+                                    <button
+                                        type="button"  // ✅ IMPORTANTE: previene il submit
+                                        className="btn btn-purple w-100 fw-bold"
+                                        onClick={(e) => {
+                                            e.preventDefault(); // ✅ Previene comportamenti default
+                                            teamSelection();
+                                        }}
                                     >
                                         ENTER
                                     </button>
@@ -262,9 +278,9 @@ function GuestSelection({ game }) {
                             )
                         )}
                     </form>
-                    
+
                     <hr className="my-4" style={{ borderColor: "rgba(255,255,255,0.3)" }} />
-                    
+
                     {/* Sezione Guest */}
                     <div className="text-center">
                         <button
@@ -273,7 +289,7 @@ function GuestSelection({ game }) {
                         >
                             {guestView === 0 ? 'CONTINUE AS GUEST' : 'CANCEL'}
                         </button>
-                        
+
                         {guestView === 1 && (
                             <>
                                 <div className="form-floating mb-3">
@@ -287,8 +303,8 @@ function GuestSelection({ game }) {
                                     />
                                     <label htmlFor="guestName">Team name</label>
                                 </div>
-                                <button 
-                                    className="btn btn-purple w-100 fw-bold" 
+                                <button
+                                    className="btn btn-purple w-100 fw-bold"
                                     onClick={() => guestTeamSelection()}
                                 >
                                     ENTER AS GUEST

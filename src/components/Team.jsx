@@ -126,8 +126,8 @@ function Team() {
                       e.currentTarget.src = "../img/champions/champless.png";
                     }}
                   />
-                  {membersRole.some((mr) => mr.idUser === user.idUser && mr.admin) ? (
-                    // Se è admin → mostra "Modify team"
+                  {membersRole.some((mr) => mr.idUser === user.idUser && mr.admin) || user.admin === true ? (
+                    // Se è admin locale o globale → mostra "Edit Team"
                     <button
                       className="btn btn-purple btn-sm mt-2 px-4 w-100"
                       onClick={() =>

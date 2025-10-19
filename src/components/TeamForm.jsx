@@ -10,7 +10,7 @@ function TeamForm() {
   const user = useSelector((state) => state.user);
   const navigate = useNavigate();
 
-  const [formTeam, setFormTeam] = useState({
+  const [teamForm, setTeamForm] = useState({
     name: "",
     tag: "",
     file: null,
@@ -19,73 +19,61 @@ function TeamForm() {
 
   const [preview, setPreview] = useState(null);
 
-  const teamRegistration = async () => {
-    const team = { name: formTeam.name, tag: formTeam.tag };
-    const file = formTeam.file;
+  const registerTeam = async () => {
+    const team = { name: teamForm.name, tag: teamForm.tag };
+    const file = teamForm.file;
 
-    await teamSave(team, file)
-      .then((response) => {
-        let newTeam = response.data.objResponse.idTeam;
-        const member = {
-          user: { idUser: user.idUser },
-          team: { idTeam: newTeam },
-          admin: true,
-        };
+    try {
+      const response = await teamSave(team, file);
+      const newTeamId = response.data.objResponse.idTeam;
 
-        teamMemberSave(member)
-          .then((response) => {
+      const member = {
+        user: { idUser: user.idUser },
+        team: { idTeam: newTeamId },
+        admin: true,
+      };
 
-          })
-          .catch(error => {
-            console.log(error.response?.data?.response || error)
-          });
-        alert("Team registrato correttamente");
-      })
-      .catch(error => {
-        alert("Team esistente")
-        console.log(error.response?.data?.response || error);
-      });
-    navigate(TEAMS);
-  };
+      try {
+        await teamMemberSave(member);
+      } catch (err) {
+        console.error(err.response?.data?.response || err);
+      }
 
-  const errorChange = (e) => {
-    const { name, value } = e.target;
-    switch (name) {
-      case "name":
-        if (!validName(value) && value !== "") {
-          setFormTeam((prev) => ({
-            ...prev,
-            error: "Nome di almeno 2 caratteri.",
-          }));
-        } else if (formTeam.error === "Nome di almeno 2 caratteri.") {
-          setFormTeam((prev) => ({ ...prev, error: "" }));
-        }
-        break;
-      case "tag":
-        if (!validTag(value) && value !== "") {
-          setFormTeam((prev) => ({
-            ...prev,
-            error: "Tag di almeno 2 caratteri e massimo 5.",
-          }));
-        } else if (formTeam.error === "Tag di almeno 2 caratteri e massimo 5.") {
-          setFormTeam((prev) => ({ ...prev, error: "" }));
-        }
-        break;
-      default:
-        break;
+      alert("Team successfully registered");
+      navigate(TEAMS);
+    } catch (err) {
+      alert("Team already exists");
+      console.error(err.response?.data?.response || err);
     }
   };
 
-  const validForm = () => validName(formTeam.name) && validTag(formTeam.tag);
-  const validName = (name) => name.length >= 2 && name.length <= 50;
-  const validTag = (tag) => tag.length >= 2 && tag.length <= 5;
+  const handleBlur = (e) => {
+    const { name, value } = e.target;
+    if (name === "name") {
+      if (!isValidName(value) && value !== "") {
+        setTeamForm((prev) => ({ ...prev, error: "Name must be at least 2 characters." }));
+      } else if (teamForm.error === "Name must be at least 2 characters.") {
+        setTeamForm((prev) => ({ ...prev, error: "" }));
+      }
+    } else if (name === "tag") {
+      if (!isValidTag(value) && value !== "") {
+        setTeamForm((prev) => ({ ...prev, error: "Tag must be 2-5 characters long." }));
+      } else if (teamForm.error === "Tag must be 2-5 characters long.") {
+        setTeamForm((prev) => ({ ...prev, error: "" }));
+      }
+    }
+  };
+
+  const isFormValid = () => isValidName(teamForm.name) && isValidTag(teamForm.tag);
+  const isValidName = (name) => name.length >= 2 && name.length <= 50;
+  const isValidTag = (tag) => tag.length >= 2 && tag.length <= 5;
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
 
     if (name === "file") {
       const file = files[0];
-      setFormTeam((prev) => ({ ...prev, file }));
+      setTeamForm((prev) => ({ ...prev, file }));
 
       if (file) {
         const reader = new FileReader();
@@ -95,30 +83,26 @@ function TeamForm() {
         setPreview(null);
       }
     } else {
-      setFormTeam((prev) => ({ ...prev, [name]: value }));
+      setTeamForm((prev) => ({ ...prev, [name]: value }));
     }
   };
 
-  const handleKey = (e) => e.key === "Enter" && teamRegistration();
+  const handleKeyPress = (e) => e.key === "Enter" && registerTeam();
 
   return (
     <div>
       <Navbar />
-      {/* HEADER CON SFONDO COME NELLA VERSIONE ORIGINALE */}
       <header className="bg-gray bg-gradient text-white py-5">
         <div className="container">
-          <h1 className="display-6 text-center mb-5">CREAZIONE TEAM</h1>
-
+          <h1 className="display-6 text-center mb-5">CREATE TEAM</h1>
           <div className="row justify-content-center">
             <div className="col-lg-8 col-md-10 col-sm-12">
               <div
                 className="card bg-dark bg-opacity-75 p-4 rounded-4 shadow-lg"
-                style={{
-                  border: "1px solid rgba(255,255,255,0.2)",
-                }}
+                style={{ border: "1px solid rgba(255,255,255,0.2)" }}
               >
                 <div className="row align-items-center">
-                  {/* COLONNA IMMAGINE */}
+                  {/* IMAGE COLUMN */}
                   <div className="col-md-5 d-flex justify-content-center mb-4 mb-md-0">
                     <label
                       htmlFor="file"
@@ -136,12 +120,8 @@ function TeamForm() {
                       {preview ? (
                         <img
                           src={preview}
-                          alt="Anteprima"
-                          style={{
-                            width: "100%",
-                            height: "100%",
-                            objectFit: "cover",
-                          }}
+                          alt="Preview"
+                          style={{ width: "100%", height: "100%", objectFit: "cover" }}
                         />
                       ) : (
                         <span style={{ fontSize: "2rem", color: "#999" }}>+</span>
@@ -157,7 +137,7 @@ function TeamForm() {
                     />
                   </div>
 
-                  {/* COLONNA INPUT */}
+                  {/* INPUT COLUMN */}
                   <div className="col-md-7">
                     <form>
                       <div className="form-floating mb-3">
@@ -166,21 +146,21 @@ function TeamForm() {
                           type="text"
                           id="name"
                           name="name"
-                          value={formTeam.name}
-                          placeholder="nome"
+                          value={teamForm.name}
+                          placeholder="Name"
                           onChange={handleChange}
-                          onKeyDown={handleKey}
-                          onBlur={errorChange}
+                          onKeyDown={handleKeyPress}
+                          onBlur={handleBlur}
                           style={{
-                            borderColor: validName(formTeam.name)
+                            borderColor: isValidName(teamForm.name)
                               ? "green"
-                              : formTeam.name
-                                ? "red"
-                                : "",
-                            borderWidth: formTeam.name ? "3px" : "0",
+                              : teamForm.name
+                              ? "red"
+                              : "",
+                            borderWidth: teamForm.name ? "3px" : "0",
                           }}
                         />
-                        <label htmlFor="name">Nome</label>
+                        <label htmlFor="name">Name</label>
                       </div>
 
                       <div className="form-floating mb-3">
@@ -190,34 +170,32 @@ function TeamForm() {
                           id="tag"
                           name="tag"
                           maxLength="5"
-                          value={formTeam.tag}
-                          placeholder="tag"
+                          value={teamForm.tag}
+                          placeholder="Tag"
                           onChange={handleChange}
-                          onKeyDown={handleKey}
-                          onBlur={errorChange}
+                          onKeyDown={handleKeyPress}
+                          onBlur={handleBlur}
                           style={{
-                            borderColor: validTag(formTeam.tag)
+                            borderColor: isValidTag(teamForm.tag)
                               ? "green"
-                              : formTeam.tag
-                                ? "red"
-                                : "",
-                            borderWidth: formTeam.tag ? "3px" : "0",
+                              : teamForm.tag
+                              ? "red"
+                              : "",
+                            borderWidth: teamForm.tag ? "3px" : "0",
                           }}
                         />
                         <label htmlFor="tag">Tag</label>
                       </div>
                     </form>
 
-                    {formTeam.error && (
-                      <div className="text-warning mb-3">{formTeam.error}</div>
-                    )}
+                    {teamForm.error && <div className="text-warning mb-3">{teamForm.error}</div>}
 
                     <button
                       className="btn btn-purple w-100 fw-bold"
-                      disabled={!validForm()}
-                      onClick={teamRegistration}
+                      disabled={!isFormValid()}
+                      onClick={registerTeam}
                     >
-                      Crea team
+                      Create Team
                     </button>
                   </div>
                 </div>
@@ -228,7 +206,7 @@ function TeamForm() {
                     style={{ cursor: "pointer" }}
                     onClick={() => navigate(TEAMS)}
                   >
-                    Torna ai teams
+                    Back to Teams
                   </span>
                 </div>
               </div>
