@@ -66,7 +66,7 @@ function TeamComp() {
         <div>
             <Navbar />
             <header className="bg-gray bg-gradient text-white">
-                <h1 className="display-6">TEAM COMPS</h1>
+                <h1 className="display-6">TEAM STRATEGIES</h1>
                 <br />
                 {location.state !== null ?
                     <>
@@ -97,7 +97,7 @@ function TeamComp() {
                                                     {comp.descr}
                                                     <br /><br />
                                                     <div className="btn-group" role="group" aria-label="Basic example">
-                                                        <button className="btn btn-secondary btn-sm" onClick={() => navigate(COMP, { state: { comp: comp } })}>
+                                                        <button className="btn btn-purple btn-sm" onClick={() => navigate(COMP, { state: { comp: comp } })}>
                                                             Info
                                                         </button>
                                                         {isTeamAdmin && (
@@ -121,10 +121,10 @@ function TeamComp() {
                         <br /><br />
                         {isTeamAdmin && (
                             <button
-                                className="btn btn-secondary btn-sm"
+                                className="btn btn-purple btn-sm mt-2 px-4"
                                 onClick={() => navigate(COMP_FORM, { state: { idTeam: location.state.idTeam } })}
                             >
-                                Crea Comp
+                                Create strategy
                             </button>
                         )}
 

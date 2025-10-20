@@ -11,6 +11,7 @@ import adc from '../img/roles/adc.webp';
 import sup from '../img/roles/sup.webp';
 import Champions from "./Champions";
 import { useSelector } from "react-redux";
+import { teamMemberFindTeam } from "../service/teamMemberService";
 
 function Comp() {
     const user = useSelector((state) => state.user);
@@ -22,6 +23,7 @@ function Comp() {
     const [selectedChampion, setSelectedChampion] = useState(null);
     const [activeTab, setActiveTab] = useState("all"); // New state for active tab
     const [selectedChampRole, setSelectedChampRole] = useState(null); // For showing champRole details
+    const [membersRole, setMembersRole] = useState([]);
 
     const [comp, setComp] = useState({
         idComp: '',
@@ -79,6 +81,13 @@ function Comp() {
             })
             .catch(error => {
                 console.log(error.response.data.response);
+            })
+        teamMemberFindTeam(location.state.comp.team.idTeam)
+            .then((response) => {
+                setMembersRole(response.data.objResponse);
+            })
+            .catch(error => {
+
             })
     }, []);
 
@@ -307,6 +316,18 @@ function Comp() {
         }
     };
 
+
+    const isUserAdmin = () => {
+
+        // Se è admin globale, mostra sempre Edit Team
+        if (user.admin === true) {
+            return true;
+        }
+        const userRole = membersRole.find(mr => mr.idUser === user.idUser);
+
+        const isAdmin = userRole?.admin === true;
+        return isAdmin;
+    };
     return (
         <div>
             <Navbar />
@@ -396,7 +417,7 @@ function Comp() {
                                         <option value="adc">Adc</option>
                                         <option value="sup">Support</option>
                                     </select>
-                                    <label htmlFor="floatingSelect">Ruolo</label>
+                                    <label htmlFor="floatingSelect">Role</label>
                                 </div>
                                 <div className="form-floating mb-3">
                                     <textarea
@@ -409,7 +430,7 @@ function Comp() {
                                         onChange={(e) => handleChange(e)}
                                         onKeyDown={handleKey}
                                     />
-                                    <label htmlFor="descr">Descrizione</label>
+                                    <label htmlFor="descr">Info</label>
                                 </div>
                                 <div className="form-check mb-3 d-flex align-items-center">
                                     <input
@@ -431,20 +452,20 @@ function Comp() {
 
                                 </div>
                             </form>
-                            {user && user.admin ?
+                            {isUserAdmin() ?
                                 <div class="btn-group" role="group" aria-label="Basic example">
                                     <button
-                                        class="btn btn-secondary btn-sm"
+                                        class="btn btn-purple btn-sm"
                                         disabled={!validForm()}
                                         onClick={() => roleSave()}
                                     >
-                                        Salva
+                                        Save
                                     </button>
                                     <button
                                         class="btn btn-danger btn-sm"
                                         onClick={() => roleDelete()}
                                     >
-                                        Elimina
+                                        Delete
                                     </button>
                                 </div>
                                 : null
@@ -504,7 +525,7 @@ function Comp() {
                                             <input
                                                 type="text"
                                                 className="form-control"
-                                                placeholder="Cerca un campione..."
+                                                placeholder="Search champions..."
                                                 value={searchTerm}
                                                 onChange={handleSearchChange}
                                             />
