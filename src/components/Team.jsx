@@ -124,18 +124,18 @@ function Team() {
     console.log('user.idUser:', user.idUser);
     console.log('user.admin:', user.admin);
     console.log('membersRole:', membersRole);
-    
+
     // Se è admin globale, mostra sempre Edit Team
     if (user.admin === true) {
       console.log('✅ User è admin globale');
       return true;
     }
-    
+
     // Controlla se è admin del team specifico in membersRole
     const userRole = membersRole.find(mr => mr.idUser === user.idUser);
     console.log('userRole trovato:', userRole);
     console.log('userRole?.admin:', userRole?.admin);
-    
+
     const isAdmin = userRole?.admin === true;
     console.log('Risultato finale isAdmin:', isAdmin);
     return isAdmin;
@@ -176,7 +176,7 @@ function Team() {
                       e.currentTarget.src = "../img/champions/champless.png";
                     }}
                   />
-                  
+
                   {/* Mostra il pulsante solo dopo il caricamento */}
                   {!isLoading && (
                     isUserAdmin() ? (
@@ -198,7 +198,98 @@ function Team() {
                     )
                   )}
 
-                  <span className="fw-bold mt-2">Coach: Zefi</span>
+                  {/* ACCORDION COACH */}
+                  <div
+                    className="accordion mt-3"
+                    id="accordionCoach"
+                    style={{
+                      width: "100%",
+                      maxWidth: "150px", // 👈 stessa larghezza del logo
+                      alignSelf: "center",
+                    }}
+                  >
+                    <div className="accordion-item border-0 bg-transparent">
+                      <h2 className="accordion-header" id="headingCoach">
+                        <button
+                          className="accordion-button collapsed bg-transparent text-white shadow-none"
+                          type="button"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#collapseCoach"
+                          aria-expanded="false"
+                          aria-controls="collapseCoach"
+                          style={{
+                            display: "flex",
+                            flexDirection: "row",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: "8px",
+                            backgroundColor: "transparent",
+                            boxShadow: "none",
+                            padding: "6px 8px",
+                            paddingRight: "24px", // spazio per la freccia
+                            paddingLeft: "24px", // 👈 stesso spazio a sinistra per bilanciare
+                            textAlign: "center",
+                            whiteSpace: "nowrap",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            position: "relative",
+                          }}
+                        >
+                          <img
+                            src={coachIco}
+                            alt="coach"
+                            style={{
+                              width: "20px",
+                              height: "20px",
+                              flexShrink: 0,
+                            }}
+                          />
+                          <strong style={{ fontSize: "0.9rem" }}>Coach</strong>
+                        </button>
+                      </h2>
+                      <div
+                        id="collapseCoach"
+                        className="accordion-collapse collapse bg-transparent"
+                        aria-labelledby="headingCoach"
+                        data-bs-parent="#accordionCoach"
+                      >
+                        <div
+                          className="accordion-body text-center text-white bg-transparent"
+                          style={{
+                            borderTop: "1px solid rgba(255,255,255,0.1)",
+                            maxWidth: "100%",
+                            overflow: "hidden",
+                            padding: "8px",
+                          }}
+                        >
+                          {members.some((m) => m.pRole?.toLowerCase() === "coach") ? (
+                            members
+                              .filter((m) => m.pRole?.toLowerCase() === "coach")
+                              .map((coach) => (
+                                <div
+                                  key={coach.idUser}
+                                  className="py-1 text-truncate"
+                                  style={{
+                                    borderBottom: "1px solid rgba(255,255,255,0.1)",
+                                    whiteSpace: "nowrap",
+                                    overflow: "hidden",
+                                    textOverflow: "ellipsis",
+                                    fontSize: "0.85rem",
+                                  }}
+                                >
+                                  {coach.username}
+                                </div>
+                              ))
+                          ) : (
+                            <div className="text-muted text-truncate" style={{ fontSize: "0.85rem" }}>
+                              No coach available
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
                   {team.opgg ? (
                     <a href={team.opgg} target="_blank" rel="noopener noreferrer">
                       <img
@@ -206,7 +297,7 @@ function Team() {
                         alt="opgg link"
                         className="img-fluid"
                         style={{
-                          maxWidth: "150px",
+                          maxWidth: "100px",
                           width: "100%",
                           height: "auto",
                           objectFit: "cover",
@@ -221,7 +312,7 @@ function Team() {
                       alt="opgg logo"
                       className="img-fluid"
                       style={{
-                        maxWidth: "150px",
+                        maxWidth: "100px",
                         width: "100%",
                         height: "auto",
                         objectFit: "cover",
@@ -279,40 +370,43 @@ function Team() {
               {/* MEMBRI TEAM */}
               <div className="d-flex justify-content-center mt-4">
                 <div className="accordion bg-dark text-white w-100 w-md-75 w-lg-50" id="accordionExample">
-                  {members.map((member) => {
-                    const roleObj = rolesData.find(r => r.role === member.pRole?.toLowerCase()) || { role: "fill", image: fillIco };
+                  {members
+                    .filter(member => member.pRole?.toLowerCase() !== "coach") // 👈 esclude i coach
+                    .map((member) => {
+                      const roleObj = rolesData.find(r => r.role === member.pRole?.toLowerCase()) || { role: "fill", image: fillIco };
 
-                    return (
-                      <div className="accordion-item" key={member.idUser}>
-                        <h2 className="accordion-header">
-                          <button
-                            className="accordion-button bg-dark text-white custom-accordion-button text-center"
-                            type="button"
-                            data-bs-toggle="collapse"
-                            data-bs-target={`#collapse${member.idUser}`}
-                            aria-expanded="false"
-                            aria-controls={`collapse${member.idUser}`}
-                            style={{ display: "flex", alignItems: "center", gap: "8px" }}
+                      return (
+                        <div className="accordion-item" key={member.idUser}>
+                          <h2 className="accordion-header">
+                            <button
+                              className="accordion-button bg-dark text-white custom-accordion-button text-center"
+                              type="button"
+                              data-bs-toggle="collapse"
+                              data-bs-target={`#collapse${member.idUser}`}
+                              aria-expanded="false"
+                              aria-controls={`collapse${member.idUser}`}
+                              style={{ display: "flex", alignItems: "center", gap: "8px" }}
+                            >
+                              <img src={roleObj.image} alt={roleObj.role} style={{ width: "20px", height: "20px" }} />
+                              {member.username}
+                            </button>
+                          </h2>
+                          <div
+                            id={`collapse${member.idUser}`}
+                            className="accordion-collapse collapse"
+                            aria-labelledby={`heading${member.idUser}`}
+                            data-bs-parent="#accordionExample"
                           >
-                            <img src={roleObj.image} alt={roleObj.role} style={{ width: "20px", height: "20px" }} />
-                            {member.username}
-                          </button>
-                        </h2>
-                        <div
-                          id={`collapse${member.idUser}`}
-                          className="accordion-collapse collapse"
-                          aria-labelledby={`heading${member.idUser}`}
-                          data-bs-parent="#accordionExample"
-                        >
-                          <div className="accordion-body custom-accordion-body text-center">
-                            <Champions champions={member.champions} />
+                            <div className="accordion-body custom-accordion-body text-center">
+                              <Champions champions={member.champions} />
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    );
-                  })}
+                      );
+                    })}
                 </div>
               </div>
+
             </div>
           ) : null
         )}

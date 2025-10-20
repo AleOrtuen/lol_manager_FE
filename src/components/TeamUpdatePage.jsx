@@ -13,6 +13,8 @@ import midIco from "../img/roles/mid_ico.png";
 import adcIco from "../img/roles/adc_ico.png";
 import supIco from "../img/roles/sup_ico.png";
 import fillIco from "../img/roles/fill_ico.png";
+import coachIco from "../img/roles/coach_ico.png";
+
 import { useSelector } from "react-redux";
 
 const rolesData = [
@@ -22,6 +24,7 @@ const rolesData = [
     { role: "adc", label: "ADC", image: adcIco },
     { role: "sup", label: "Support", image: supIco },
     { role: "fill", label: "Fill", image: fillIco },
+    { role: "coach", label: "Coach", image: coachIco }
 ];
 
 function TeamUpdatePage({ team: propTeam, members: propMembers, membersRole: propMembersRole }) {

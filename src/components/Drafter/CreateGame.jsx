@@ -37,7 +37,7 @@ function CreateGame() {
         <div className="container" style={{ paddingTop: "20px", minHeight: "70vh" }}>
             {/* Sezione principale: Logo + Box input affiancati */}
             <div className="d-flex flex-column flex-lg-row align-items-center justify-content-center gap-5 mb-5 px-4">
-                
+
                 {/* Logo e descrizione */}
                 <div className="text-center">
                     <div className="d-flex flex-column align-items-center">
@@ -52,54 +52,104 @@ function CreateGame() {
 
                 {/* Box con selezioni */}
                 <div className="d-flex flex-column align-items-center">
-                    <div 
-                        className="login-box p-4 rounded shadow text-center" 
-                        style={{ 
+                    <div
+                        className="login-box p-4 rounded shadow text-center"
+                        style={{
                             backgroundColor: "rgba(0,0,0,0.7)",
-                            minWidth: "300px", 
-                            maxWidth: "350px" 
+                            minWidth: "300px",
+                            maxWidth: "350px"
                         }}
                     >
                         <h4 className="fw-bold mb-4">Draft type</h4>
                         <form>
-                            <div className="form-check form-check-inline">
-                                <input
-                                    className="form-check-input"
-                                    type="radio"
-                                    name="style"
-                                    id="radioBo1"
-                                    value="bo1"
-                                    checked={form.style === 'bo1'}
-                                    onChange={handleChange}
-                                />
-                                <label className="form-check-label" htmlFor="radioBo1">BO1</label>
-                            </div>
-                            <div className="form-check form-check-inline">
-                                <input
-                                    className="form-check-input"
-                                    type="radio"
-                                    name="style"
-                                    id="radioBo3"
-                                    value="bo3"
-                                    checked={form.style === 'bo3'}
-                                    onChange={handleChange}
-                                />
-                                <label className="form-check-label" htmlFor="radioBo3">BO3</label>
-                            </div>
-                            <div className="form-check form-check-inline">
-                                <input
-                                    className="form-check-input"
-                                    type="radio"
-                                    name="style"
-                                    id="radioBo5"
-                                    value="bo5"
-                                    checked={form.style === 'bo5'}
-                                    onChange={handleChange}
-                                />
-                                <label className="form-check-label" htmlFor="radioBo5">BO5</label>
-                            </div>
+                            <div className="d-flex justify-content-center gap-4 mb-4">
+                                {/* BO1 */}
+                                <div
+                                    className="d-flex flex-column align-items-center p-3 rounded cursor-pointer border border-3"
+                                    style={{
+                                        minWidth: '80px',
+                                        cursor: 'pointer',
+                                        borderColor: form.style === 'bo1' ? '#ffc107' : '#6c757d',
+                                        backgroundColor: form.style === 'bo1' ? 'rgba(255, 193, 7, 0.1)' : 'transparent',
+                                        transition: 'all 0.3s ease'
+                                    }}
+                                    onClick={() => setForm(prev => ({ ...prev, style: 'bo1', fearless: false }))}
+                                >
+                                    <div className="d-flex gap-1 mb-2">
+                                        <div
+                                            className="rounded-circle bg-warning"
+                                            style={{ width: '12px', height: '12px' }}
+                                        ></div>
+                                    </div>
+                                    <strong>BO1</strong>
+                                </div>
 
-                            <br /><br />
+                                {/* BO3 */}
+                                <div
+                                    className="d-flex flex-column align-items-center p-3 rounded cursor-pointer border border-3"
+                                    style={{
+                                        minWidth: '80px',
+                                        cursor: 'pointer',
+                                        borderColor: form.style === 'bo3' ? '#ffc107' : '#6c757d',
+                                        backgroundColor: form.style === 'bo3' ? 'rgba(255, 193, 7, 0.1)' : 'transparent',
+                                        transition: 'all 0.3s ease'
+                                    }}
+                                    onClick={() => setForm(prev => ({ ...prev, style: 'bo3' }))}
+                                >
+                                    <div className="d-flex gap-1 mb-2">
+                                        <div
+                                            className="rounded-circle bg-warning"
+                                            style={{ width: '12px', height: '12px' }}
+                                        ></div>
+                                        <div
+                                            className="rounded-circle bg-warning"
+                                            style={{ width: '12px', height: '12px' }}
+                                        ></div>
+                                        <div
+                                            className="rounded-circle bg-warning"
+                                            style={{ width: '12px', height: '12px' }}
+                                        ></div>
+                                    </div>
+                                    <strong>BO3</strong>
+                                </div>
+
+                                {/* BO5 */}
+                                <div
+                                    className="d-flex flex-column align-items-center p-3 rounded cursor-pointer border border-3"
+                                    style={{
+                                        minWidth: '80px',
+                                        cursor: 'pointer',
+                                        borderColor: form.style === 'bo5' ? '#ffc107' : '#6c757d',
+                                        backgroundColor: form.style === 'bo5' ? 'rgba(255, 193, 7, 0.1)' : 'transparent',
+                                        transition: 'all 0.3s ease'
+                                    }}
+                                    onClick={() => setForm(prev => ({ ...prev, style: 'bo5' }))}
+                                >
+                                    <div className="d-flex gap-1 mb-2">
+                                        <div
+                                            className="rounded-circle bg-warning"
+                                            style={{ width: '12px', height: '12px' }}
+                                        ></div>
+                                        <div
+                                            className="rounded-circle bg-warning"
+                                            style={{ width: '12px', height: '12px' }}
+                                        ></div>
+                                        <div
+                                            className="rounded-circle bg-warning"
+                                            style={{ width: '12px', height: '12px' }}
+                                        ></div>
+                                        <div
+                                            className="rounded-circle bg-warning"
+                                            style={{ width: '12px', height: '12px' }}
+                                        ></div>
+                                        <div
+                                            className="rounded-circle bg-warning"
+                                            style={{ width: '12px', height: '12px' }}
+                                        ></div>
+                                    </div>
+                                    <strong>BO5</strong>
+                                </div>
+                            </div>
 
                             <div className="form-check form-switch d-flex justify-content-center">
                                 <input
@@ -125,11 +175,11 @@ function CreateGame() {
             {/* Blocchi dei link: occupano più larghezza */}
             {room && (
                 <div className="mx-auto px-4" style={{ maxWidth: "900px" }}>
-                    {['player1Link','player2Link','spectateLink'].map(linkKey => (
+                    {['player1Link', 'player2Link', 'spectateLink'].map(linkKey => (
                         <div className="mb-3" key={linkKey}>
                             <label className="form-label fw-bold">
                                 {linkKey === 'player1Link' ? 'Your link:' :
-                                 linkKey === 'player2Link' ? 'Opponent link:' : 'Spectate link:'}
+                                    linkKey === 'player2Link' ? 'Opponent link:' : 'Spectate link:'}
                             </label>
                             <div className="input-group">
                                 <a

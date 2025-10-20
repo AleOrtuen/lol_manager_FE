@@ -192,7 +192,7 @@ function ChampData() {
                 {/* PAGINATION CONTROLS */}
                 <div className="d-flex justify-content-center mt-3">
                     <button
-                        className="btn btn-sm btn-secondary me-2"
+                        className="btn btn-purple btn-sm me-2"
                         disabled={currentPage === 1}
                         onClick={() => setCurrentPage((prev) => prev - 1)}
                     >
@@ -202,7 +202,7 @@ function ChampData() {
                         Page {currentPage} of {totalPages}
                     </span>
                     <button
-                        className="btn btn-sm btn-secondary ms-2"
+                        className="btn btn-purple btn-sm ms-2"
                         disabled={currentPage === totalPages}
                         onClick={() => setCurrentPage((prev) => prev + 1)}
                     >
