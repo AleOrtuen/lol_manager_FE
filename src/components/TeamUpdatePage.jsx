@@ -100,7 +100,8 @@ function TeamUpdatePage({ team: propTeam, members: propMembers, membersRole: pro
                 name: team.name,
                 tag: team.tag,
                 img: team.img,
-                opgg: team.opgg
+                opgg: team.opgg,
+                active: true
             };
             await teamUpdate(teamForm, team.file);
             alert("Team aggiornato con successo!");
