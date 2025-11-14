@@ -341,28 +341,35 @@ function Team() {
                     <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                       <p className="fw-bold mb-0">Total</p>
                       <p className="mb-0">Played: {teamData?.gamesCount ?? "N/A"}</p>
-                      {teamData?.winRate ? (
-                        <RateCircle rate={teamData.winRate} count={teamData.winCount} size={120} />
-                      ) : "N/A"}
+                      <RateCircle 
+                        rate={teamData?.winRate} 
+                        count={teamData?.winCount} 
+                        size={120}
+                      />
                     </div>
 
                     {/* BLUE SIDE */}
                     <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                       <p className="fw-bold mb-0" style={{ color: "#0d6efd" }}>Blue Side</p>
                       <p className="mb-0">Played: {teamData?.gamesCountBlue ?? "N/A"}</p>
-                      {teamData?.winRateBlue ? (
-                        <RateCircle rate={teamData.winRateBlue} count={teamData.winCountBlue} size={90} />
-                      ) : "N/A"}
+                      <RateCircle 
+                        rate={teamData?.winRateBlue} 
+                        count={teamData?.winCountBlue} 
+                        size={90}
+                      />
                     </div>
 
                     {/* RED SIDE */}
                     <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                       <p className="fw-bold mb-0" style={{ color: "#dc3545" }}>Red Side</p>
                       <p className="mb-0">Played: {teamData?.gamesCountRed ?? "N/A"}</p>
-                      {teamData?.winRateRed ? (
-                        <RateCircle rate={teamData.winRateRed} count={teamData.winCountRed} size={90} />
-                      ) : "N/A"}
+                      <RateCircle 
+                        rate={teamData?.winRateRed} 
+                        count={teamData?.winCountRed} 
+                        size={90}
+                      />
                     </div>
+                    
                   </div>
                 </div>
               </div>
