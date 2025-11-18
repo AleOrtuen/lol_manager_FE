@@ -185,7 +185,7 @@ function ChampionGallery({
                                 champRoles={champRoles}
                                 locked={lockedChampions.has(champ.idChamp)}
                                 passiveState={passiveState}
-                                size={"90px"}
+                                size={"99px"}
                             />
                         ))
                     ) : (
@@ -194,7 +194,7 @@ function ChampionGallery({
                             onSelectChampion={onSelectChampion}
                             lockedChampions={lockedChampions}
                             passiveState={passiveState}
-                            size={"90px"}
+                            size={"99px"}
                         />
                     )
                 ) : (
