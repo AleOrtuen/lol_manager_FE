@@ -486,7 +486,8 @@ function Draft() {
 
     return (
 
-        <div className="wide-component">
+        <div className="wide-component" style={{marginTop: '-50px'}}>
+
             {/* <button onClick={consoleLogs}>logs</button> */}
             {pageLoading && pageLoading === true ?
                 <div>
@@ -519,7 +520,7 @@ function Draft() {
                         </div>
                         <div className="col-2">
                             {draft && draft.ready && (currentPhase !== undefined && currentPhase !== 'end') ?
-                                <Timer currentPhase={currentPhase} />
+                                <Timer currentPhase={currentPhase}/>
                                 : null
                             }
                         </div>
@@ -553,12 +554,12 @@ function Draft() {
                         </div>
                         {/* CHAMPIONS AND SIDE SELECTION */}
                         <div className="col-10"
-                            style={{
-                                maxHeight: '60vh'
-                            }}
+                             style={{
+                                 height: '60vh'
+                             }}
                         >
                             {draft?.closed && role !== 'spectate' ? (
-                                <WinnerSelection draft={draft} />
+                                <WinnerSelection draft={draft}/>
                             ) : (draft && draft.teamBlue && draft.teamRed) || role === 'spectate' ? (
                                 <ChampionGallery
                                     champions={champions}
@@ -573,7 +574,7 @@ function Draft() {
                                     champRoles={champRoles}
                                 />
                             ) : game && game.team1 && game.team2 ? (
-                                <SideSelection game={game} draft={draft} />
+                                <SideSelection game={game} draft={draft}/>
                             ) : (
                                 <h5>Waiting for other team to join the game</h5>
                             )}
@@ -594,9 +595,10 @@ function Draft() {
                     </div>
 
                     {/* BANS E BUTTON */}
-                    <div className="row align-items-center" style={{ marginTop: '20px' }}>
+                    <div className="row align-items-center" style={{marginTop: '20px'}}>
                         {/* BLUE BANS */}
-                        <div className="col-5 d-flex justify-content-center align-items-center" style={{ display: 'flex', gap: '10px' }}>
+                        <div className="col-5 d-flex justify-content-center align-items-center"
+                             style={{display: 'flex', gap: '10px'}}>
                             <Bans
                                 side="blue"
                                 selectedChampion={
@@ -612,22 +614,23 @@ function Draft() {
                         <div className="col-2">
                             {role !== 'spectate' ?
                                 (draft && draft.ready === false && draft.teamBlue !== null ?
-                                    <ReadyCheck draft={draft} setDraft={setDraft} />
-                                    :
-                                    <button
-                                        className="btn btn-secondary btn-lg"
-                                        disabled={passiveState || selectedChampion === null}
-                                        onClick={lockChampion}
-                                    >
-                                        Lock
-                                    </button>
+                                        <ReadyCheck draft={draft} setDraft={setDraft}/>
+                                        :
+                                        <button
+                                            className="btn btn-secondary btn-lg"
+                                            disabled={passiveState || selectedChampion === null}
+                                            onClick={lockChampion}
+                                        >
+                                            Lock
+                                        </button>
                                 )
                                 : null
                             }
                         </div>
 
                         {/* RED BANS */}
-                        <div className="col-5 d-flex justify-content-center align-items-center" style={{ display: 'flex', gap: '10px' }}>
+                        <div className="col-5 d-flex justify-content-center align-items-center"
+                             style={{display: 'flex', gap: '10px'}}>
                             <Bans
                                 side="red"
                                 selectedChampion={
@@ -642,7 +645,7 @@ function Draft() {
                     </div>
                 </div>
                 :
-                <GuestSelection game={game} />
+                <GuestSelection game={game}/>
             }
         </div>
     );

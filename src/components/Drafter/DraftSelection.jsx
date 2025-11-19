@@ -32,7 +32,7 @@ function DraftSelection({ game, draftList = [], onSelect, currentPhase }) {
                     key={index}
                     type="button"
                     disabled={!draftList[index] || (currentPhase !== "end" && currentPhase !== undefined)}
-                    className={`btn ${index === selectedIndex ? 'btn-secondary btn-sm' : 'btn-outline-secondary btn-sm'}`}
+                    className={`btn ${index === selectedIndex ? 'btn-warning btn-sm' : 'btn-outline-warning btn-sm'}`}
                     onClick={() => {
                         setSelectedIndex(index);
                         onSelect(index);
