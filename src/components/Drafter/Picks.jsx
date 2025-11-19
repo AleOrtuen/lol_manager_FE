@@ -52,6 +52,8 @@ function Picks({ selectedChampion, lockedChampions = [], currentPhase, side }) {
                             width: '100%',
                             maxWidth: '186px',
                             aspectRatio: '186 / 123',
+                            minWidth: '100px',
+                            minHeight: '70px',
                             border: isActive ? '3px solid limegreen' : '2px solid #555',
                             boxShadow: isActive ? '0 0 5px limegreen' : 'none',
                             backgroundColor: '#333',
@@ -62,7 +64,8 @@ function Picks({ selectedChampion, lockedChampions = [], currentPhase, side }) {
                             marginBottom: '3px',
                             display: 'flex',
                             justifyContent: 'center',
-                            alignItems: 'center'
+                            alignItems: 'center',
+                            flexShrink: 0
                         }}
                     >
                         <img
@@ -73,13 +76,14 @@ function Picks({ selectedChampion, lockedChampions = [], currentPhase, side }) {
                                 maxHeight: '100%',
                                 width: 'auto',
                                 height: 'auto',
-                                minWidth: '120px',
-                                minHeight: '80px',
+                                minWidth: '100px',
+                                minHeight: '70px',
                                 objectFit: 'cover',
                                 borderRadius: '8px'
                             }}
                         />
                     </div>
+
                 );
             })}
         </div>
