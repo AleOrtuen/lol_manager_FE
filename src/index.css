@@ -141,6 +141,26 @@ header {
   /* Colore quando il campo è selezionato (es. blu Bootstrap) */
 }
 
+.div-gray {
+  background-color: #333;
+  color: white;
+  display: flex;
+  /* border-radius: 3px; */
+  align-items: center;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.div-gray.left {
+  clip-path: polygon(0 0, 90% 0, 100% 100%, 0% 100%);
+  justify-content: flex-start;
+}
+
+.div-gray.right {
+  clip-path: polygon(10% 0, 100% 0, 100% 100%, 0% 100%);
+  justify-content: flex-end;
+}
+
 .div-blue {
   background-color: rgb(97, 97, 255);
   clip-path: polygon(0 0, 90% 0, 100% 100%, 0% 100%);
@@ -150,10 +170,10 @@ header {
   align-items: center;
   justify-content: flex-start;
   padding-left: 20px;
-  padding-top: 5px;
-  padding-bottom: 5px;
+  /*padding-top: 5px;*/
+  /*padding-bottom: 5px;*/
   box-sizing: border-box;
-  margin-bottom: 10px;
+  margin-bottom: 3px;
   position: relative;
 }
 
@@ -166,10 +186,10 @@ header {
   align-items: center;
   justify-content: flex-end;
   padding-right: 20px;
-  padding-top: 5px;
-  padding-bottom: 5px;
+  /*padding-top: 5px;*/
+  /*padding-bottom: 5px;*/
   box-sizing: border-box;
-  margin-bottom: 10px;
+  margin-bottom: 3px;
   position: relative;
 }
 
@@ -294,6 +314,145 @@ header {
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+.lol-draft-card {
+  max-width: 560px;
+  margin: 30px auto;
+  padding: 24px;
+  background: rgb(46, 51, 59);
+  /*border: 2px solid #c8aa6e;*/
+  border: 2px solid #555;
+  border-radius: 14px;
+  /*box-shadow: 0 0 25px rgba(200, 170, 110, 0.25);*/
+  color: #f0e6d2;
+  font-family: "Beaufort for LOL", serif;
+}
+
+/* HEADER */
+.lol-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 22px;
+}
+
+.lol-title {
+  font-size: 1.4rem;
+  color: #c8aa6e;
+  letter-spacing: 1px;
+}
+
+.lol-team {
+  font-size: 1rem;
+  opacity: 0.85;
+}
+
+/* SECTION */
+.lol-section {
+  text-align: center;
+}
+
+.lol-section-title {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 14px;
+  opacity: 0.75;
+}
+
+/* DIVIDER */
+.lol-divider {
+  height: 1px;
+  background: linear-gradient(
+          90deg,
+          transparent,
+          #c8aa6e,
+          transparent
+  );
+  margin: 22px 0;
+}
+
+/* BUTTON ROW */
+.lol-button-row {
+  display: flex;
+  gap: 16px;
+}
+
+/* BASE BUTTON */
+.lol-btn {
+  flex: 1;
+  padding: 14px 0;
+  font-size: 1rem;
+  /*font-weight: 600;*/
+  border-radius: 10px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* BLUE SIDE */
+.lol-btn.blue {
+  background: linear-gradient(180deg, #1e4ed8, #1e3a8a);
+  border-color: #3b82f6;
+  color: #dbeafe;
+  box-shadow: 0 0 12px rgba(59, 130, 246, 0.4);
+}
+
+.lol-btn.blue:hover {
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.8);
+  transform: translateY(-2px);
+}
+
+/* RED SIDE */
+.lol-btn.red {
+  background: linear-gradient(180deg, #7f1d1d, #450a0a);
+  border-color: #ef4444;
+  color: #fee2e2;
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.4);
+}
+
+.lol-btn.red:hover {
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.8);
+  transform: translateY(-2px);
+}
+
+/* FIRST PICK */
+.lol-btn.gold {
+  background: linear-gradient(180deg, #a16207, #713f12);
+  border-color: #facc15;
+  color: #fef3c7;
+  box-shadow: 0 0 12px rgba(250, 204, 21, 0.4);
+}
+
+.lol-btn.gold:hover {
+  box-shadow: 0 0 20px rgba(250, 204, 21, 0.8);
+  transform: translateY(-2px);
+}
+
+/* LAST PICK */
+.lol-btn.silver {
+  background: linear-gradient(180deg, #4b5563, #1f2933);
+  border-color: #9ca3af;
+  color: #e5e7eb;
+}
+
+.lol-btn.silver:hover {
+  box-shadow: 0 0 20px rgba(250, 204, 21, 0.8);
+  transform: translateY(-2px);
+}
+
+.custom-search {
+  background-color: #333 !important; /* sfondo scuro */
+  border-color: #555 !important;     /* bordo */
+  color: #bbb !important;            /* testo */
+}
+
+.custom-search::placeholder {
+  color: #bbb !important;            /* placeholder */
+  opacity: 1 !important;             /* alcuni browser lo rendono trasparente di default */
 }
 
 

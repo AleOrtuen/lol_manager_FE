@@ -20,6 +20,8 @@ import DraftSelection from "./DraftSelection";
 import Score from "./Score";
 import { teamCompFindTeam } from "../../service/teamCompService";
 import { champRoleFindComp } from "../../service/champRoleService";
+import FirstSelection from "./FirstSelection.jsx";
+import PicksBanner from "./PicksBanner.jsx";
 
 
 function Draft() {
@@ -66,6 +68,24 @@ function Draft() {
         Array(5).fill({ champ: null, locked: false })
     );
     const [fearlessPicks, setFearlessPicks] = useState([]);
+
+    const [pickOrderBlueSide, setPickOrderBlueSide] = useState("");
+    const [pickOrderRedSide, setPickOrderRedSide] = useState("");
+    const blueIsFirstPick =
+        draft?.teamBlue?.idTeam === draft?.firstPick?.idTeam;
+
+// colonna sinistra
+    const leftSide = blueIsFirstPick ? "blue" : "red";
+// colonna destra
+    const rightSide = blueIsFirstPick ? "red" : "blue";
+
+    const leftLocked = leftSide === "blue" ? bluePicks : redPicks;
+    const rightLocked = rightSide === "blue" ? bluePicks : redPicks;
+    const leftBans = leftSide === "blue" ? blueBans : redBans;
+    const rightBans = rightSide === "blue" ? blueBans : redBans;
+
+
+
 
     //WEBSOCKET EVENTS
     const onWebSocketMessage = useCallback((msg) => {
@@ -324,6 +344,17 @@ function Draft() {
                 });
         }
 
+        if (draft?.firstPick && draft?.lastPick && draft?.teamBlue && draft?.teamRed) {
+            if (draft.teamBlue.idTeam === draft.firstPick.idTeam) {
+                setPickOrderBlueSide("FIRST PICK");
+                setPickOrderRedSide("LAST PICK");
+            } else {
+                setPickOrderBlueSide("LAST PICK");
+                setPickOrderRedSide("FIRST PICK");
+            }
+        }
+
+
     }, [draft, role, game]);
 
     // RETRIEVE TEAM COMPS
@@ -486,12 +517,15 @@ function Draft() {
 
     return (
 
-        <div className="wide-component" style={{marginTop: '-50px'}}>
+        <div className="wide-component" style={{marginTop: '-65px'}}>
 
             {/* <button onClick={consoleLogs}>logs</button> */}
             {pageLoading && pageLoading === true ?
                 <div>
                     <div className="row justify-content-center">
+                        <div className="col-2 div-gray left">
+                            {pickOrderBlueSide}
+                        </div>
                         <div className="col-8 ">
                             {game && draftList?.length > 0 && (
                                 <DraftSelection
@@ -502,10 +536,13 @@ function Draft() {
                                 />
                             )}
                         </div>
+                        <div className="col-2 div-gray right">
+                            {pickOrderRedSide}
+                        </div>
                     </div>
                     {/* TEAMS E PHASE */}
                     <div className="row justify-content-center">
-                        {/* TEAM BLUE SIDE */}
+                    {/* TEAM BLUE SIDE */}
 
                         <div className="col-4 div-blue">
                             {draft?.teamBlue?.name ?
@@ -538,29 +575,29 @@ function Draft() {
                     </div>
 
                     {/* PICKS E ALL CHAMPS */}
-                    <div className="row">
+                    <div className="row" style={{ height: '100%' }}>
                         {/* PICKS BLUE SIDE */}
-                        <div className="col-1">
-                            <Picks
-                                side="blue"
+                        <div className="col-2">
+                            <PicksBanner
+                                side={leftSide}
                                 selectedChampion={
-                                    currentPhase?.startsWith("bluePick")
+                                    currentPhase?.startsWith(`${leftSide}Pick`)
                                         ? (passiveState ? remoteSelectedChampion : selectedChampion)
                                         : undefined
                                 }
-                                lockedChampions={bluePicks}
+                                lockedChampions={leftLocked}
                                 currentPhase={currentPhase}
+                                align={"flex-start"}
                             />
                         </div>
                         {/* CHAMPIONS AND SIDE SELECTION */}
-                        <div className="col-10"
-                             style={{
-                                 height: '60vh'
-                             }}
+                        <div className="col-8" style={{ maxHeight: '66vh' }}
                         >
                             {draft?.closed && role !== 'spectate' ? (
                                 <WinnerSelection draft={draft}/>
-                            ) : (draft && draft.teamBlue && draft.teamRed) || role === 'spectate' ? (
+                            ) : (draft &&
+                                draft.teamBlue && draft.teamRed &&
+                                draft.firstPick && draft.lastPick) || role === 'spectate' ? (
                                 <ChampionGallery
                                     champions={champions}
                                     leagueRoles={leagueRoles}
@@ -574,22 +611,24 @@ function Draft() {
                                     champRoles={champRoles}
                                 />
                             ) : game && game.team1 && game.team2 ? (
-                                <SideSelection game={game} draft={draft}/>
+                                // <SideSelection game={game} draft={draft}/>
+                                <FirstSelection game={game} draft={draft} />
                             ) : (
                                 <h5>Waiting for other team to join the game</h5>
                             )}
                         </div>
                         {/* PICKS RED SIDE */}
-                        <div className="col-1">
-                            <Picks
-                                side="red"
+                        <div className="col-2">
+                            <PicksBanner
+                                side={rightSide}
                                 selectedChampion={
-                                    currentPhase?.startsWith("redPick")
+                                    currentPhase?.startsWith(`${rightSide}Pick`)
                                         ? (passiveState ? remoteSelectedChampion : selectedChampion)
                                         : undefined
                                 }
-                                lockedChampions={redPicks}
+                                lockedChampions={rightLocked}
                                 currentPhase={currentPhase}
+                                align={"flex-end"}
                             />
                         </div>
                     </div>
@@ -597,21 +636,21 @@ function Draft() {
                     {/* BANS E BUTTON */}
                     <div className="row align-items-center" style={{marginTop: '20px'}}>
                         {/* BLUE BANS */}
-                        <div className="col-5 d-flex justify-content-center align-items-center"
+                        <div className="col-4 d-flex justify-content-center align-items-center"
                              style={{display: 'flex', gap: '10px'}}>
                             <Bans
-                                side="blue"
+                                side={leftSide}
                                 selectedChampion={
-                                    currentPhase?.startsWith("blueBan")
+                                    currentPhase?.startsWith(`${leftSide}Ban`)
                                         ? (passiveState ? remoteSelectedChampion : selectedChampion)
                                         : undefined
                                 }
-                                lockedChampions={blueBans}
+                                lockedChampions={leftBans}
                                 currentPhase={currentPhase}
                             />
                         </div>
 
-                        <div className="col-2">
+                        <div className="col-4">
                             {role !== 'spectate' ?
                                 (draft && draft.ready === false && draft.teamBlue !== null ?
                                         <ReadyCheck draft={draft} setDraft={setDraft}/>
@@ -629,16 +668,16 @@ function Draft() {
                         </div>
 
                         {/* RED BANS */}
-                        <div className="col-5 d-flex justify-content-center align-items-center"
+                        <div className="col-4 d-flex justify-content-center align-items-center"
                              style={{display: 'flex', gap: '10px'}}>
                             <Bans
-                                side="red"
+                                side={rightSide}
                                 selectedChampion={
-                                    currentPhase?.startsWith("redBan")
+                                    currentPhase?.startsWith(`${rightSide}Ban`)
                                         ? (passiveState ? remoteSelectedChampion : selectedChampion)
                                         : undefined
                                 }
-                                lockedChampions={redBans}
+                                lockedChampions={rightBans}
                                 currentPhase={currentPhase}
                             />
                         </div>

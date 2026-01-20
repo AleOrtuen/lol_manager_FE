@@ -101,7 +101,7 @@ function ChampionGallery({
     return (
         <div
             className="rounded-top d-flex flex-column h-100"
-            style={{ border: '5px solid #242424' }}
+            style={{ border: '5px solid #242424', minHeight: 0 }}
         >
             <div className="bg-dark d-flex align-items-center">
                 {/* Tabs per ruoli */}
@@ -145,7 +145,7 @@ function ChampionGallery({
                     <div className="input-group">
                         <input
                             type="text"
-                            className="form-control"
+                            className="form-control custom-search"
                             placeholder="Search champions..."
                             value={searchTerm}
                             onChange={onSearchChange}
@@ -168,6 +168,7 @@ function ChampionGallery({
             <div
                 className="flex-grow-1 overflow-auto p-2 text-center"
                 style={{
+                    minHeight: 0,
                     display: 'flex',
                     flexWrap: 'wrap',
                     gap: '2px',

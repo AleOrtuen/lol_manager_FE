@@ -12,7 +12,9 @@ function Bans({ selectedChampion, lockedChampions = [], currentPhase, side }) {
         redBan5: 4
     };
 
-    const activeIndex = currentPhase?.startsWith(side) ? phaseToIndex[currentPhase] : null;
+    const activeIndex = currentPhase?.startsWith(side)
+        ? phaseToIndex[currentPhase]
+        : null;
 
     return (
         <div
@@ -22,7 +24,7 @@ function Bans({ selectedChampion, lockedChampions = [], currentPhase, side }) {
                 gap: '3px',
                 justifyContent: 'center',
                 width: '100%',
-                maxWidth: '600px', // opzionale
+                maxWidth: '600px',
                 margin: '0 auto'
             }}
         >
@@ -34,15 +36,18 @@ function Bans({ selectedChampion, lockedChampions = [], currentPhase, side }) {
                         ? selectedChampion
                         : null;
 
+                const isBanned = !!champToShow;
+
                 return (
                     <div
                         key={index}
                         style={{
-                            flex: '1 1 0',               // permette a tutti i box di adattarsi uniformemente
-                            minWidth: '40px',            // minimo 40px
-                            maxWidth: '85px',            // massimo 85px
-                            aspectRatio: '1 / 1',        // mantiene il box quadrato
-                            width: '100%',               // necessario in flexbox per rispettare min/max
+                            position: 'relative',
+                            flex: '1 1 0',
+                            minWidth: '40px',
+                            maxWidth: '85px',
+                            aspectRatio: '1 / 1',
+                            width: '100%',
                             border: isActive ? '3px solid limegreen' : '2px solid #555',
                             boxShadow: isActive ? '0 0 5px limegreen' : 'none',
                             display: 'flex',
@@ -50,10 +55,10 @@ function Bans({ selectedChampion, lockedChampions = [], currentPhase, side }) {
                             alignItems: 'center',
                             backgroundColor: '#333',
                             borderRadius: '8px',
-                            cursor: 'pointer'
+                            cursor: 'default',
+                            overflow: 'hidden'
                         }}
                     >
-
                         <img
                             src={
                                 champToShow
@@ -68,10 +73,26 @@ function Bans({ selectedChampion, lockedChampions = [], currentPhase, side }) {
                                 borderRadius: '8px'
                             }}
                         />
+
+                        {isBanned && (
+                            <div
+                                style={{
+                                    position: 'absolute',
+                                    top: '50%',
+                                    left: '50%',
+                                    width: '80%',        // lunghezza della diagonale
+                                    height: '3px',       // spessore
+                                    backgroundColor: 'white',
+                                    transform: 'translate(-50%, -50%) rotate(-45deg)', // centrata perfettamente
+                                    pointerEvents: 'none'
+                                }}
+                            />
+                        )}
                     </div>
                 );
             })}
         </div>
     );
 }
-export default Bans
+
+export default Bans;

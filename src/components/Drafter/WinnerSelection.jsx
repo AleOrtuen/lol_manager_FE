@@ -20,29 +20,40 @@ function WinnerSelection({ draft }) {
     }
 
     return (
-        <div>
-            {draft.winner !== null ?
-                <h5>{draft.winner.name} winner</h5>
-                :
+        <div className="lol-draft-card">
+            <div className="lol-header">
+                <span className="lol-title">Winner Selection</span>
+            </div>
+            {draft.winner ? (
+                <div className="lol-section">
+                    <div className="lol-section-title">
+                        Winner: {draft.winner.name}
+                    </div>
+                </div>
+            ) : (
                 <>
-                    <h5>Select winner</h5>
-                    <button
-                        className="btn btn-primary btn-lg"
-                        onClick={() => handleWinnerSelection("blue")}
-                    >
-                        Blue side
-                    </button>
-                    <> </>
-                    <button
-                        className="btn btn-danger btn-lg"
-                        onClick={() => handleWinnerSelection("red")}
-                    >
-                        Red side
-                    </button>
+                    <div className="lol-section">
+                        <div className="lol-section-title">Select Winner</div>
+                        <div className="lol-button-row">
+                            <button
+                                className="lol-btn blue"
+                                onClick={() => handleWinnerSelection("blue")}
+                            >
+                                {draft.teamBlue?.name || "Blue side"}
+                            </button>
+                            <button
+                                className="lol-btn red"
+                                onClick={() => handleWinnerSelection("red")}
+                            >
+                                {draft.teamRed?.name || "Red side"}
+                            </button>
+                        </div>
+                    </div>
                 </>
-            }
+            )}
         </div>
-    )
+    );
+
 }
 
 export default WinnerSelection
