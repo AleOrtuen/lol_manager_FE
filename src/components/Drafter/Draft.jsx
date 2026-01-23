@@ -635,18 +635,19 @@ function Draft() {
 
                     <div className="lol-divider"/>
 
-                    {game?.fearless && (
-                        <div className="row align-items-center">
-                            <div className="col-5 d-flex justify-content-start align-items-center">
-                                <FearlessBans game={game} lockedChampions={leftBans}/>
-                            </div>
-                            <div className="col-2">
-                            </div>
-                            <div className="col-5 d-flex justify-content-end align-items-center">
-                                <FearlessBans game={game} lockedChampions={rightBans}/>
-                            </div>
-                        </div>
-                    )}
+                    {/*FEARLESS BAN DA IMPLEMENTARE*/}
+                    {/*{game?.fearless && (*/}
+                    {/*    <div className="row align-items-center">*/}
+                    {/*        <div className="col-5 d-flex justify-content-start align-items-center">*/}
+                    {/*            <FearlessBans game={game} lockedChampions={leftBans}/>*/}
+                    {/*        </div>*/}
+                    {/*        <div className="col-2">*/}
+                    {/*        </div>*/}
+                    {/*        <div className="col-5 d-flex justify-content-end align-items-center">*/}
+                    {/*            <FearlessBans game={game} lockedChampions={rightBans}/>*/}
+                    {/*        </div>*/}
+                    {/*    </div>*/}
+                    {/*)}*/}
 
                     {/* BANS E BUTTON */}
                     <div className="row align-items-center" style={{marginTop: '20px'}}>
