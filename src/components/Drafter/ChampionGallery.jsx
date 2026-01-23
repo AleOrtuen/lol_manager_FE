@@ -141,7 +141,7 @@ function ChampionGallery({
                 )}
 
                 {/* Barra di ricerca */}
-                <div className="ms-auto px-2" style={{ maxWidth: '250px' }}>
+                <div className="ms-auto px-2 pb-1" style={{ maxWidth: '250px' }}>
                     <div className="input-group">
                         <input
                             type="text"
@@ -201,8 +201,8 @@ function ChampionGallery({
                 ) : (
                     <div className="text-white-50 mt-4">
                         {searchTerm
-                            ? "Nessun campione trovato"
-                            : `Nessun campione disponibile${activeTab ? ` per il ruolo ${activeTab}` : ''}`}
+                            ? "No champions found"
+                            : `No available champions${activeTab ? ` per il ruolo ${activeTab}` : ''}`}
                     </div>
                 )}
             </div>

@@ -143,12 +143,13 @@ header {
 
 .div-gray {
   background-color: #333;
-  color: white;
+  color: #fdbf07;
   display: flex;
   /* border-radius: 3px; */
   align-items: center;
   box-sizing: border-box;
   position: relative;
+  font-weight: bold;
 }
 
 .div-gray.left {
@@ -162,7 +163,9 @@ header {
 }
 
 .div-blue {
-  background-color: rgb(97, 97, 255);
+  /*background-color: rgb(97, 97, 255);*/
+  /*background-color: #1e4ed8;*/
+  background: linear-gradient(90deg, #1e3a8a, #1e4ed8);
   clip-path: polygon(0 0, 90% 0, 100% 100%, 0% 100%);
   /* border-radius: 3px; */
   color: white;
@@ -178,7 +181,9 @@ header {
 }
 
 .div-red {
-  background-color: rgb(255, 31, 31);
+  /*background-color: rgb(255, 31, 31);*/
+  /*background-color: #7f1d1d;*/
+  background: linear-gradient(90deg, #7f1d1d, #450a0a);
   clip-path: polygon(10% 0, 100% 0, 100% 100%, 0% 100%);
   /* border-radius: 3px; */
   color: white;
@@ -437,6 +442,7 @@ header {
   background: linear-gradient(180deg, #4b5563, #1f2933);
   border-color: #9ca3af;
   color: #e5e7eb;
+  box-shadow: 0 0 12px rgba(250, 204, 21, 0.4);
 }
 
 .lol-btn.silver:hover {

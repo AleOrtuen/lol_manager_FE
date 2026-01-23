@@ -27,13 +27,9 @@ function PicksBanner({ selectedChampion, lockedChampions = [], currentPhase, sid
         // rimuove estensione
         const nameWithoutExt = img.replace(/\.[^/.]+$/, '');
 
-        console.log("url db", img)
-
-
         // prima lettera maiuscola
         const formattedName =
             nameWithoutExt.charAt(0).toUpperCase() + nameWithoutExt.slice(1);
-        console.log("composto", `${baseUrlBanner}/${formattedName}_0.jpg`)
         return `${baseUrlBanner}/${formattedName}_0.jpg`;
     };
 
@@ -68,12 +64,12 @@ function PicksBanner({ selectedChampion, lockedChampions = [], currentPhase, sid
                         style={{
                             width: '100%',              // 🔴 riempie la col
                             aspectRatio: '21 / 9',  // mantiene proporzione
-                            border: isActive ? '3px solid limegreen' : '2px solid #555',
+                            border: isActive ? '3px solid limegreen' : '0px solid #555',
                             boxShadow: isActive ? '0 0 5px limegreen' : 'none',
                             backgroundColor: '#333',
                             borderRadius: '3px',
                             overflow: 'hidden',
-                            marginBottom: '3px',
+                            marginBottom: '2px',
                             display: 'flex',
                             justifyContent: 'center',
                             alignItems: 'center',

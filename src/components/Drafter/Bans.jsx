@@ -1,4 +1,4 @@
-function Bans({ selectedChampion, lockedChampions = [], currentPhase, side }) {
+function Bans({ selectedChampion, lockedChampions = [], currentPhase, side, order= false }) {
     const phaseToIndex = {
         blueBan1: 0,
         blueBan2: 1,
@@ -25,7 +25,8 @@ function Bans({ selectedChampion, lockedChampions = [], currentPhase, side }) {
                 justifyContent: 'center',
                 width: '100%',
                 maxWidth: '600px',
-                margin: '0 auto'
+                margin: '0 auto',
+                flexDirection: order ? 'row-reverse' : 'row'
             }}
         >
             {lockedChampions.map((ban, index) => {
@@ -54,7 +55,7 @@ function Bans({ selectedChampion, lockedChampions = [], currentPhase, side }) {
                             justifyContent: 'center',
                             alignItems: 'center',
                             backgroundColor: '#333',
-                            borderRadius: '8px',
+                            borderRadius: '5px',
                             cursor: 'default',
                             overflow: 'hidden'
                         }}
@@ -62,7 +63,7 @@ function Bans({ selectedChampion, lockedChampions = [], currentPhase, side }) {
                         <img
                             src={
                                 champToShow
-                                    ? `/img/champions/${champToShow.img || 'champless.png'}`
+                                    ? `/img/champions/${champToShow.img.toLowerCase() || 'champless.png'}`
                                     : '/img/champions/champless.png'
                             }
                             alt={champToShow?.name || 'No Champion'}
@@ -70,7 +71,7 @@ function Bans({ selectedChampion, lockedChampions = [], currentPhase, side }) {
                                 width: '95%',
                                 height: '95%',
                                 objectFit: 'contain',
-                                borderRadius: '8px'
+                                borderRadius: '5px'
                             }}
                         />
 

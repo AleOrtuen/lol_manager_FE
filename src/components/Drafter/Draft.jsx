@@ -5,8 +5,6 @@ import { useParams } from "react-router-dom";
 import { gameRoomFindId } from "../../service/gameRoomService";
 import { useWebSocketDraft } from "../web_socket/useWebSocketGame";
 import GuestSelection from "./GuestSelection";
-import SideSelection from "./SideSelection";
-import Picks from "./Picks";
 import Bans from "./Bans";
 import { draftFindRoom } from "../../service/draftService";
 import ReadyCheck from "./ReadyCheck";
@@ -15,17 +13,16 @@ import { banFindByDraft } from "../../service/banService";
 import { pickFindByDraft, pickFindByGame } from "../../service/pickService";
 import ChampionGallery from "./ChampionGallery";
 import WinnerSelection from "./WinnerSelection";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import DraftSelection from "./DraftSelection";
-import Score from "./Score";
 import { teamCompFindTeam } from "../../service/teamCompService";
 import { champRoleFindComp } from "../../service/champRoleService";
 import FirstSelection from "./FirstSelection.jsx";
 import PicksBanner from "./PicksBanner.jsx";
+import FearlessBans from "./FearlessBans.jsx";
 
 
 function Draft() {
-    const dispatch = useDispatch();
     const teams = useSelector((state) => Object.values(state.team));
     const [comps, setComps] = useState([]);
     const [champRoles, setChampRoles] = useState([]);
@@ -45,6 +42,8 @@ function Draft() {
     const [passiveState, setPassiveState] = useState();
     const [yourSide, setYourSide] = useState();
     const yourSideRef = useRef();
+    const myTeamRef = useRef();
+    const draftRef = useRef();
     const [registeredTeam, setRegisteredTeam] = useState();
     const [searchTerm, setSearchTerm] = useState("");
     const [uniqueChamp, setUniqueChamp] = useState({
@@ -121,14 +120,16 @@ function Draft() {
         if (msg.type === "EVENT_CHANGE" && msg.events) {
             const nextPhase = msg.events.currentPhase;
             console.log("🆕 EVENTS_UPDATE received", msg.events);
-            const side = yourSideRef.current;
             setCurrentPhase(nextPhase);
             setSelectedChampion(null);
             setRemoteSelectedChampion(null);
             if (role !== 'spectate') {
+                console.log("STO DENTRO IF", myTeamRef.current, draft?.firstPick)
+                const calcoloPickOrder = myTeamRef.current?.idTeam === draftRef.current?.firstPick?.idTeam ? "firstPick" : "lastPick";
+                console.log("calcolo variabile", calcoloPickOrder, nextPhase)
                 setPassiveState(
-                    (side === 'blue' && nextPhase.startsWith("blue")) ||
-                        (side === 'red' && nextPhase.startsWith("red")) ? false : true
+                    (calcoloPickOrder === 'firstPick' && nextPhase.startsWith("blue")) ||
+                        (calcoloPickOrder === 'lastPick' && nextPhase.startsWith("red")) ? false : true
                 );
             }
         }
@@ -138,16 +139,11 @@ function Draft() {
             console.log("🆕 CURRENT_EVENT received", current);
             setCurrentPhase(current);
 
-            const side = yourSideRef.current;
-            if (!side) {
-                console.warn("⚠️ yourSideRef ancora non inizializzato, salto setPassiveState");
-                return;
-            }
-
             if (role !== 'spectate') {
+                const calcoloPickOrder = myTeamRef.current?.idTeam === draftRef.current?.firstPick?.idTeam ? "firstPick" : "lastPick";
                 setPassiveState(
-                    (side === 'blue' && nextPhase.startsWith("blue")) ||
-                        (side === 'red' && nextPhase.startsWith("red")) ? false : true
+                    (calcoloPickOrder === 'firstPick' && nextPhase.startsWith("blue")) ||
+                        (calcoloPickOrder === 'lastPick' && nextPhase.startsWith("red")) ? false : true
                 );
             }
         }
@@ -240,6 +236,10 @@ function Draft() {
 
     }, []);
 
+    useEffect(() => {
+        draftRef.current = draft;
+    }, [draft]);
+
     // VERIFY IF THE GAME EXIST BEFORE LOAD THE PAGE
     useEffect(() => {
                 console.log(game);
@@ -278,6 +278,7 @@ function Draft() {
         setRedPicks(Array(5).fill({ champ: null, locked: false }));
 
         const yourTeam = role === "player1" ? game.team1 : game.team2;
+        myTeamRef.current = yourTeam;
 
         const yourTeamId = yourTeam?.idTeam;
         const teamBlueId = draft?.teamBlue?.idTeam;
@@ -353,7 +354,6 @@ function Draft() {
                 setPickOrderRedSide("FIRST PICK");
             }
         }
-
 
     }, [draft, role, game]);
 
@@ -542,7 +542,7 @@ function Draft() {
                     </div>
                     {/* TEAMS E PHASE */}
                     <div className="row justify-content-center">
-                    {/* TEAM BLUE SIDE */}
+                        {/* TEAM BLUE SIDE */}
 
                         <div className="col-4 div-blue">
                             {draft?.teamBlue?.name ?
@@ -575,7 +575,7 @@ function Draft() {
                     </div>
 
                     {/* PICKS E ALL CHAMPS */}
-                    <div className="row" style={{ height: '100%' }}>
+                    <div className="row" style={{height: '100%'}}>
                         {/* PICKS BLUE SIDE */}
                         <div className="col-2">
                             <PicksBanner
@@ -591,7 +591,7 @@ function Draft() {
                             />
                         </div>
                         {/* CHAMPIONS AND SIDE SELECTION */}
-                        <div className="col-8" style={{ maxHeight: '66vh' }}
+                        <div className="col-8" style={{maxHeight: '66vh'}}
                         >
                             {draft?.closed && role !== 'spectate' ? (
                                 <WinnerSelection draft={draft}/>
@@ -612,7 +612,7 @@ function Draft() {
                                 />
                             ) : game && game.team1 && game.team2 ? (
                                 // <SideSelection game={game} draft={draft}/>
-                                <FirstSelection game={game} draft={draft} />
+                                <FirstSelection game={game} draft={draft}/>
                             ) : (
                                 <h5>Waiting for other team to join the game</h5>
                             )}
@@ -632,6 +632,21 @@ function Draft() {
                             />
                         </div>
                     </div>
+
+                    <div className="lol-divider"/>
+
+                    {game?.fearless && (
+                        <div className="row align-items-center">
+                            <div className="col-5 d-flex justify-content-start align-items-center">
+                                <FearlessBans game={game} lockedChampions={leftBans}/>
+                            </div>
+                            <div className="col-2">
+                            </div>
+                            <div className="col-5 d-flex justify-content-end align-items-center">
+                                <FearlessBans game={game} lockedChampions={rightBans}/>
+                            </div>
+                        </div>
+                    )}
 
                     {/* BANS E BUTTON */}
                     <div className="row align-items-center" style={{marginTop: '20px'}}>
@@ -671,6 +686,7 @@ function Draft() {
                         <div className="col-4 d-flex justify-content-center align-items-center"
                              style={{display: 'flex', gap: '10px'}}>
                             <Bans
+                                order={true}
                                 side={rightSide}
                                 selectedChampion={
                                     currentPhase?.startsWith(`${rightSide}Ban`)
