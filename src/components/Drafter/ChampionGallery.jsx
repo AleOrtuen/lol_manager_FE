@@ -101,7 +101,7 @@ function ChampionGallery({
     return (
         <div
             className="rounded-top d-flex flex-column h-100"
-            style={{ border: '5px solid #242424' }}
+            style={{ border: '5px solid #242424', minHeight: 0 }}
         >
             <div className="bg-dark d-flex align-items-center">
                 {/* Tabs per ruoli */}
@@ -141,11 +141,11 @@ function ChampionGallery({
                 )}
 
                 {/* Barra di ricerca */}
-                <div className="ms-auto px-2" style={{ maxWidth: '250px' }}>
+                <div className="ms-auto px-2 pb-1" style={{ maxWidth: '250px' }}>
                     <div className="input-group">
                         <input
                             type="text"
-                            className="form-control"
+                            className="form-control custom-search"
                             placeholder="Search champions..."
                             value={searchTerm}
                             onChange={onSearchChange}
@@ -168,6 +168,7 @@ function ChampionGallery({
             <div
                 className="flex-grow-1 overflow-auto p-2 text-center"
                 style={{
+                    minHeight: 0,
                     display: 'flex',
                     flexWrap: 'wrap',
                     gap: '2px',
@@ -200,8 +201,8 @@ function ChampionGallery({
                 ) : (
                     <div className="text-white-50 mt-4">
                         {searchTerm
-                            ? "Nessun campione trovato"
-                            : `Nessun campione disponibile${activeTab ? ` per il ruolo ${activeTab}` : ''}`}
+                            ? "No champions found"
+                            : `No available champions${activeTab ? ` per il ruolo ${activeTab}` : ''}`}
                     </div>
                 )}
             </div>

@@ -70,13 +70,13 @@ const ChampionInfoHoverBox = ({
                 }}
             >
                 <img
-                    src={champion.img ? `/img/champions/${champion.img}` : ''}
+                    src={champion.img ? `/img/champions/${champion.img.toLowerCase()}` : ''}
                     alt={champion.name}
                     style={{
                         width: size ?? '67px',
                         height: size ?? '67px',
                         objectFit: 'cover',
-                        borderRadius: '8px'
+                        borderRadius: '5px'
                     }}
                     className="image-hover"
                     onError={(e) => {

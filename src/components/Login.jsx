@@ -115,7 +115,7 @@ function Login() {
                                 Invalid credentials.{" "}
                                 <span
                                     className="text-warning "
-                                    style={{ cursor: "pointer" }}
+                                    style={{cursor: "pointer"}}
                                     onClick={() => navigate(PSW_RESET)}
                                 >
                                     Forgot password?
@@ -134,12 +134,13 @@ function Login() {
                             Don’t have an account?{" "}
                             <span
                                 className="text-warning "
-                                style={{ cursor: "pointer" }}
+                                style={{cursor: "pointer"}}
                                 onClick={() => navigate(SIGNUP)}
                             >
                                 Sign up
                             </span>
                         </div>
+                        <div className="lol-divider"/>
                         <div className="mt-4 text-center">
                             <a
                                 className="btn btn-warning btn-lg fw-bold mt-2 w-100 d-flex align-items-center justify-content-center gap-2"

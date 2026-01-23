@@ -39,7 +39,7 @@ function Champions({ champions, onSelectChampion, lockedChampions = new Set(), p
       >
         {champions.map((champion, index) => {
           const isLocked = lockedChampions.has(champion.idChamp);
-          const imgSrc = imagesMap[champion.name.toLowerCase()] || `/img/champions/${champion.img}`;
+          const imgSrc = `/img/champions/${champion.img.toLowerCase()}`;
 
           return (
             <div
@@ -62,7 +62,7 @@ function Champions({ champions, onSelectChampion, lockedChampions = new Set(), p
                   width: size ?? '67px',
                   height: size ?? '67px',
                   objectFit: 'cover',
-                  borderRadius: '8px'
+                  borderRadius: '5px'
                 }}
                 className="image-hover"
                 onError={(e) => {

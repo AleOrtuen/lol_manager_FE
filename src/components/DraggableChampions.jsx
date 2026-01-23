@@ -33,7 +33,7 @@ function DraggableChampions({ champions, onChampionClick }) {
           style={{
             display: 'flex',
             flexWrap: 'wrap',
-            gap: '8px',
+            gap: '5px',
             justifyContent: 'center'
           }}
         >
@@ -51,28 +51,28 @@ function DraggableChampions({ champions, onChampionClick }) {
             >
               {/* Verifica se l'immagine è disponibile basandosi sul nome */}
               {imagesMap[champion.name?.toLowerCase()] ? (
-                <img 
-                  src={imagesMap[champion.name.toLowerCase()]} 
+                <img
+                  src={imagesMap[champion.name.toLowerCase()]}
                   alt={champion.name}
                   style={{
                     width: '67px',
                     height: '67px',
                     objectFit: 'cover',
-                    borderRadius: '8px'
+                    borderRadius: '5px'
                   }}
                   className="image-hover"
                 />
               ) : (
                 /* Mostra l'immagine dal percorso indicato nell'oggetto champion, se presente */
-                champion.img || champion.imgChamp ? (
+                champion.img ? (
                   <img 
-                    src={champion.imgChamp || `../img/champions/${champion.img}`} 
+                    src={`../img/champions/${champion.img.toLowerCase()}`}
                     alt={champion.name || champion.nameChamp}
                     style={{
                       width: '67px',
                       height: '67px',
                       objectFit: 'cover',
-                      borderRadius: '8px'
+                      borderRadius: '5px'
                     }}
                     className="image-hover"
                     onError={(e) => {

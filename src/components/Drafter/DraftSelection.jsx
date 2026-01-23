@@ -26,7 +26,7 @@ function DraftSelection({ game, draftList = [], onSelect, currentPhase }) {
     const numberOfGames = getNumberOfGames();
 
     return (
-        <div className="btn-group my-2" role="group" aria-label="Draft selection">
+        <div className="btn-group" role="group" aria-label="Draft selection">
             {[...Array(numberOfGames)].map((_, index) => (
                 <button
                     key={index}
