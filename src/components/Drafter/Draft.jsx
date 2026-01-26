@@ -124,9 +124,7 @@ function Draft() {
             setSelectedChampion(null);
             setRemoteSelectedChampion(null);
             if (role !== 'spectate') {
-                console.log("STO DENTRO IF", myTeamRef.current, draft?.firstPick)
                 const calcoloPickOrder = myTeamRef.current?.idTeam === draftRef.current?.firstPick?.idTeam ? "firstPick" : "lastPick";
-                console.log("calcolo variabile", calcoloPickOrder, nextPhase)
                 setPassiveState(
                     (calcoloPickOrder === 'firstPick' && nextPhase.startsWith("blue")) ||
                         (calcoloPickOrder === 'lastPick' && nextPhase.startsWith("red")) ? false : true
@@ -142,8 +140,8 @@ function Draft() {
             if (role !== 'spectate') {
                 const calcoloPickOrder = myTeamRef.current?.idTeam === draftRef.current?.firstPick?.idTeam ? "firstPick" : "lastPick";
                 setPassiveState(
-                    (calcoloPickOrder === 'firstPick' && nextPhase.startsWith("blue")) ||
-                        (calcoloPickOrder === 'lastPick' && nextPhase.startsWith("red")) ? false : true
+                    (calcoloPickOrder === 'firstPick' && current.startsWith("blue")) ||
+                        (calcoloPickOrder === 'lastPick' && current.startsWith("red")) ? false : true
                 );
             }
         }
