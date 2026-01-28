@@ -22,14 +22,43 @@ function FirstSelection({ game, draft }) {
         draft?.firstSelection !== null;
 
     const getSelectionLabel = () => {
-        if (!draft?.firstSelection) return "";
+        if (!draft?.firstSelection || !draft.selectionTeam) return "";
 
+        const selectorIsYou =
+            draft.selectionTeam.idTeam === yourTeam.idTeam;
+
+        // PICK SELECTION
         if (draft.firstSelection === "pick") {
-            return draft.firstPick ? "first pick" : "last pick";
+            if (!draft.firstPick || !draft.lastPick) return "";
+
+            const selectorIsFirstPick =
+                draft.firstPick.idTeam === draft.selectionTeam.idTeam;
+
+            const label = selectorIsFirstPick ? "first pick" : "last pick";
+
+            return selectorIsYou
+                ? label                  // You selected first/last pick
+                : label;                 // Opponent selected first/last pick
         }
 
-        return draft.teamBlue ? "blue side" : "red side";
+        // SIDE SELECTION
+        if (draft.firstSelection === "side") {
+            if (!draft.teamBlue || !draft.teamRed) return "";
+
+            const selectorIsBlue =
+                draft.teamBlue.idTeam === draft.selectionTeam.idTeam;
+
+            const label = selectorIsBlue ? "blue side" : "red side";
+
+            return selectorIsYou
+                ? label
+                : label;
+        }
+
+        return "";
     };
+
+
 
     const selectionLabel = getSelectionLabel();
 
