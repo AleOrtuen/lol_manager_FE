@@ -19,8 +19,6 @@ import { teamCompFindTeam } from "../../service/teamCompService";
 import { champRoleFindComp } from "../../service/champRoleService";
 import FirstSelection from "./FirstSelection.jsx";
 import PicksBanner from "./PicksBanner.jsx";
-import FearlessBans from "./FearlessBans.jsx";
-
 
 function Draft() {
     const teams = useSelector((state) => Object.values(state.team));
@@ -46,13 +44,6 @@ function Draft() {
     const draftRef = useRef();
     const [registeredTeam, setRegisteredTeam] = useState();
     const [searchTerm, setSearchTerm] = useState("");
-    const [uniqueChamp, setUniqueChamp] = useState({
-        top: [],
-        jng: [],
-        mid: [],
-        adc: [],
-        sup: []
-    });
 
     const [blueBans, setBlueBans] = useState(
         Array(5).fill({ champ: null, locked: false })
@@ -78,12 +69,12 @@ function Draft() {
 // colonna destra
     const rightSide = blueIsFirstPick ? "red" : "blue";
 
-    const leftLocked = leftSide === "blue" ? bluePicks : redPicks;
-    const rightLocked = rightSide === "blue" ? bluePicks : redPicks;
-    const leftBans = leftSide === "blue" ? blueBans : redBans;
-    const rightBans = rightSide === "blue" ? blueBans : redBans;
-
-
+    const mapToSlots = (items, key) =>
+        Array(5).fill({ champ: null, locked: false }).map((_, i) =>
+            items[i]
+                ? { champ: items[i][key], locked: true }
+                : { champ: null, locked: false }
+        );
 
 
     //WEBSOCKET EVENTS
@@ -296,16 +287,9 @@ function Draft() {
                 const blue = bans.filter(b => b.side === 'blue');
                 const red = bans.filter(b => b.side === 'red');
 
-                const blueMapped = Array(5).fill({ champ: null, locked: false }).map((_, i) => {
-                    return blue[i] ? { champ: blue[i].ban, locked: true } : { champ: null, locked: false };
-                });
+                setBlueBans(mapToSlots(blue, "ban"));
+                setRedBans(mapToSlots(red, "ban"));
 
-                const redMapped = Array(5).fill({ champ: null, locked: false }).map((_, i) => {
-                    return red[i] ? { champ: red[i].ban, locked: true } : { champ: null, locked: false };
-                });
-
-                setBlueBans(blueMapped);
-                setRedBans(redMapped);
             })
             .catch(error => {
                 console.log(error.response?.data?.response || error.message);
@@ -318,16 +302,9 @@ function Draft() {
                 const blue = picks.filter(b => b.side === 'blue');
                 const red = picks.filter(b => b.side === 'red');
 
-                const blueMapped = Array(5).fill({ champ: null, locked: false }).map((_, i) => {
-                    return blue[i] ? { champ: blue[i].pick, locked: true } : { champ: null, locked: false };
-                });
+                setBluePicks(mapToSlots(blue, "pick"));
+                setRedPicks(mapToSlots(red, "pick"));
 
-                const redMapped = Array(5).fill({ champ: null, locked: false }).map((_, i) => {
-                    return red[i] ? { champ: red[i].pick, locked: true } : { champ: null, locked: false };
-                });
-
-                setBluePicks(blueMapped);
-                setRedPicks(redMapped);
             })
             .catch(error => {
                 console.log(error.response?.data?.response || error.message);
@@ -343,6 +320,8 @@ function Draft() {
                 });
         }
 
+        setPickOrderBlueSide("");
+        setPickOrderRedSide("");
         if (draft?.firstPick && draft?.lastPick && draft?.teamBlue && draft?.teamRed) {
             if (draft.teamBlue.idTeam === draft.firstPick.idTeam) {
                 setPickOrderBlueSide("FIRST PICK");
@@ -408,7 +387,7 @@ function Draft() {
                 }
             });
 
-            setUniqueChamp(newUniqueChamp);
+            // setUniqueChamp(newUniqueChamp);
         }
 
     }, [champRoles]);
@@ -464,7 +443,11 @@ function Draft() {
                 idRoom,
                 type: "PICK",
                 sender: role,
-                champion: selectedChampion
+                events: {
+                    currentPhase: currentPhase
+                },
+                champion: selectedChampion,
+                side: yourSide
             });
         }
     }, [selectedChampion, passiveState]);
@@ -490,7 +473,8 @@ function Draft() {
                 sender: role,
                 events: {
                     currentPhase: currentPhase
-                }
+                },
+                side: yourSide
             });
         }
     }
@@ -500,10 +484,11 @@ function Draft() {
     };
 
     const consoleLogs = () => {
-        console.log(passiveState);
+        // console.log(passiveState);
         // console.log(currentPhase);
         // console.log(leagueRoles);
-        // console.log(yourSide);
+        console.log(yourSide);
+        console.log(yourSideRef.current);
         // console.log(draft);
         // console.log(draftList);
         // console.log(comps);
@@ -517,7 +502,7 @@ function Draft() {
 
         <div className="wide-component" style={{marginTop: '-65px'}}>
 
-            {/* <button onClick={consoleLogs}>logs</button> */}
+             {/*<button onClick={consoleLogs}>logs</button>*/}
             {pageLoading && pageLoading === true ?
                 <div>
                     <div className="row justify-content-center">
@@ -583,7 +568,7 @@ function Draft() {
                                         ? (passiveState ? remoteSelectedChampion : selectedChampion)
                                         : undefined
                                 }
-                                lockedChampions={leftLocked}
+                                lockedChampions={bluePicks}
                                 currentPhase={currentPhase}
                                 align={"flex-start"}
                             />
@@ -624,7 +609,7 @@ function Draft() {
                                         ? (passiveState ? remoteSelectedChampion : selectedChampion)
                                         : undefined
                                 }
-                                lockedChampions={rightLocked}
+                                lockedChampions={redPicks}
                                 currentPhase={currentPhase}
                                 align={"flex-end"}
                             />
@@ -659,7 +644,7 @@ function Draft() {
                                         ? (passiveState ? remoteSelectedChampion : selectedChampion)
                                         : undefined
                                 }
-                                lockedChampions={leftBans}
+                                lockedChampions={blueBans}
                                 currentPhase={currentPhase}
                             />
                         </div>
@@ -692,7 +677,7 @@ function Draft() {
                                         ? (passiveState ? remoteSelectedChampion : selectedChampion)
                                         : undefined
                                 }
-                                lockedChampions={rightBans}
+                                lockedChampions={redBans}
                                 currentPhase={currentPhase}
                             />
                         </div>
