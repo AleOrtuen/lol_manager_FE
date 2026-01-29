@@ -23,11 +23,6 @@ export function userFindTeams(idUser) {
     return api.get(`${USER_FIND_TEAMS}${idUser}`);
 }
 
-export function userAuth(email, password) {
-    return api.get(USER_AUTH, {
-        params: {
-            email: email,
-            password: password
-        }
-    });
+export function userAuth(user) {
+    return api.post(USER_AUTH, user);
 }
