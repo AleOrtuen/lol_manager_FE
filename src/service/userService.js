@@ -1,4 +1,3 @@
-import axios from "axios";
 import { USER_AUTH, USER_FIND_EMAIL, USER_FIND_ID, USER_FIND_TEAMS, USER_SAVE, USER_UPDATE } from "../utils/endpoint";
 import api from "./axiosInstance";
 
