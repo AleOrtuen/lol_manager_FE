@@ -58,7 +58,12 @@ function GuestSelection({ game }) {
             && password && password !== ''
         ) {
 
-            await userAuth(email, password).then((response) => {
+            const userDto = {
+                email: email,
+                password: password
+            }
+
+            await userAuth(userDto).then((response) => {
                 dispatch(setUser(response.data.objResponse))
                 dispatch(resetTeam());
                 setError(false);

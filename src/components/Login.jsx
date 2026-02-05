@@ -28,7 +28,11 @@ function Login() {
 
     function login() {
         if (email && password) {
-            userAuth(email, password).then((response) => {
+            const userDto = {
+                email: email,
+                password: password
+            }
+            userAuth(userDto).then((response) => {
                 dispatch(setUser(response.data.objResponse))
                 dispatch(resetTeam());
                 navigate(HOME)
