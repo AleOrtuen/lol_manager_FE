@@ -158,3 +158,8 @@ export const GAME_FOLDER_DELETE = GAME_FOLDER_PATH + 'delete/';
 export const GAME_FOLDER_FIND_ALL = GAME_FOLDER_PATH + 'find-all';
 export const GAME_FOLDER_FIND_ID = GAME_FOLDER_PATH + 'find-id/';
 export const GAME_FOLDER_FIND_TEAM = GAME_FOLDER_PATH + 'find-team/';
+
+//ENDPOINT CHAMP ANALYSIS
+const STATS_ANALYSIS_PATH = BASE_PATH + '/stats-analysis/';
+export const CHAMP_ANALYSIS_FOLDER = STATS_ANALYSIS_PATH + 'champ-analysis/';
+export const DRAFTS_ANALYSIS_FOLDER = STATS_ANALYSIS_PATH + 'drafts-analysis/';

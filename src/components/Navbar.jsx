@@ -185,6 +185,7 @@ function Navbar() {
                     <TeamsSidebar
                         isOpen={showTeamsSidebar}
                         onClose={() => setShowTeamsSidebar(false)}
+                        user={user}
                     />
                 </>
             ) : (

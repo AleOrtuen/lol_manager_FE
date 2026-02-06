@@ -1,10 +1,19 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { TEAM, COMP_BUILDER, TEAM_COMP, TEAM_FORM, TEAMS, CHAMP_DATA, TEAM_GAMES } from "../utils/routes";
+import {
+    TEAM,
+    COMP_BUILDER,
+    TEAM_COMP,
+    TEAM_FORM,
+    TEAMS,
+    CHAMP_DATA,
+    TEAM_GAMES,
+    STATS_DATA_ADMIN
+} from "../utils/routes";
 import teamIcon from '../img/team_icon.png';
 
-function TeamsSidebar({ isOpen, onClose }) {
+function TeamsSidebar({ isOpen, onClose, user }) {
     const [dropdownOpen, setDropdownOpen] = useState({});
     const teams = useSelector((state) => state.team);
     const navigate = useNavigate();
@@ -106,10 +115,16 @@ function TeamsSidebar({ isOpen, onClose }) {
                             borderBottom: '2px solid #495057'
                         }}
                     >
-                        <h6 style={{ color: '#adb5bd', fontSize: '12px', textTransform: 'uppercase', marginBottom: '10px', paddingLeft: '5px' }}>
+                        <h6 style={{
+                            color: '#adb5bd',
+                            fontSize: '12px',
+                            textTransform: 'uppercase',
+                            marginBottom: '10px',
+                            paddingLeft: '5px'
+                        }}>
                             Gestione Teams
                         </h6>
-                        
+
                         {/* Crea Team */}
                         <a
                             onClick={() => handleNavigation(TEAM_FORM)}
@@ -134,7 +149,7 @@ function TeamsSidebar({ isOpen, onClose }) {
                                 e.currentTarget.style.paddingLeft = '15px';
                             }}
                         >
-                            <i class="bi bi-plus-circle-fill"></i> Create Team
+                            <i className="bi bi-plus-circle-fill"></i> Create Team
                         </a>
 
                         {/* Lista Teams */}
@@ -160,14 +175,47 @@ function TeamsSidebar({ isOpen, onClose }) {
                                 e.currentTarget.style.paddingLeft = '15px';
                             }}
                         >
-                            <i class="bi bi-list-ul"></i> Teams List
+                            <i className="bi bi-list-ul"></i> Teams List
                         </a>
+
+                        {/* Champ Stats Admin */}
+                        {user?.admin === true && (
+                            <a
+                                onClick={() => handleNavigation(STATS_DATA_ADMIN)}
+                                style={{
+                                    display: 'block',
+                                    padding: '12px 20px',
+                                    color: '#adb5bd',
+                                    textDecoration: 'none',
+                                    cursor: 'pointer',
+                                    transition: 'all 0.2s'
+                                }}
+                                onMouseEnter={(e) => {
+                                    e.currentTarget.style.backgroundColor = '#495057';
+                                    e.currentTarget.style.color = '#fff';
+                                    e.currentTarget.style.paddingLeft = '25px';
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.currentTarget.style.backgroundColor = 'transparent';
+                                    e.currentTarget.style.color = '#adb5bd';
+                                    e.currentTarget.style.paddingLeft = '20px';
+                                }}
+                            >
+                                <i className="bi bi-graph-up"></i> Competition Stats
+                            </a>
+                        )}
                     </div>
 
                     {/* I Miei Teams Section */}
                     {teams && teams.length > 0 && (
                         <>
-                            <h6 style={{ color: '#adb5bd', fontSize: '12px', textTransform: 'uppercase', marginBottom: '10px', paddingLeft: '5px' }}>
+                            <h6 style={{
+                                color: '#adb5bd',
+                                fontSize: '12px',
+                                textTransform: 'uppercase',
+                                marginBottom: '10px',
+                                paddingLeft: '5px'
+                            }}>
                                 My Teams
                             </h6>
                             {teams.map((team) => (
