@@ -120,24 +120,14 @@ function Team() {
   // Determina se l'utente corrente è admin
   // IMPORTANTE: usa membersRole, NON members (che potrebbe non includere user senza champion)
   const isUserAdmin = () => {
-    console.log('=== DEBUG isUserAdmin ===');
-    console.log('user.idUser:', user.idUser);
-    console.log('user.admin:', user.admin);
-    console.log('membersRole:', membersRole);
 
     // Se è admin globale, mostra sempre Edit Team
     if (user.admin === true) {
-      console.log('✅ User è admin globale');
       return true;
     }
-
     // Controlla se è admin del team specifico in membersRole
     const userRole = membersRole.find(mr => mr.idUser === user.idUser);
-    console.log('userRole trovato:', userRole);
-    console.log('userRole?.admin:', userRole?.admin);
-
     const isAdmin = userRole?.admin === true;
-    console.log('Risultato finale isAdmin:', isAdmin);
     return isAdmin;
   };
 

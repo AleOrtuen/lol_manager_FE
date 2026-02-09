@@ -23,6 +23,12 @@ function StatsDataAdmin() {
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 15;
 
+    const countKeyMap = {
+        winRatePick: "winCountPick",
+        pickRate: "pickCount",
+        banRate: "banCount",
+    };
+
     useEffect(() => {
         if (user?.admin === false) {
             navigate(HOME);
@@ -39,7 +45,7 @@ function StatsDataAdmin() {
 
     useEffect(() => {
         if (selectedFolder === "") return;
-        setDraftsData();
+        setDraftsData(null);
         champAnalysisFindFolder(selectedFolder)
             .then((response) => {
                 setChampsData(response.data.objResponse);
@@ -65,10 +71,16 @@ function StatsDataAdmin() {
     };
 
     const requestSort = (key) => {
-        setSortConfig((prev) => ({
-            key,
-            direction: prev.key === key && prev.direction === 'asc' ? 'desc' : 'asc',
-        }));
+        setSortConfig((prev) => {
+            if (prev.key !== key) {
+                return { key, direction: 'desc' };
+            }
+            return {
+                key,
+                direction: prev.direction === 'desc' ? 'asc' : 'desc',
+            };
+        });
+
         setCurrentPage(1);
     };
 
@@ -81,6 +93,7 @@ function StatsDataAdmin() {
         if (!sortConfig.key) return 0;
 
         let valA, valB;
+
         if (sortConfig.key === "name") {
             valA = a.champ.name.toLowerCase();
             valB = b.champ.name.toLowerCase();
@@ -91,7 +104,19 @@ function StatsDataAdmin() {
 
         if (valA < valB) return sortConfig.direction === "asc" ? -1 : 1;
         if (valA > valB) return sortConfig.direction === "asc" ? 1 : -1;
-        return 0;
+
+        const countKey = countKeyMap[sortConfig.key];
+        if (countKey) {
+            const countA = a[countKey] ?? 0;
+            const countB = b[countKey] ?? 0;
+
+            if (countA !== countB) {
+                // count sempre DESC: più partite prima
+                return countB - countA;
+            }
+        }
+
+        return a.champ.name.localeCompare(b.champ.name);
     });
 
     // PAGINAZIONE
