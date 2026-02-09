@@ -340,7 +340,7 @@ function Team() {
                     {/* TOTAL */}
                     <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                       <p className="fw-bold mb-0">Total</p>
-                      <p className="mb-0">Played: {teamData?.gamesCount ?? "N/A"}</p>
+                      <p className="mb-2">Played: {teamData?.gamesCount ?? "N/A"}</p>
                       <RateCircle 
                         rate={teamData?.winRate} 
                         count={teamData?.winCount} 
@@ -351,7 +351,7 @@ function Team() {
                     {/* BLUE SIDE */}
                     <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                       <p className="fw-bold mb-0" style={{ color: "#0d6efd" }}>Blue Side</p>
-                      <p className="mb-0">Played: {teamData?.gamesCountBlue ?? "N/A"}</p>
+                      <p className="mb-2">Played: {teamData?.gamesCountBlue ?? "N/A"}</p>
                       <RateCircle 
                         rate={teamData?.winRateBlue} 
                         count={teamData?.winCountBlue} 
@@ -362,7 +362,7 @@ function Team() {
                     {/* RED SIDE */}
                     <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                       <p className="fw-bold mb-0" style={{ color: "#dc3545" }}>Red Side</p>
-                      <p className="mb-0">Played: {teamData?.gamesCountRed ?? "N/A"}</p>
+                      <p className="mb-2">Played: {teamData?.gamesCountRed ?? "N/A"}</p>
                       <RateCircle 
                         rate={teamData?.winRateRed} 
                         count={teamData?.winCountRed} 

@@ -46,7 +46,10 @@ function Navbar() {
         } else if (user && user.admin === true) {
             teamFindAll()
                 .then((response) => {
-                    dispatch(setTeam(response.data.objResponse));
+                    const filteredTeams = response.data.objResponse.filter(
+                        team => team.guest === false && team.active === true
+                    );
+                    dispatch(setTeam(filteredTeams));
                 })
                 .catch(error => {
                     console.log(error.response.data.response);
@@ -182,6 +185,7 @@ function Navbar() {
                     <TeamsSidebar
                         isOpen={showTeamsSidebar}
                         onClose={() => setShowTeamsSidebar(false)}
+                        user={user}
                     />
                 </>
             ) : (

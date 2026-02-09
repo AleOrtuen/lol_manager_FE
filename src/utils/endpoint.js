@@ -149,3 +149,17 @@ const PASSWORD_RESET_TOKEN_PATH = BASE_PATH + '/psw-reset/';
 export const PASSWORD_RESET_TOKEN_SAVE = PASSWORD_RESET_TOKEN_PATH + 'save/';
 export const PASSWORD_RESET_TOKEN_FIND_TOKEN = PASSWORD_RESET_TOKEN_PATH + 'find-token/';
 export const PASSWORD_RESET_TOKEN_DELETE = PASSWORD_RESET_TOKEN_PATH + 'delete/';
+
+//ENDPOINT GAME FOLDER
+const GAME_FOLDER_PATH = BASE_PATH + '/game-folder/';
+export const GAME_FOLDER_SAVE = GAME_FOLDER_PATH + 'save';
+export const GAME_FOLDER_UPDATE = GAME_FOLDER_PATH + 'update';
+export const GAME_FOLDER_DELETE = GAME_FOLDER_PATH + 'delete/';
+export const GAME_FOLDER_FIND_ALL = GAME_FOLDER_PATH + 'find-all';
+export const GAME_FOLDER_FIND_ID = GAME_FOLDER_PATH + 'find-id/';
+export const GAME_FOLDER_FIND_TEAM = GAME_FOLDER_PATH + 'find-team/';
+
+//ENDPOINT CHAMP ANALYSIS
+const STATS_ANALYSIS_PATH = BASE_PATH + '/stats-analysis/';
+export const CHAMP_ANALYSIS_FOLDER = STATS_ANALYSIS_PATH + 'champ-analysis/';
+export const DRAFTS_ANALYSIS_FOLDER = STATS_ANALYSIS_PATH + 'drafts-analysis/';

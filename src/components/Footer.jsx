@@ -18,7 +18,7 @@ function Footer() {
         </b>
         <br />
         <span>
-          © 2025 LoL Team Manager is not endorsed by Riot Games. League of Legends and Riot Games are trademarks or registered trademarks of Riot Games, Inc. League of Legends © Riot Games, Inc.
+          © 2026 LoL Team Manager is not endorsed by Riot Games. League of Legends and Riot Games are trademarks or registered trademarks of Riot Games, Inc. League of Legends © Riot Games, Inc.
         </span>
       </footer>
     </div>
