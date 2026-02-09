@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { teamAnalysisChampAnalysis, teamAnalysisFindTeam } from "../service/teamAnalysisService";
+import { teamAnalysisChampAnalysis } from "../service/teamAnalysisService";
 import Navbar from "./Navbar";
 import { useLocation } from "react-router-dom";
 import Champions from "./Champions";
@@ -13,6 +13,12 @@ function ChampData() {
     const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 20;
+    const countKeyMap = {
+        winRatePick: "winCountPick",
+        pickRate: "pickCount",
+        banRate: "banCount",
+    };
+
 
     useEffect(() => {
         if (location.state && location.state.idTeam) {
@@ -34,22 +40,47 @@ function ChampData() {
     };
 
     const requestSort = (key) => {
-        setSortConfig((prev) => ({
-            key,
-            direction: prev.key === key && prev.direction === 'asc' ? 'desc' : 'asc',
-        }));
+        setSortConfig((prev) => {
+            if (prev.key !== key) {
+                return { key, direction: 'desc' };
+            }
+            return {
+                key,
+                direction: prev.direction === 'desc' ? 'asc' : 'desc',
+            };
+        });
+
         setCurrentPage(1);
     };
+
 
     const resetSort = () => {
         setSortConfig({ key: null, direction: 'asc' });
         setCurrentPage(1);
     };
 
+    // const sortedData = [...champsData].sort((a, b) => {
+    //     if (!sortConfig.key) return 0;
+    //
+    //     let valA, valB;
+    //     if (sortConfig.key === "name") {
+    //         valA = a.champ.name.toLowerCase();
+    //         valB = b.champ.name.toLowerCase();
+    //     } else {
+    //         valA = a[sortConfig.key] ?? 0;
+    //         valB = b[sortConfig.key] ?? 0;
+    //     }
+    //
+    //     if (valA < valB) return sortConfig.direction === "asc" ? -1 : 1;
+    //     if (valA > valB) return sortConfig.direction === "asc" ? 1 : -1;
+    //     return 0;
+    // });
+
     const sortedData = [...champsData].sort((a, b) => {
         if (!sortConfig.key) return 0;
 
         let valA, valB;
+
         if (sortConfig.key === "name") {
             valA = a.champ.name.toLowerCase();
             valB = b.champ.name.toLowerCase();
@@ -58,10 +89,26 @@ function ChampData() {
             valB = b[sortConfig.key] ?? 0;
         }
 
+        // 1️⃣ confronto principale (rate o nome)
         if (valA < valB) return sortConfig.direction === "asc" ? -1 : 1;
         if (valA > valB) return sortConfig.direction === "asc" ? 1 : -1;
-        return 0;
+
+        // 2️⃣ fallback sul count (solo per rate)
+        const countKey = countKeyMap[sortConfig.key];
+        if (countKey) {
+            const countA = a[countKey] ?? 0;
+            const countB = b[countKey] ?? 0;
+
+            if (countA !== countB) {
+                // count sempre DESC: più partite prima
+                return countB - countA;
+            }
+        }
+
+        // 3️⃣ ultimo fallback: nome (stabile)
+        return a.champ.name.localeCompare(b.champ.name);
     });
+
 
     // PAGINAZIONE
     const totalPages = Math.ceil(sortedData.length / itemsPerPage);
