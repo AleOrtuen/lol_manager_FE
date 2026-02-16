@@ -15,6 +15,24 @@ function CreateGame() {
         setForm(prev => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
     };
 
+
+    const copyAllLinks = () => {
+        if (!room) return;
+
+        const textToCopy =
+            `Player 1:
+${baseUrl}${room.player1Link}
+
+Player 2:
+${baseUrl}${room.player2Link}
+
+Spectate:
+${baseUrl}${room.spectateLink}`;
+
+        navigator.clipboard.writeText(textToCopy);
+    };
+
+
     const createGame = async () => {
         let gameRoom = { game: {} };
         let game;
@@ -34,7 +52,7 @@ function CreateGame() {
     };
 
     return (
-        <div className="container" style={{ paddingTop: "20px", minHeight: "70vh" }}>
+        <div className="container" style={{ minHeight: "70vh" }}>
             {/* Sezione principale: Logo + Box input affiancati */}
             <div className="d-flex flex-column flex-lg-row align-items-center justify-content-center gap-5 mb-5 px-4">
 
@@ -174,35 +192,113 @@ function CreateGame() {
 
             {/* Blocchi dei link: occupano più larghezza */}
             {room && (
-                <div className="mx-auto px-4" style={{ maxWidth: "900px" }}>
-                    {['player1Link', 'player2Link', 'spectateLink'].map(linkKey => (
-                        <div className="mb-3" key={linkKey}>
-                            <label className="form-label fw-bold">
-                                {linkKey === 'player1Link' ? 'Your link:' :
-                                    linkKey === 'player2Link' ? 'Opponent link:' : 'Spectate link:'}
-                            </label>
-                            <div className="input-group">
-                                <a
-                                    href={`${baseUrl}${room[linkKey]}`}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="form-control text-decoration-none text-primary"
-                                    style={{ backgroundColor: "rgba(255,255,255,0.9)" }}
-                                >
-                                    {`${baseUrl}${room[linkKey]}`}
-                                </a>
-                                <button
-                                    className="btn btn-outline-secondary"
-                                    type="button"
-                                    onClick={() => navigator.clipboard.writeText(`${baseUrl}${room[linkKey]}`)}
-                                >
-                                    Copy
-                                </button>
-                            </div>
+                <div className="d-flex justify-content-center px-4 mt-4">
+                    <div
+                        className="login-box p-4 rounded shadow w-100"
+                        style={{
+                            backgroundColor: "rgba(0,0,0,0.7)",
+                            maxWidth: "400px"
+                        }}
+                    >
+                        {/* Header */}
+                        <div className="d-flex justify-content-between align-items-center mb-4">
+                            <h5 className="fw-bold m-0">
+                                {form.style.toUpperCase()} {form.fearless && "- Fearless"}
+                            </h5>
+
+                            <button
+                                className="btn btn-warning btn-sm fw-bold"
+                                onClick={copyAllLinks}
+                            >
+                                <i class="bi bi-copy me-2"></i> COPY ALL
+                            </button>
                         </div>
-                    ))}
+
+                        {/* Link rows */}
+                        {[
+                            { key: "player1Link", label: "Team 1" },
+                            { key: "player2Link", label: "Team 2" },
+                            { key: "spectateLink", label: "Spectate" }
+                        ].map(({ key, label }) => {
+
+                            const fullLink = `${baseUrl}${room[key]}`;
+
+                            return (
+                                <div
+                                    key={key}
+                                    className="d-flex justify-content-between align-items-center mb-2 p-2 rounded"
+                                    style={{
+                                        backgroundColor: "rgba(255,255,255,0.05)",
+                                        border: "1px solid rgba(255,255,255,0.1)",
+                                        cursor: "pointer",
+                                        transition: "all 0.2s ease"
+                                    }}
+                                    onClick={() => window.open(fullLink, "_blank")}
+                                    onMouseEnter={(e) =>
+                                        e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.1)"
+                                    }
+                                    onMouseLeave={(e) =>
+                                        e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.05)"
+                                    }
+                                >
+                                    <span className="fw-semibold">{label}</span>
+
+                                    <button
+                                        className="btn btn-outline-warning btn-sm"
+                                        onClick={(e) => {
+                                            e.stopPropagation(); // 🔥 impedisce apertura link
+                                            navigator.clipboard.writeText(fullLink);
+                                        }}
+                                    >
+                                        Copy
+                                    </button>
+                                </div>
+                            );
+                        })}
+
+                    </div>
                 </div>
             )}
+
+            {/*{room && (*/}
+            {/*    <div className="mx-auto px-4" style={{maxWidth: "700px"}}>*/}
+            {/*        {['player1Link', 'player2Link', 'spectateLink'].map(linkKey => (*/}
+            {/*            <div className="mb-3" key={linkKey}>*/}
+            {/*                <label className="form-label fw-bold">*/}
+            {/*                    {linkKey === 'player1Link' ? 'Your link:' :*/}
+            {/*                        linkKey === 'player2Link' ? 'Opponent link:' : 'Spectate link:'}*/}
+            {/*                </label>*/}
+            {/*                <div className="input-group">*/}
+            {/*                    <a*/}
+            {/*                        href={`${baseUrl}${room[linkKey]}`}*/}
+            {/*                        target="_blank"*/}
+            {/*                        rel="noopener noreferrer"*/}
+            {/*                        className="form-control text-decoration-none text-primary"*/}
+            {/*                        style={{backgroundColor: "rgba(255,255,255,0.9)"}}*/}
+            {/*                    >*/}
+            {/*                        {`${baseUrl}${room[linkKey]}`}*/}
+            {/*                    </a>*/}
+            {/*                    <button*/}
+            {/*                        className="btn btn-outline-secondary"*/}
+            {/*                        type="button"*/}
+            {/*                        onClick={() => navigator.clipboard.writeText(`${baseUrl}${room[linkKey]}`)}*/}
+            {/*                    >*/}
+            {/*                        Copy*/}
+            {/*                    </button>*/}
+            {/*                </div>*/}
+            {/*            </div>*/}
+            {/*        ))}*/}
+            {/*        <div className="text-center mt-4">*/}
+            {/*            <button*/}
+            {/*                className="btn btn-warning fw-bold px-4"*/}
+            {/*                onClick={copyAllLinks}*/}
+            {/*            >*/}
+            {/*                Copy All*/}
+            {/*            </button>*/}
+            {/*        </div>*/}
+
+            {/*    </div>*/}
+            {/*)}*/}
         </div>
     );
 }
